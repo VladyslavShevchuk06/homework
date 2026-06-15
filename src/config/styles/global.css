@@ -1,0 +1,13 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --font-primary: var(--font-primary);
+}
+
+@layer base {
+  body {
+    @apply font-sans antialiased;
+  }
+}
