@@ -61,14 +61,13 @@ export const items = pgTable(
   'items',
   {
     id: uuid('id').primaryKey().defaultRandom(),
+    slug: text('slug').notNull().unique(),
     title: text('title').notNull(),
     description: text('description'),
     imageUrl: text('image_url'),
     createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
   },
-  (table) => ({
-    createdAtIdx: index('items_created_at_idx').on(table.createdAt),
-  }),
+  (table) => [index('items_created_at_idx').on(table.createdAt)],
 )
 
 // Favorites table - user <-> item relationship
@@ -84,9 +83,9 @@ export const favorites = pgTable(
       .references(() => items.id, { onDelete: 'cascade' }),
     createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
   },
-  (table) => ({
-    userItemUnique: uniqueIndex('user_item_unique').on(table.userId, table.itemId),
-    userIdIdx: index('favorites_user_id_idx').on(table.userId),
-    itemIdIdx: index('favorites_item_id_idx').on(table.itemId),
-  }),
+  (table) => [
+    uniqueIndex('user_item_unique').on(table.userId, table.itemId),
+    index('favorites_user_id_idx').on(table.userId),
+    index('favorites_item_id_idx').on(table.itemId),
+  ],
 )

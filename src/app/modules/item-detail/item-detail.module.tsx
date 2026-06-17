@@ -1,17 +1,16 @@
 'use client'
 
 import Link from 'next/link'
+import Image from 'next/image'
 import { useQuery } from '@tanstack/react-query'
-import { itemDetailQueryOptions } from '@/entities/api'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui'
+import { itemDetailQueryOptions } from '@/app/entities/api'
+import { Card, CardContent, CardHeader, CardTitle } from '@/app/shared/components/ui'
 import { FavoriteToggle } from '@/app/features/favorite-toggle'
+import { parseDriverMeta } from '@/app/shared/utils'
+import { IItemDetailModuleProps } from './item-detail.interface'
 
-interface IItemDetailModuleProps {
-  itemId: string
-}
-
-export function ItemDetailModule({ itemId }: IItemDetailModuleProps) {
-  const { data: item, isLoading, error } = useQuery(itemDetailQueryOptions(itemId))
+export function ItemDetailModule({ slug }: IItemDetailModuleProps) {
+  const { data: item, isLoading, error } = useQuery(itemDetailQueryOptions(slug))
 
   if (isLoading) {
     return (
@@ -36,9 +35,7 @@ export function ItemDetailModule({ itemId }: IItemDetailModuleProps) {
     )
   }
 
-  const [team, number, country] = item.description
-    ? item.description.split(' | ').map((s) => s.split(': ')[1])
-    : ['', '', '']
+  const { team, number, country } = parseDriverMeta(item.description)
 
   return (
     <div className="space-y-6">
@@ -52,7 +49,13 @@ export function ItemDetailModule({ itemId }: IItemDetailModuleProps) {
             <CardContent className="p-0">
               {item.imageUrl && (
                 <div className="relative h-96 w-full bg-slate-100">
-                  <img src={item.imageUrl} alt={item.title} className="h-full w-full object-cover" />
+                  <Image
+                    src={item.imageUrl}
+                    alt={item.title}
+                    fill
+                    sizes="(max-width: 1024px) 100vw, 66vw"
+                    className="object-cover"
+                  />
                 </div>
               )}
             </CardContent>
@@ -86,7 +89,7 @@ export function ItemDetailModule({ itemId }: IItemDetailModuleProps) {
             </CardContent>
           </Card>
 
-          <FavoriteToggle itemId={itemId} />
+          <FavoriteToggle itemId={item.id} />
         </div>
       </div>
     </div>

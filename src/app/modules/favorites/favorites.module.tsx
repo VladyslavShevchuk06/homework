@@ -1,15 +1,12 @@
 'use client'
 
 import Link from 'next/link'
+import Image from 'next/image'
 import { useQuery } from '@tanstack/react-query'
-import { favoritesListQueryOptions } from '@/entities/api'
-import { Card, CardContent } from '@/components/ui'
+import { favoritesListQueryOptions } from '@/app/entities/api'
+import { Card, CardContent } from '@/app/shared/components/ui'
 
-interface IFavoritesModuleProps {
-  // placeholder for future extension
-}
-
-export function FavoritesModule({}: IFavoritesModuleProps) {
+export function FavoritesModule() {
   const { data: favorites = [], isLoading, error } = useQuery(favoritesListQueryOptions())
 
   if (isLoading) {
@@ -51,12 +48,18 @@ export function FavoritesModule({}: IFavoritesModuleProps) {
       ) : (
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {favorites.map((favorite) => (
-            <Link key={favorite.itemId} href={`/items/${favorite.itemId}`}>
+            <Link key={favorite.itemId} href={`/items/${favorite.slug}`}>
               <Card className="h-full cursor-pointer transition-all hover:shadow-lg hover:ring-2 hover:ring-blue-500">
                 <CardContent className="p-0">
                   {favorite.imageUrl && (
                     <div className="relative h-48 w-full bg-slate-100">
-                      <img src={favorite.imageUrl} alt={favorite.title} className="h-full w-full object-cover" />
+                      <Image
+                        src={favorite.imageUrl}
+                        alt={favorite.title}
+                        fill
+                        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+                        className="object-cover"
+                      />
                     </div>
                   )}
                   <div className="p-4">

@@ -1,19 +1,14 @@
 'use client'
 
-import { useEffect, useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
-import { useFavoriteToggleMutation, favoritesListQueryOptions } from '@/entities/api'
-import { Button } from '@/components/ui'
+import { useFavoriteToggleMutation, favoritesListQueryOptions } from '@/app/entities/api'
+import { Button } from '@/app/shared/components/ui'
 import { authClient } from '@/pkg/auth'
+import { IFavoriteToggleProps } from './favorite-toggle.interface'
 
-interface IFavoriteToggleProps {
-  itemId: string
-  isFavorited?: boolean
-}
-
-export function FavoriteToggle({ itemId, isFavorited: initialFavorited }: IFavoriteToggleProps) {
-  const [user, setUser] = useState<any>(null)
-  const [isHydrated, setIsHydrated] = useState(false)
+export function FavoriteToggle({ itemId }: IFavoriteToggleProps) {
+  const { data: session, isPending } = authClient.useSession()
+  const user = session?.user
 
   const { data: favorites = [] } = useQuery(favoritesListQueryOptions())
   const { addMutation, removeMutation } = useFavoriteToggleMutation()
@@ -21,16 +16,7 @@ export function FavoriteToggle({ itemId, isFavorited: initialFavorited }: IFavor
   const isFavorited = favorites.some((fav) => fav.itemId === itemId)
   const isLoading = addMutation.isPending || removeMutation.isPending
 
-  useEffect(() => {
-    const checkSession = async () => {
-      const session = await authClient.getSession()
-      setUser(session.data?.user || null)
-      setIsHydrated(true)
-    }
-    checkSession()
-  }, [])
-
-  if (!isHydrated) {
+  if (isPending) {
     return null
   }
 
@@ -53,7 +39,9 @@ export function FavoriteToggle({ itemId, isFavorited: initialFavorited }: IFavor
       disabled={isLoading}
       className="w-full"
     >
-      {isLoading ? 'Updating...' : isFavorited ? '★ Remove from Favorites' : '☆ Add to Favorites'}
+      {/* isFavorited flips instantly via the optimistic mutation, so the label
+          updates immediately — the button just dims (disabled) during the request */}
+      {isFavorited ? '★ Remove from Favorites' : '☆ Add to Favorites'}
     </Button>
   )
 }

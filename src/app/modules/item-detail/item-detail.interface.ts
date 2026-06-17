@@ -1,3 +1,3 @@
 export interface IItemDetailModuleProps {
-  itemId: string
+  slug: string
 }

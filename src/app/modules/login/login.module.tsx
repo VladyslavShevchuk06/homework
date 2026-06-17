@@ -5,12 +5,14 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { loginSchema, TLoginInput } from '@/shared/validation/validation'
+import { useQueryClient } from '@tanstack/react-query'
+import { loginSchema, TLoginInput } from '@/app/shared/validation'
 import { authClient } from '@/pkg/auth'
-import { Button, Card, CardContent, CardHeader, CardTitle, Input, Label } from '@/components/ui'
+import { Button, Card, CardContent, CardHeader, CardTitle, Input, Label } from '@/app/shared/components/ui'
 
 export function LoginModule() {
   const router = useRouter()
+  const queryClient = useQueryClient()
   const [serverError, setServerError] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(false)
 
@@ -34,7 +36,11 @@ export function LoginModule() {
         },
         {
           onSuccess: () => {
+            // drop stale (logged-out) query state and clear the router cache so
+            // the nav + user-scoped data reflect the new session without a reload
+            queryClient.invalidateQueries()
             router.push('/items')
+            router.refresh()
           },
           onError: (error) => {
             setServerError(error.error.message || 'Failed to sign in')

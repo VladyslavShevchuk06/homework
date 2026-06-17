@@ -17,6 +17,7 @@ export async function GET(request: Request) {
       .select({
         id: favorites.id,
         itemId: favorites.itemId,
+        slug: items.slug,
         title: items.title,
         description: items.description,
         imageUrl: items.imageUrl,

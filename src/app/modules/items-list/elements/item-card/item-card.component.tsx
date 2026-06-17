@@ -1,23 +1,29 @@
 import Link from 'next/link'
-import { Card, CardContent } from '@/components/ui'
-import { IItem } from '@/entities/models'
+import Image from 'next/image'
+import { Card, CardContent } from '@/app/shared/components/ui'
+import { IItem } from '@/app/entities/models'
+import { parseDriverMeta } from '@/app/shared/utils'
 
 interface IItemCardProps {
   item: IItem
 }
 
 export function ItemCard({ item }: IItemCardProps) {
-  const [team, number, country] = item.description
-    ? item.description.split(' | ').map((s) => s.split(': ')[1])
-    : ['', '', '']
+  const { team, number, country } = parseDriverMeta(item.description)
 
   return (
-    <Link href={`/items/${item.id}`}>
+    <Link href={`/items/${item.slug}`}>
       <Card className="h-full cursor-pointer transition-all hover:shadow-lg hover:ring-2 hover:ring-blue-500">
         <CardContent className="p-0">
           {item.imageUrl && (
             <div className="relative h-48 w-full bg-slate-100">
-              <img src={item.imageUrl} alt={item.title} className="h-full w-full object-cover" />
+              <Image
+                src={item.imageUrl}
+                alt={item.title}
+                fill
+                sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+                className="object-cover"
+              />
             </div>
           )}
           <div className="p-4">

@@ -2,6 +2,7 @@ import { betterAuth } from 'better-auth'
 import { drizzleAdapter } from 'better-auth/adapters/drizzle'
 import { db } from '@/db'
 import * as schema from '@/db/schema'
+import { envServer } from '@/config/env'
 
 export const auth = betterAuth({
   database: drizzleAdapter(db, {
@@ -12,7 +13,7 @@ export const auth = betterAuth({
     enabled: true,
     minPasswordLength: 8,
   },
-  secret: process.env.BETTER_AUTH_SECRET,
-  baseURL: process.env.BETTER_AUTH_URL,
+  secret: envServer.BETTER_AUTH_SECRET,
+  baseURL: envServer.BETTER_AUTH_URL,
   basePath: '/api/auth',
 })
