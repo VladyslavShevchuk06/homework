@@ -30,8 +30,8 @@ Declarative structural rules that hold for **every** Next.js client built with t
 ## Environment access
 
 - **MUST** read env only through `envClient` / `envServer` from `config/env/`.
-- **MUST NOT** read `process.env` outside `config/env/` — sole exception: `src/middleware.ts` reading `process.env.NODE_ENV` for cookie flags.
-  Check: `grep -R "process.env" src --include=*.ts | grep -v "config/env" | grep -v "middleware.ts"` returns nothing.
+- **MUST NOT** read `process.env` outside `config/env/` — sole exception: `src/proxy.ts` reading `process.env.NODE_ENV` for cookie flags.
+  Check: `grep -R "process.env" src --include=*.ts | grep -v "config/env" | grep -v "proxy.ts"` returns nothing.
 - **MUST** place `NEXT_PUBLIC_*` vars on `envClient`; secrets on `envServer`.
 
 ## File naming
@@ -47,3 +47,25 @@ Declarative structural rules that hold for **every** Next.js client built with t
 - **MUST** keep `entities/models/*.model.ts` runtime-free (types/interfaces/enums only).
 - **MUST NOT** put TanStack Query files (`*.api.ts` / `*.query.ts` / `*.mutation.ts`) anywhere except `entities/api/<api>/`.
   Check: `grep -Rl "queryOptions\|useMutation\|useQuery" src/app/{modules,widgets,features}` returns nothing.
+
+## Data layer
+
+- **MUST** fetch data only through Drizzle ORM inside `(api)` route handlers.
+  Check: `grep -R "@supabase/supabase-js" src` returns nothing.
+- **MUST** use `db.$count(...)` for aggregate counts of related rows rather than counting a fetched array.
+  Check: counts come from `db.$count` / `count()`, not `.length` over fetched rows.
+- **MUST** source the cache key for every query from an `EEntityKey` value in `shared/interfaces/`.
+  Check: `grep -R "queryKey:" src/app/entities/api` shows each key starting with an `EEntityKey.*` member.
+
+## Server state
+
+- **MUST** pass `placeholderData: keepPreviousData` on paginated list queries.
+- **MUST** invalidate every affected key in `onSettled` for any mutation that updates the cache optimistically.
+  Check: each `onMutate` that calls `setQueryData`/`setQueriesData` has a matching `onSettled` `invalidateQueries`.
+
+## Auth
+
+- **MUST** read the session on the server via `auth.api.getSession({ headers })`; never trust a client store for gating.
+- **MUST** declare OAuth provider secrets as `z.string().optional()` in `env.server.ts`.
+  Check: `grep -R "CLIENT_SECRET" src/config/env/env.server.ts` shows `.optional()`.
+- **MUST** keep all page-route gating in `src/proxy.ts` (one file); each `(api)` handler enforces its own session check.

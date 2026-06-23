@@ -1,6 +1,6 @@
 ---
 name: agent-skill-architect
-description: Use to author, scaffold, or restructure a Claude Code skill that follows the "router + independent resources + declarative self-verification" anatomy proven in this repo's client-structure / server-structure / worker-structure skills. Trigger when someone wants to create a new skill from scratch, convert ad-hoc docs into a skill, add references/examples/spec to an existing skill, or audit a skill for self-sufficiency and resource independence. Especially for codebase-structure / architecture skills (FSD Layer/Slice/Segment), but applies to any skill. Skip for one-off edits to a single skill file.
+description: Use to author, scaffold, or restructure a Claude Code skill that follows the "router + independent resources + declarative self-verification" anatomy proven in this repo's client-structure skill. Trigger when someone wants to create a new skill from scratch, convert ad-hoc docs into a skill, add references/examples/spec to an existing skill, or audit a skill for self-sufficiency and resource independence. Especially for codebase-structure / architecture skills (FSD Layer/Slice/Segment), but applies to any skill. Skip for one-off edits to a single skill file.
 tools: Read, Write, Edit, Grep, Glob, Bash
 ---
 

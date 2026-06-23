@@ -4,8 +4,8 @@ import { ECookieKey, E<Route> } from '@/app/shared/interfaces/<name>.interface'
 import { envServer } from '@/config/env'
 import { authServer } from '@/pkg/<auth>/auth.server'
 
-// middleware — single file at src/ root, owns locale routing, auth gates, session cookies
-export default async function proxy(req: NextRequest) {
+// proxy — single file at src/ root (Next.js 16), owns locale routing, auth gates, session cookies
+export async function proxy(req: NextRequest) {
   // (api) passthrough: inject the shared secret then exit
   if (req.nextUrl.pathname.startsWith('/api/')) {
     const headers = new Headers(req.headers)

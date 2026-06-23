@@ -40,7 +40,7 @@ Is it app configuration (env, fonts, global css)?► config/<segment>
 Is it an external-system client / framework glue
 that must stay liftable as one folder?───────────► pkg/<name>
 
-Is it edge routing/auth/locale gating?───────────► middleware.ts (src root)
+Is it edge routing/auth/locale gating?───────────► proxy.ts (src root)
 ```
 
 ### `features` vs `widgets` vs `modules` (the most common mix-up)
@@ -64,7 +64,7 @@ Imports flow **only downward**: `(web)/(api) → modules → widgets → feature
 | `shared` | config, pkg | entities and above | a `shared` symbol that needs a domain shape takes it as a param |
 | `config` | pkg | app/* | — |
 | `pkg/<name>` | itself only | `app/*`; another `pkg/*` | shared helper between two pkg slots → duplicate privately in each |
-| `middleware.ts` | config/env, relevant pkg slots | modules/widgets/features | new gate logic stays here, not duplicated in pages |
+| `proxy.ts` | config/env, lib, relevant pkg slots | modules/widgets/features | new gate logic stays here, not duplicated in pages |
 
 **Lift-down test:** a symbol needed by 3+ layers belongs in `shared/interfaces/` (cross-cutting) or `entities/models/` (domain shape). Logic reused by two siblings drops one layer down.
 

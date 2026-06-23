@@ -26,7 +26,7 @@ Even then, prefer **two short lines or one sentence under 15 words** over a para
 ## What earns a comment
 
 - Top-level exports (`// <name>` above `export const <name> = ...`).
-- Section markers inside a page/layout/middleware file (`// metadata`, `// cache`, `// interface`, `// component`, `// return`, `// config`).
+- Section markers inside a page/layout/proxy file (`// metadata`, `// cache`, `// interface`, `// component`, `// return`, `// config`).
 - Page / route handler files — use `// page`, `// layout`, `// metadata` for Next.js conventions; route handlers use HTTP shorthand `// VERB /path` (e.g. `// GET /api/<route>`, `// POST /api/<route>/:id`).
 - Module/component/widget/feature exports — single label of the role (`// component`, `// module`, `// widget`).
 - TanStack hooks — name the action (`// <api> create hook`, `// <api> query options`).

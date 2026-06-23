@@ -23,6 +23,8 @@ After a specific action, run the matching block. Declarative `MUST` checks — r
 - **MUST** source the `queryKey` from an `EEntityKey.QUERY_*` value in `shared/interfaces/<entities>.interface.ts`.
 - **MUST** throw `new Error(message)` in fetchers; mutations surface errors via the project's toast/notification service in `onError`.
 - **MUST** export only what consumers need from the barrel (hooks, option factories) — not internal fetchers.
+- **MUST** source each `queryKey` from an `EEntityKey` value; list queries carry `placeholderData: keepPreviousData`.
+- **MUST**, for optimistic mutations, snapshot + cancel in `onMutate`, restore in `onError`, and **always** `invalidateQueries` in `onSettled`; sync related caches with `setQueriesData`.
 - Model: `entities/models/<entity>.model.ts` holds `I*`/`E*` only, re-exported from `entities/models/index.ts`.
 
 ## After `+shared` segment file
@@ -43,11 +45,12 @@ After a specific action, run the matching block. Declarative `MUST` checks — r
 - **(web) MUST** keep the page thin: read params, optionally `prefetchQuery` from `entities/api/<api>`, render a `<…>Module`. Logic > ~20 lines → move into a module.
 - **(web) MUST** use `(public)` / `(private)` route groups to scope shared layout/middleware without changing the URL.
 - **(api) MUST** export `GET`/`POST`/… , pull env from `config/env/`, validate input; factor a shared `handler` for multi-method passthroughs.
-- **MUST** update `src/middleware.ts` for any new route gate (new private path, redirect rule) — keep all gating in that one file; `config.matcher` excludes static/image assets.
+- **(api) MUST** fetch via Drizzle (`db` from `@/db`), never `supabase-js`; user-scoped handlers check `auth.api.getSession({ headers })` themselves.
+- **MUST** update `src/proxy.ts` for any new route gate (new private path, redirect rule) — keep all gating in that one file; `config.matcher` excludes static/image assets.
 
 ## After `bootstrap` (new project)
 
 - **MUST** pass `yarn type-check` (or `tsc --noEmit`).
 - **MUST** pass `yarn lint` / `yarn format` end-to-end.
 - **MUST** boot via `bun dev` / `yarn dev`; the first route renders.
-- **MUST** have `@/*` → `src/*` path alias, env validation wired, and a single `src/middleware.ts`.
+- **MUST** have `@/*` → `src/*` path alias, env validation wired, and a single `src/proxy.ts`.

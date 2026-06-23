@@ -14,7 +14,7 @@
 
 **Free-floating domain types in modules.** Types describing API shapes belong in `entities/models/<entity>.model.ts`. Cross-cutting enums (route names, cookie keys, query-param keys, query-key enum) live in `shared/interfaces/`. Defining `IFoo` inside `modules/<module>/<module>.interface.ts` is correct *only* when the type is genuinely module-private.
 
-**Direct `process.env` access.** Read env variables only through `envClient` / `envServer` exported from `config/env/`. Adding a var means updating the Zod schema in `env.client.ts` or `env.server.ts` *and* `.env.example`. The one structural exception is `src/middleware.ts`, which may read `process.env.NODE_ENV` for branching `secure: process.env.NODE_ENV === 'production'` cookie flags — any other env var goes through `envClient`/`envServer` even in middleware.
+**Direct `process.env` access.** Read env variables only through `envClient` / `envServer` exported from `config/env/`. Adding a var means updating the Zod schema in `env.client.ts` or `env.server.ts` *and* `.env.example`. The one structural exception is `src/proxy.ts`, which may read `process.env.NODE_ENV` for branching `secure: process.env.NODE_ENV === 'production'` cookie flags — any other env var goes through `envClient`/`envServer` even in the proxy.
 
 **`NEXT_PUBLIC_*` vars declared on the server-only schema (or vice versa).** Vars prefixed `NEXT_PUBLIC_` go in `envClient` (`client: { … }`); everything else (secrets, upstream URLs not safe to ship) goes in `envServer` (`server: { … }`). Swapping them either crashes the build (`envClient` rejecting a non-public name) or leaks a secret into the client bundle.
 
@@ -26,12 +26,26 @@
 
 **File suffix omitted.** Every implementation file carries its role suffix (`.module.tsx`, `.component.tsx`, `.service.ts`, `.store.ts`, `.hook.ts(x)`, `.api.ts`, `.query.ts`, `.mutation.ts`, `.model.ts`, `.interface.ts`, `.constant.ts`, `.util.ts`). The single documented exception is **`shared/validation/validation.ts`** — flat `*.ts`, not `*.validation.ts`. Don't extend this exception to other segments.
 
-**Business logic in `page.tsx`.** Pages read params, optionally prefetch a query for hydration, and render a module. Authentication checks, data orchestration, side effects, analytics — all belong inside the module (or in `middleware.ts` for route gates). If a page has more than ~20 lines of logic, the logic belongs in a module.
+**Business logic in `page.tsx`.** Pages read params, optionally prefetch a query for hydration, and render a module. Authentication checks, data orchestration, side effects, analytics — all belong inside the module (or in `proxy.ts` for route gates). If a page has more than ~20 lines of logic, the logic belongs in a module.
 
 **Component prop pattern drift.** Components use `FC<Readonly<IProps>>` with `IProps` declared just above the component, and props are **destructured inside the body** (`const { x, y } = props`), not in the parameter list. The convention is repo-wide; deviating creates churn when other files mirror neighbours.
 
 **Module folder name doesn't match file prefix.** A slice at `modules/<module-name>/` must contain `<module-name>.module.tsx`, not `<moduleName>.module.tsx` or a different prefix. The folder and the suffix files share one kebab-case prefix.
 
 **Component element class lookup pulled into a util that depends on React.** When something needs React, it belongs in `shared/components/` or `shared/hooks/`, not `shared/utils/`. Test: can the file run under `vitest` with no DOM? If not, it's not a util.
+
+**Reaching for `supabase-js` to fetch data.** This project never uses the Supabase client SDK for data access. All reads and writes go through Drizzle ORM (`db` from `@/db`) inside `(api)` route handlers, and the client reaches them through the `entities/api/<api>` fetchers. Importing `@supabase/supabase-js` to query a table bypasses the entire data layer; if Supabase is present it is infrastructure for the Postgres instance only.
+
+**Counting rows in application code.** Loading a list and then issuing a count query per row (or measuring `array.length` after fetching everything) is the N+1 trap. Use a Drizzle correlated sub-select via `db.$count(...)` — the shared `favoritesCount` expression in `src/db/favorites-count.ts` is embedded directly in the parent `select`, keeping the count in one round trip. For a total over a filtered set, use the `count()` aggregate in its own `select`, not `data.length`.
+
+**Optimistic mutation without a settling invalidation.** An `onMutate` that calls `setQueryData` / `setQueriesData` must be paired with an `onSettled` that invalidates the same keys, and an `onError` that restores the snapshot captured in `onMutate`. Skipping the `onSettled` invalidation leaves the cache holding optimistic deltas that are never reconciled against the server; skipping the snapshot/restore leaves a failed mutation showing a change that never persisted. The keys touched in `onMutate` (favorites list + items list + item detail) are exactly the keys that must be invalidated.
+
+**OAuth secrets declared as required env vars.** GitHub/Google credentials are `z.string().optional()` in `env.server.ts` so an unconfigured provider simply stays disabled. Declaring them required (`z.string()`) makes the build fail whenever a provider isn't wired up. Only `BETTER_AUTH_SECRET`, `BETTER_AUTH_URL`, and `DATABASE_URL` are required.
+
+**Gating a route somewhere other than `proxy.ts`.** Page-route protection lives in the single `src/proxy.ts` file (the Next.js 16 successor to `middleware.ts`); scattering `redirect()` calls across pages or layouts splits the gate logic. API auth is the exception — each `(api)` handler runs its own `auth.api.getSession({ headers })` check and `/api/*` paths fall through the proxy to the handler.
+
+**Treating `src/proxy.ts` as `middleware.ts`.** Next.js 16 renamed the edge-gating file: it is `src/proxy.ts`, exporting `proxy` (not `middleware`) plus a `config` matcher. Older docs and scaffolds that create `src/middleware.ts` are out of date for this project.
+
+**Putting the Better Auth server instance in `pkg/`.** The server singleton (`betterAuth(...)` + `drizzleAdapter`) is wired to this app's `db` and schema, so it is not liftable as a self-contained `pkg/` slot — it lives in `src/lib/auth.ts`. The client adapter (`createAuthClient`, config from `envClient` only) is liftable and stays in `pkg/auth/`.
 
 **Notion KB drift from reality.** The project's Notion KB lists `shared/` segments as `ui/, hooks/, store/, interfaces/, assets/`. The repo actually uses `components/, hooks/, store/, interfaces/, constants/, utils/, services/, validation/, assets/`. The skill anchors on **reality** (the segments in active use). If both the Notion KB and the code change in the future, update this skill in lockstep — do not let one drift away from the other again.

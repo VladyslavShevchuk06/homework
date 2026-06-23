@@ -144,9 +144,9 @@ Scaffold `src/app/modules/<module>/{<module>.module.tsx, index.ts}` and the opti
 
 Mount the module from `src/app/(web)/[locale]/page.tsx` (or the relevant nested page).
 
-## 11. `src/middleware.ts`
+## 11. `src/proxy.ts`
 
-Single file at `src/` root. Composes: locale routing (e.g. `next-intl/middleware`), session-cookie issuance, header rewrites, private route gates. Reads from `config/env/` and the relevant `pkg/<auth>/` slot. Do not import from modules/widgets/features. Set `config.matcher` to skip Next.js internals and static assets.
+Single file at `src/` root (Next.js 16 — the rename of `middleware.ts`). Exports a `proxy` function and a `config` matcher. Composes: locale routing (e.g. `next-intl` middleware), session-cookie issuance, header rewrites, private route gates. Reads from `config/env/`, `src/lib/`, and the relevant `pkg/<auth>/` slot. Do not import from modules/widgets/features. Set `config.matcher` to skip Next.js internals and static assets.
 
 ## 12. Verify
 
@@ -158,7 +158,7 @@ yarn dev
 
 - `yarn format` chains `type-check → lint → prettier`. All three must pass.
 - `yarn build` must complete without environment-variable errors (the Zod schema in `env.client.ts` runs at build time and will throw if a required var is missing).
-- `yarn dev` (or `bun dev` if Bun is the dev runtime) must boot. Open the root URL, confirm the first module renders, navigate one private route and confirm the middleware redirect fires when unauthenticated.
+- `yarn dev` (or `bun dev` if Bun is the dev runtime) must boot. Open the root URL, confirm the first module renders, navigate one private route and confirm the `proxy.ts` redirect fires when unauthenticated.
 
 ## 13. `.claude/` directory
 
