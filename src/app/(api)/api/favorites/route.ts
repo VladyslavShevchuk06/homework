@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 import { db } from '@/db'
 import { favorites, items } from '@/db/schema'
+import { favoritesCount } from '@/db/favorites-count'
 import { eq, and } from 'drizzle-orm'
 import { auth } from '@/lib/auth'
 
@@ -22,6 +23,7 @@ export async function GET(request: Request) {
         description: items.description,
         imageUrl: items.imageUrl,
         createdAt: favorites.createdAt,
+        favoritesCount,
       })
       .from(favorites)
       .innerJoin(items, eq(favorites.itemId, items.id))

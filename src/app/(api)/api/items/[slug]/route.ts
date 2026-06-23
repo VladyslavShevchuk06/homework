@@ -1,7 +1,8 @@
 import { NextResponse } from 'next/server'
 import { db } from '@/db'
 import { items } from '@/db/schema'
-import { eq } from 'drizzle-orm'
+import { favoritesCount } from '@/db/favorites-count'
+import { eq, getTableColumns } from 'drizzle-orm'
 
 interface IItemDetailRouteParams {
   params: Promise<{ slug: string }>
@@ -12,7 +13,11 @@ export async function GET(_req: Request, { params }: IItemDetailRouteParams) {
   try {
     const { slug } = await params
 
-    const item = await db.select().from(items).where(eq(items.slug, slug)).limit(1)
+    const item = await db
+      .select({ ...getTableColumns(items), favoritesCount })
+      .from(items)
+      .where(eq(items.slug, slug))
+      .limit(1)
 
     if (item.length === 0) {
       return NextResponse.json({ error: 'Item not found' }, { status: 404 })

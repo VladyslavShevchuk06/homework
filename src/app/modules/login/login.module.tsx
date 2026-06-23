@@ -9,6 +9,7 @@ import { useQueryClient } from '@tanstack/react-query'
 import { loginSchema, TLoginInput } from '@/app/shared/validation'
 import { authClient } from '@/pkg/auth'
 import { Button, Card, CardContent, CardHeader, CardTitle, Input, Label } from '@/app/shared/components/ui'
+import { SocialAuth } from '@/app/features/social-auth'
 
 export function LoginModule() {
   const router = useRouter()
@@ -92,6 +93,8 @@ export function LoginModule() {
               {isLoading ? 'Signing in...' : 'Sign In'}
             </Button>
           </form>
+
+          <SocialAuth className="mt-6" />
 
           <div className="mt-4 text-center text-sm">
             Don&apos;t have an account?{' '}

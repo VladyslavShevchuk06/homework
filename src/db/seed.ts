@@ -101,13 +101,13 @@ const drivers = [
   },
   {
     title: 'Liam Lawson',
-    description: 'Team: Racing  Bulls | Number: 30 | Country: New Zeland',
+    description: 'Team: Racing Bulls | Number: 30 | Country: New Zeland',
     imageUrl:
       'https://media.formula1.com/image/upload/t_16by9Centre/c_fit,w_3200,h_1800/q_auto/v1740000001/trackside-images/2026/F1_Grand_Prix_Of_China___Sprint__Qualifying/2266431845.webp',
   },
   {
     title: 'Arvid Lindblad',
-    description: 'Team: Racing  Bulls | Number: 41 | Country: United Kingdom',
+    description: 'Team: Racing Bulls | Number: 41 | Country: United Kingdom',
     imageUrl:
       'https://media.formula1.com/image/upload/t_16by9North/c_fit,w_3200,h_1800/q_auto/v1740000001/trackside-images/2026/F1_Grand_Prix_Of_China/2266576203.webp',
   },

@@ -17,6 +17,7 @@ export interface IFavoriteWithItem {
   description: string | null
   imageUrl: string | null
   createdAt: Date
+  favoritesCount: number
 }
 
 export interface IToggleFavoriteBody {

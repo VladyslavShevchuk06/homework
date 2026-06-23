@@ -7,11 +7,13 @@ export interface IItem {
   description: string | null
   imageUrl: string | null
   createdAt: Date
+  favoritesCount: number
 }
 
 export interface IItemsListParams {
   page?: number
   search?: string
+  team?: string
 }
 
 export interface IItemsListMeta {

@@ -5,16 +5,17 @@ import { itemsListQueryOptions } from '@/app/entities/api'
 import { ItemsListModule } from '@/app/modules/items-list'
 
 interface IItemsPageProps {
-  searchParams: Promise<{ page?: string; search?: string }>
+  searchParams: Promise<{ page?: string; search?: string; team?: string }>
 }
 
 async function ItemsPageContent({ searchParams }: IItemsPageProps) {
-  const { page: pageParam, search: searchParam } = await searchParams
+  const { page: pageParam, search: searchParam, team: teamParam } = await searchParams
   const page = Number(pageParam) || 1
   const search = searchParam ?? ''
+  const team = teamParam ?? ''
 
   const queryClient = getQueryClient()
-  await queryClient.prefetchQuery(itemsListQueryOptions({ page, search }))
+  await queryClient.prefetchQuery(itemsListQueryOptions({ page, search, team }))
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>

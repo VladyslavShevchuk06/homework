@@ -1,23 +1,31 @@
 import { NextResponse, type NextRequest } from 'next/server'
 import { db } from '@/db'
 import { items } from '@/db/schema'
-import { desc, ilike, or, count } from 'drizzle-orm'
+import { favoritesCount } from '@/db/favorites-count'
+import { and, desc, ilike, or, count, getTableColumns } from 'drizzle-orm'
 
 const PAGE_SIZE = 11
 
-// GET /api/items?page=1&search=
+// GET /api/items?page=1&search=&team=
 export async function GET(request: NextRequest) {
   try {
     const params = request.nextUrl.searchParams
     const page = Math.max(1, Number(params.get('page')) || 1)
     const search = (params.get('search') ?? '').trim()
+    const team = (params.get('team') ?? '').trim()
 
-    // filter by title OR description when a search term is present
-    const filter = search ? or(ilike(items.title, `%${search}%`), ilike(items.description, `%${search}%`)) : undefined
+    // match title OR description when a search term is present
+    const searchFilter = search
+      ? or(ilike(items.title, `%${search}%`), ilike(items.description, `%${search}%`))
+      : undefined
+    // team lives inside description as "Team: <Name> | ..."; substring-match it
+    const teamFilter = team && team !== 'all' ? ilike(items.description, `%Team: ${team}%`) : undefined
+    // and() drops undefined parts, so this is the search-only / team-only / combined / no-op filter
+    const filter = and(searchFilter, teamFilter)
 
     const [data, totals] = await Promise.all([
       db
-        .select()
+        .select({ ...getTableColumns(items), favoritesCount })
         .from(items)
         .where(filter)
         .orderBy(desc(items.createdAt))

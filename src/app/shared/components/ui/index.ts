@@ -1,4 +1,6 @@
 export { Button } from './button'
 export { Card, CardHeader, CardTitle, CardContent } from './card'
+export { FavoriteCount } from './favorite-count'
 export { Input } from './input'
 export { Label } from './label'
+export { Select, type ISelectOption } from './select'

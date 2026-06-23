@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import Image from 'next/image'
-import { Card, CardContent } from '@/app/shared/components/ui'
+import { Card, CardContent, FavoriteCount } from '@/app/shared/components/ui'
 import { IItem } from '@/app/entities/models'
 import { parseDriverMeta } from '@/app/shared/utils'
 
@@ -27,7 +27,10 @@ export function ItemCard({ item }: IItemCardProps) {
             </div>
           )}
           <div className="p-4">
-            <h3 className="text-lg font-semibold text-slate-900">{item.title}</h3>
+            <div className="flex items-start justify-between gap-2">
+              <h3 className="text-lg font-semibold text-slate-900">{item.title}</h3>
+              <FavoriteCount count={item.favoritesCount} className="mt-1 shrink-0" />
+            </div>
             {team && (
               <p className="mt-1 text-sm text-slate-600">
                 <span className="font-medium">Team:</span> {team}

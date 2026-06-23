@@ -4,7 +4,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { useQuery } from '@tanstack/react-query'
 import { itemDetailQueryOptions } from '@/app/entities/api'
-import { Card, CardContent, CardHeader, CardTitle } from '@/app/shared/components/ui'
+import { Card, CardContent, CardHeader, CardTitle, FavoriteCount } from '@/app/shared/components/ui'
 import { FavoriteToggle } from '@/app/features/favorite-toggle'
 import { parseDriverMeta } from '@/app/shared/utils'
 import { IItemDetailModuleProps } from './item-detail.interface'
@@ -65,7 +65,10 @@ export function ItemDetailModule({ slug }: IItemDetailModuleProps) {
         <div className="space-y-6">
           <Card>
             <CardHeader>
-              <CardTitle>{item.title}</CardTitle>
+              <div className="flex items-start justify-between gap-2">
+                <CardTitle>{item.title}</CardTitle>
+                <FavoriteCount count={item.favoritesCount} className="mt-1 shrink-0" />
+              </div>
             </CardHeader>
             <CardContent className="space-y-4">
               {team && (

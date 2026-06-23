@@ -13,6 +13,16 @@ export const auth = betterAuth({
     enabled: true,
     minPasswordLength: 8,
   },
+  socialProviders: {
+    github: {
+      clientId: envServer.GITHUB_CLIENT_ID ?? '',
+      clientSecret: envServer.GITHUB_CLIENT_SECRET ?? '',
+    },
+    google: {
+      clientId: envServer.GOOGLE_CLIENT_ID ?? '',
+      clientSecret: envServer.GOOGLE_CLIENT_SECRET ?? '',
+    },
+  },
   secret: envServer.BETTER_AUTH_SECRET,
   baseURL: envServer.BETTER_AUTH_URL,
   basePath: '/api/auth',

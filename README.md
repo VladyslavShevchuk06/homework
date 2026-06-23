@@ -1,156 +1,78 @@
 # F1 Drivers Catalog
 
-A full-stack **Next.js 16** application that catalogs all 22 Formula 1 drivers from the 2026
-season. Visitors can browse the grid and view driver details; authenticated users get their
-own **user-scoped favorites** that persist in the database and are never visible to other users.
+A full-stack **Next.js 16** application demonstrating modern App Router features, Drizzle ORM, Supabase, Better Auth, and TanStack Query v5 pagination/optimistic updates. It catalogs the 2026 Formula 1 grid: anyone can browse drivers, search, and filter by team, while authenticated users get their own private list of favorite drivers with live "popularity" counts.
 
 ## Tech Stack
 
-- **Next.js 16** (App Router, React Server Components)
-- **Drizzle ORM** + Drizzle Kit
-- **Supabase** (PostgreSQL)
-- **Better Auth** (email + password)
-- **TanStack Query v5** (client data fetching, optimistic updates)
-- **react-hook-form** (form state & validation)
-- **Tailwind CSS / shadcn/ui** (styling & UI components)
-- **TypeScript**
+- **Next.js 16** — App Router, React Server Components
+- **Drizzle ORM** — type-safe schema, queries, and migrations
+- **Supabase** — managed PostgreSQL
+- **Better Auth** — email/password + OAuth (GitHub, Google)
+- **TanStack Query v5** — server-state, pagination, optimistic updates
+- **react-hook-form** — form state & validation
+- **Tailwind CSS** — styling
+- **shadcn/ui** — UI component patterns
 
-## Getting Started
+## Getting Started (Step-by-Step for the Reviewer)
 
-### Prerequisites
+> **Prerequisites:** Node.js 18+, Yarn, and a Supabase (or any PostgreSQL) database. All commands use **Yarn** — please do not substitute `npm`.
 
-- Node.js 18+
-- A Supabase project (for the PostgreSQL database)
-
-### Step 1 — Install dependencies
+### Step 1 — Install Dependencies
 
 ```bash
 yarn install
 ```
 
-### Step 2 — Environment setup
+### Step 2 — Environment Variables
 
-Copy the example env file and fill in your own values:
+Copy the example file to `.env.local`:
 
 ```bash
 cp .env.example .env.local
 ```
 
-Then edit `.env.local`:
+Then fill in the required variables:
 
-- `DATABASE_URL` — your Supabase Postgres connection string
-- `BETTER_AUTH_SECRET` — a random string, **at least 32 characters** (e.g. `openssl rand -base64 32`)
-- `BETTER_AUTH_URL` — `http://localhost:3000`
-- `NEXT_PUBLIC_APP_URL` — `http://localhost:3000`
+| Variable | Required | What to set |
+| --- | --- | --- |
+| `DATABASE_URL` | ✅ | Connection string for **your own** Supabase/Postgres instance. |
+| `BETTER_AUTH_SECRET` | ✅ | Any random string of **32+ characters** (e.g. `openssl rand -base64 32`). |
+| `BETTER_AUTH_URL` | ✅ | Leave as `http://localhost:3000`. |
+| `NEXT_PUBLIC_APP_URL` | ✅ | Leave as `http://localhost:3000`. |
 
-### Step 3 — Database setup
+> ### ⚠️ Note for the Reviewer — OAuth is OPTIONAL
+>
+> The four OAuth variables (`GITHUB_CLIENT_ID`, `GITHUB_CLIENT_SECRET`, `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`) are **completely optional**.
+>
+> **The app boots and standard Email/Password authentication works perfectly without them.** You only need to fill these in if you specifically want to exercise the "Sign in with GitHub / Google" flow. Leaving them empty has no effect on the rest of the application.
 
-Push the Drizzle schema directly to your Supabase database:
+### Step 3 — Database Setup
+
+Push the Drizzle schema to your database, then seed the 22 F1 drivers:
 
 ```bash
+# 1. Create all tables (items, favorites, and the Better Auth tables)
 yarn db:push
-```
 
-This creates all tables (`items`, `favorites`, and the Better Auth tables). Alternatively,
-generate SQL migration files and apply them:
-
-```bash
-yarn db:generate   # generate migration files from the schema
-yarn db:migrate    # apply them to the database
-```
-
-### Step 4 — Seed the database
-
-Populate the catalog with the 22 F1 drivers:
-
-```bash
+# 2. Seed the catalog with the 22 drivers of the 2026 F1 grid
 yarn seed
-# or: npx tsx --env-file=.env.local src/db/seed.ts
 ```
 
-### Step 5 — Run the app
+> The seed script is `yarn seed` (defined in `package.json`). If you prefer SQL migration files over a direct push, you can instead run `yarn db:generate` followed by `yarn db:migrate`.
+
+### Step 4 — Run the Application
 
 ```bash
 yarn dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) in your browser.
+Open **[http://localhost:3000](http://localhost:3000)** in your browser.
 
-## Available Scripts
+## Key Features Implemented
 
-- `yarn dev` — Start the development server on port 3000
-- `yarn build` — Build for production
-- `yarn start` — Start the production server
-- `yarn type-check` — Run TypeScript type checking
-- `yarn lint` — Run ESLint
-- `yarn format` — Type-check + lint --fix + Prettier
-- `yarn db:push` — Push the Drizzle schema to the database
-- `yarn db:migrate` — Run migrations
-- `yarn db:studio` — Open Drizzle Studio
-- `yarn seed` — Seed the database with 22 F1 drivers
-
-## Project Structure
-
-```
-src/
-├── app/                    # Next.js App Router
-│   ├── (web)/             # Public routes
-│   │   ├── items/         # List & detail pages
-│   │   ├── favorites/     # User favorites (protected)
-│   │   ├── login/         # Login form
-│   │   └── register/      # Registration form
-│   ├── (api)/             # API routes
-│   │   └── api/           # Route handlers
-│   ├── modules/           # Page-level modules
-│   ├── features/          # UI features (buttons, toggles, etc.)
-│   └── entities/          # Domain entities (API, models)
-├── config/                # Configuration
-│   ├── env/              # Environment variable validation
-│   ├── fonts/            # Font configuration
-│   └── styles/           # Global styles
-├── db/                    # Database
-│   ├── schema.ts         # Drizzle schema (items, favorites, auth tables)
-│   ├── index.ts          # DB client
-│   └── seed.ts           # Seed script
-├── lib/                   # Server utilities
-│   └── auth.ts           # Better Auth configuration
-├── pkg/                   # Reusable packages
-│   ├── theme/            # Theme utilities (cn)
-│   ├── auth/             # Auth client
-│   └── query/            # Query client setup
-└── proxy.ts              # Route protection for /favorites
-```
-
-## Features
-
-- ✅ Browse all 22 F1 drivers from a public list
-- ✅ View detailed information for each driver
-- ✅ Register and login with email + password
-- ✅ Save favorite drivers (authenticated users only)
-- ✅ View a personal favorites list
-- ✅ Real-time UI updates with TanStack Query
-- ✅ Optimistic updates when adding/removing favorites
-- ✅ Full TypeScript support
-- ✅ Responsive design with Tailwind CSS
-
-## Definition of Done
-
-- [x] List renders from Supabase via Drizzle
-- [x] Click driver → `/items/[slug]` with full details
-- [x] Unauthenticated users redirected from `/favorites` to `/login`
-- [x] Authenticated users can add/remove from favorites
-- [x] Favorites persist in the database
-- [x] Different users cannot see each other's favorites
-- [x] Registration & login working
-- [x] Session persists across page reloads
-- [x] UI updates without full page reload (TanStack Query)
-- [x] Forms validate input and show errors
-- [x] `.env.example` provided, secrets not committed
-
-## Development Notes
-
-- All environment variables are required and validated (`@t3-oss/env-nextjs`) before the app runs.
-- `proxy.ts` handles `/favorites` route protection.
-- Better Auth auto-generates the `user`, `session`, `account`, and `verification` tables.
-- The seed script initializes the database with the 22 F1 drivers from the 2026 season grid.
-- All database access uses Drizzle ORM (no raw SQL).
+- **URL-synced pagination & team filtering** — the `/items` page reads `page`, `search`, and `team` straight from the URL; every control (paging, search box, team dropdown) is shareable, survives refresh, and stays in sync with the browser Back button.
+- **User-scoped favorites** — authenticated users add/remove favorites that persist in Postgres and are never visible to other users; `/favorites` is route-protected.
+- **`$count` aggregation for popularity badges** — each driver shows a live "times favorited" count computed via a Drizzle `$count` correlated sub-query, surfaced on the list, detail, and favorites views.
+- **Optimistic updates in lockstep** — toggling a favorite instantly flips the button *and* the popularity badge across all cached queries (items list, detail, favorites), rolling back together on error.
+- **Better Auth (email/password + optional OAuth)** — session-based auth with GitHub & Google social sign-in available when configured.
+- **App Router caching** — Server Components prefetch and hydrate TanStack Query state on the server, with client-side cache invalidation keeping the UI fresh without full reloads.

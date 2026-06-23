@@ -4,4 +4,5 @@ export interface ISearchFormProps {
 
 export interface ISearchFormValues {
   search: string
+  team: string
 }

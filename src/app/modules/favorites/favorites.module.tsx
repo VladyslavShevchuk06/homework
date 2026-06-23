@@ -4,7 +4,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { useQuery } from '@tanstack/react-query'
 import { favoritesListQueryOptions } from '@/app/entities/api'
-import { Card, CardContent } from '@/app/shared/components/ui'
+import { Card, CardContent, FavoriteCount } from '@/app/shared/components/ui'
 
 export function FavoritesModule() {
   const { data: favorites = [], isLoading, error } = useQuery(favoritesListQueryOptions())
@@ -63,7 +63,10 @@ export function FavoritesModule() {
                     </div>
                   )}
                   <div className="p-4">
-                    <h3 className="text-lg font-semibold text-slate-900">{favorite.title}</h3>
+                    <div className="flex items-start justify-between gap-2">
+                      <h3 className="text-lg font-semibold text-slate-900">{favorite.title}</h3>
+                      <FavoriteCount count={favorite.favoritesCount} className="mt-1 shrink-0" />
+                    </div>
                     {favorite.description && <p className="mt-2 text-sm text-slate-600">{favorite.description}</p>}
                   </div>
                 </CardContent>

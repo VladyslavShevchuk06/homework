@@ -1,9 +1,14 @@
 import { IItem, IItemsListParams, IItemsListResponse } from '@/app/entities/models'
 
-// GET /api/items?page=&search=
-export async function itemsListApi({ page = 1, search = '' }: IItemsListParams = {}): Promise<IItemsListResponse> {
+// GET /api/items?page=&search=&team=
+export async function itemsListApi({
+  page = 1,
+  search = '',
+  team = '',
+}: IItemsListParams = {}): Promise<IItemsListResponse> {
   const params = new URLSearchParams({ page: String(page) })
   if (search) params.set('search', search)
+  if (team && team !== 'all') params.set('team', team)
 
   const response = await fetch(`/api/items?${params.toString()}`, {
     method: 'GET',

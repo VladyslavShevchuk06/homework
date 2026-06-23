@@ -4,10 +4,10 @@ import { IItemsListParams } from '@/app/entities/models'
 import { EEntityKey } from '@/app/shared/interfaces'
 
 // GET /api/items - paginated + searchable list
-export function itemsListQueryOptions({ page = 1, search = '' }: IItemsListParams = {}) {
+export function itemsListQueryOptions({ page = 1, search = '', team = '' }: IItemsListParams = {}) {
   return queryOptions({
-    queryKey: [EEntityKey.ITEMS_LIST, page, search],
-    queryFn: () => itemsListApi({ page, search }),
+    queryKey: [EEntityKey.ITEMS_LIST, page, search, team],
+    queryFn: () => itemsListApi({ page, search, team }),
     // v5 standard: keep showing the previous page's data while the next one loads
     placeholderData: keepPreviousData,
   })

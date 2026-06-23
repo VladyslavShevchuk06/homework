@@ -12,8 +12,9 @@ export function ItemsListModule() {
   const searchParams = useSearchParams()
   const page = Number(searchParams.get('page')) || 1
   const search = searchParams.get('search') ?? ''
+  const team = searchParams.get('team') ?? ''
 
-  const { data, isPending, isError, isFetching } = useQuery(itemsListQueryOptions({ page, search }))
+  const { data, isPending, isError, isFetching } = useQuery(itemsListQueryOptions({ page, search, team }))
 
   const items = data?.data ?? []
   const totalPages = data?.meta.totalPages ?? 1
@@ -22,6 +23,7 @@ export function ItemsListModule() {
   const goToPage = (next: number) => {
     const params = new URLSearchParams()
     if (search) params.set('search', search)
+    if (team && team !== 'all') params.set('team', team)
     params.set('page', String(next))
     router.push(`/items?${params.toString()}`)
   }
