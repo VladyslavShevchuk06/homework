@@ -10,6 +10,10 @@ A **Next.js 16 (App Router) application** — an F1-drivers catalog with search,
 
 The full architectural specification (Layer/Slice/Segment layout, naming conventions, data layer, auth, TanStack Query patterns, Mode A bootstrap, Mode B extension) lives in the project-local skill at [.claude/skills/client-structure/](.claude/skills/client-structure/). Invoke it with `/client-structure` when the task is "add a module / widget / feature / entity / shared segment", "register a route or route handler", "decide where a new file should live", or "audit this project against the pattern".
 
+Two workflow skills sit on top of it (they defer all file shapes/placement to `client-structure`, never duplicate it):
+- [.claude/skills/add-feature/](.claude/skills/add-feature/) (`/add-feature`) — the ordered DB → API → UI recipe for a brand-new entity (table + migration + seed → `entities/api` slice + query key → route handler → module + page → proxy gating). Use when wiring a new resource end-to-end.
+- [.claude/skills/review-changes/](.claude/skills/review-changes/) (`/review-changes`) — project-tuned verification pass over a diff before declaring work done (FSD direction, `db.$count`, `EEntityKey` keys, `'use client'`/optimistic-invalidate, env access, `proxy.ts` gating). Complements `/code-review`.
+
 ## Commands
 
 - `yarn dev` — local Next.js dev server.
