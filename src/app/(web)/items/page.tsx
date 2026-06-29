@@ -1,7 +1,7 @@
 import { Suspense } from 'react'
 import { HydrationBoundary, dehydrate } from '@tanstack/react-query'
 import { getQueryClient } from '@/pkg/query'
-import { itemsListQueryOptions } from '@/app/entities/api'
+import { itemsListServerQueryOptions } from '@/app/entities/api/items/items.query.server'
 import { ItemsListModule } from '@/app/modules/items-list'
 
 interface IItemsPageProps {
@@ -15,7 +15,7 @@ async function ItemsPageContent({ searchParams }: IItemsPageProps) {
   const team = teamParam ?? ''
 
   const queryClient = getQueryClient()
-  await queryClient.prefetchQuery(itemsListQueryOptions({ page, search, team }))
+  await queryClient.prefetchQuery(itemsListServerQueryOptions({ page, search, team }))
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>

@@ -1,7 +1,7 @@
 import { Suspense } from 'react'
 import { HydrationBoundary, dehydrate } from '@tanstack/react-query'
 import { getQueryClient } from '@/pkg/query'
-import { itemDetailQueryOptions } from '@/app/entities/api'
+import { itemDetailServerQueryOptions } from '@/app/entities/api/items/items.query.server'
 import { ItemDetailModule } from '@/app/modules/item-detail'
 
 interface IItemDetailPageProps {
@@ -13,7 +13,7 @@ async function ItemDetailContent({ slug }: { slug: string }) {
   'use cache'
 
   const queryClient = getQueryClient()
-  await queryClient.prefetchQuery(itemDetailQueryOptions(slug))
+  await queryClient.prefetchQuery(itemDetailServerQueryOptions(slug))
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
