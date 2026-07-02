@@ -1,8 +1,9 @@
+import { type FC } from 'react'
 import { NotFoundModule } from '@/app/modules/not-found'
 import '@/config/styles/global.css'
 
 // not found
-export default function NotFound() {
+const NotFound: FC = () => {
   // return
   return (
     <html lang="en">
@@ -12,3 +13,5 @@ export default function NotFound() {
     </html>
   )
 }
+
+export default NotFound

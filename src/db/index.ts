@@ -7,5 +7,3 @@ import { envServer } from '@/config/env'
 const client = postgres(envServer.DATABASE_URL)
 
 export const db = drizzle(client, { schema })
-
-export type DB = typeof db

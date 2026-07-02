@@ -1,8 +1,8 @@
 'use client'
 
-import { createContext, useContext, useOptimistic, useSyncExternalStore, useTransition } from 'react'
-import { useQuery, useQueryClient } from '@tanstack/react-query'
-import { favoritesListQueryOptions, favoritesListQueryKey, toggleFavorite } from '@/app/entities/api'
+import { createContext, useContext, useState, useSyncExternalStore } from 'react'
+import { useQuery } from '@tanstack/react-query'
+import { favoritesListQueryOptions, useToggleFavoriteMutation } from '@/app/entities/api'
 import { IFavoriteToggleContextValue, IFavoriteToggleProviderProps } from './favorite-toggle.interface'
 import { authClient } from '@/pkg/auth'
 
@@ -35,32 +35,27 @@ export function FavoriteToggleProvider(props: Readonly<IFavoriteToggleProviderPr
   const { data: session, isPending: sessionPending } = authClient.useSession()
   const user = session?.user
 
-  const queryClient = useQueryClient()
   const { data: favorites = [] } = useQuery({ ...favoritesListQueryOptions(), enabled: !!user })
-  const isFavorited = favorites.some((favorite) => favorite.itemId === itemId)
+  const favorited = favorites.some((favorite) => favorite.itemId === itemId)
 
-  const [optimistic, applyOptimistic] = useOptimistic(
-    { favorited: isFavorited, count: initialCount },
-    (state, nextFavorited: boolean) => ({
-      favorited: nextFavorited,
-      count: Math.max(0, state.count + (nextFavorited ? 1 : -1)),
-    }),
-  )
-  const [isMutating, startTransition] = useTransition()
+  const mutation = useToggleFavoriteMutation()
+
+  // freeze the base so the server-action refresh of initialCount can't double-count
+  const [baseCount] = useState(() => initialCount)
+  const [countDelta, setCountDelta] = useState(0)
+  const count = Math.max(0, baseCount + countDelta)
 
   const toggle = () => {
-    startTransition(async () => {
-      applyOptimistic(!optimistic.favorited)
-      await toggleFavorite(itemId, slug)
-      await queryClient.invalidateQueries({ queryKey: favoritesListQueryKey() })
-    })
+    const step = favorited ? -1 : 1
+    setCountDelta((delta) => delta + step)
+    mutation.mutate({ itemId, slug, favorited }, { onError: () => setCountDelta((delta) => delta - step) })
   }
 
   const value: IFavoriteToggleContextValue = {
     canRender: mounted && !sessionPending && !!user,
-    favorited: optimistic.favorited,
-    count: optimistic.count,
-    isMutating,
+    favorited,
+    count,
+    isMutating: mutation.isPending,
     toggle,
   }
 

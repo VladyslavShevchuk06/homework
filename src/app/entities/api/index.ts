@@ -2,4 +2,4 @@
 export { itemsListQueryOptions } from './items'
 
 // favorites
-export { favoritesListQueryOptions, favoritesListQueryKey, toggleFavorite } from './favorites'
+export { favoritesListQueryOptions, useToggleFavoriteMutation } from './favorites'

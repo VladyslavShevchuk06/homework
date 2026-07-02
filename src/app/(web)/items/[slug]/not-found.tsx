@@ -1,7 +1,9 @@
+import { type FC } from 'react'
 import { NotFoundModule } from '@/app/modules/not-found'
 
 // not found
-export default function DriverNotFound() {
+const DriverNotFound: FC = () => {
+  // return
   return (
     <NotFoundModule
       title="Driver not found"
@@ -11,3 +13,5 @@ export default function DriverNotFound() {
     />
   )
 }
+
+export default DriverNotFound
