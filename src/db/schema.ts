@@ -1,8 +1,7 @@
 import { pgTable, text, timestamp, uuid, boolean, uniqueIndex, index } from 'drizzle-orm/pg-core'
 
 // Better Auth: user table
-// NOTE: JS property keys MUST match Better Auth field names (camelCase) — the
-// Drizzle adapter resolves columns by these keys, not by the SQL column name.
+// JS keys MUST match Better Auth field names — Drizzle resolves columns by key, not SQL column name
 export const user = pgTable('user', {
   id: text('id').primaryKey(),
   name: text('name').notNull(),
@@ -56,7 +55,7 @@ export const verification = pgTable('verification', {
   updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
 })
 
-// Items table - F1 drivers catalog
+// items table - F1 drivers catalog
 export const items = pgTable(
   'items',
   {
@@ -70,7 +69,7 @@ export const items = pgTable(
   (table) => [index('items_created_at_idx').on(table.createdAt)],
 )
 
-// Favorites table - user <-> item relationship
+// favorites table - user <-> item relationship
 export const favorites = pgTable(
   'favorites',
   {

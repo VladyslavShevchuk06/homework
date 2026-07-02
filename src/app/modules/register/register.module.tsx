@@ -11,6 +11,7 @@ import { authClient } from '@/pkg/auth'
 import { Button, Card, CardContent, CardHeader, CardTitle, Input, Label } from '@/app/shared/components/ui'
 import { SocialAuth } from '@/app/features/social-auth'
 
+// module
 export function RegisterModule() {
   const router = useRouter()
   const queryClient = useQueryClient()
@@ -56,6 +57,7 @@ export function RegisterModule() {
     }
   }
 
+  // return
   return (
     <div className="flex min-h-[calc(100vh-80px)] items-center justify-center bg-slate-50 px-4 py-12">
       <Card className="w-full max-w-md">

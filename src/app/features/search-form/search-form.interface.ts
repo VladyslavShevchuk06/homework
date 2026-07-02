@@ -1,3 +1,4 @@
+// interface
 export interface ISearchFormProps {
   className?: string
 }

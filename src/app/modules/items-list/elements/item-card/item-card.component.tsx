@@ -4,13 +4,16 @@ import { Card, CardContent, FavoriteCount } from '@/app/shared/components/ui'
 import { IItem } from '@/app/entities/models'
 import { parseDriverMeta } from '@/app/shared/utils'
 
+// interface
 interface IItemCardProps {
   item: IItem
 }
 
+// component
 export function ItemCard({ item }: IItemCardProps) {
   const { team, number, country } = parseDriverMeta(item.description)
 
+  // return
   return (
     <Link href={`/items/${item.slug}`}>
       <Card className="h-full cursor-pointer transition-all hover:shadow-lg hover:ring-2 hover:ring-blue-500">

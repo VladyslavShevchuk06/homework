@@ -1,25 +1,26 @@
 import { Suspense } from 'react'
+import { type NextPage } from 'next'
 import { headers } from 'next/headers'
 import { redirect } from 'next/navigation'
+import { getFavoritesList } from '@/app/entities/api/favorites/favorites.service'
+import { auth } from '@/app/shared/lib/auth'
 import { FavoritesModule } from '@/app/modules/favorites'
-import { auth } from '@/lib/auth'
 
-// resolves the session from request headers — kept inside <Suspense> so Cache
-// Components does not flag the cookie/header access as blocking, uncached data
+// content
 async function FavoritesContent() {
-  // session must be read from the incoming request headers, otherwise the
-  // session cookie is invisible and every visitor is treated as logged out
   const session = await auth.api.getSession({ headers: await headers() })
 
-  if (!session) {
+  if (!session?.user) {
     redirect('/login')
   }
 
-  return <FavoritesModule />
+  const favorites = await getFavoritesList(session.user.id)
+
+  return <FavoritesModule favorites={favorites} />
 }
 
-// page — /favorites (auth-gated, per-user; not cacheable)
-export default function FavoritesPage() {
+// page
+const FavoritesPage: NextPage = () => {
   return (
     <main className="container mx-auto px-4 py-8">
       <Suspense fallback={<div>Loading...</div>}>
@@ -28,3 +29,5 @@ export default function FavoritesPage() {
     </main>
   )
 }
+
+export default FavoritesPage

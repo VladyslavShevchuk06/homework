@@ -2,10 +2,15 @@ import { queryOptions } from '@tanstack/react-query'
 import { favoritesListApi } from './favorites.api'
 import { EEntityKey } from '@/app/shared/interfaces'
 
-// GET /api/favorites - user's favorites
+// favorites list query key
+export function favoritesListQueryKey() {
+  return [EEntityKey.FAVORITES_LIST] as const
+}
+
+// favorites list query options
 export function favoritesListQueryOptions() {
   return queryOptions({
-    queryKey: [EEntityKey.FAVORITES_LIST],
+    queryKey: favoritesListQueryKey(),
     queryFn: () => favoritesListApi(),
   })
 }

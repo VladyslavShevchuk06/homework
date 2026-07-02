@@ -1,6 +1,6 @@
-import { IItem, IItemsListParams, IItemsListResponse } from '@/app/entities/models'
+import { IItemsListParams, IItemsListResponse } from '@/app/entities/models'
 
-// GET /api/items?page=&search=&team=
+// items list fetch
 export async function itemsListApi({
   page = 1,
   search = '',
@@ -18,21 +18,6 @@ export async function itemsListApi({
 
   if (!response.ok) {
     throw new Error('Failed to fetch items')
-  }
-
-  return response.json()
-}
-
-// GET /api/items/:slug
-export async function itemDetailApi(slug: string): Promise<IItem> {
-  const response = await fetch(`/api/items/${slug}`, {
-    method: 'GET',
-    headers: { 'Content-Type': 'application/json' },
-    cache: 'no-store',
-  })
-
-  if (!response.ok) {
-    throw new Error('Failed to fetch item')
   }
 
   return response.json()

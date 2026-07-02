@@ -1,1 +1,1 @@
-export { itemsListQueryOptions, itemDetailQueryOptions } from './items.query'
+export { itemsListQueryOptions } from './items.query'

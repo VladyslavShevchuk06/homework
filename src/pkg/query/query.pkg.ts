@@ -1,12 +1,12 @@
 import { QueryClient } from '@tanstack/react-query'
 
-// create query client singleton
+// query client factory
 export function makeQueryClient() {
   return new QueryClient({
     defaultOptions: {
       queries: {
-        staleTime: 60 * 1000, // 1 minute
-        gcTime: 5 * 60 * 1000, // 5 minutes (formerly cacheTime)
+        staleTime: 60 * 1000,
+        gcTime: 5 * 60 * 1000,
       },
     },
   })
@@ -14,13 +14,14 @@ export function makeQueryClient() {
 
 let clientSingleton: QueryClient | undefined
 
+// get query client
 export function getQueryClient() {
+  // server: a fresh client per request
   if (typeof window === 'undefined') {
-    // Server: always make a new query client
     return makeQueryClient()
   }
 
-  // Browser: use singleton pattern to keep the same client
+  // browser: reuse one singleton across renders
   if (!clientSingleton) clientSingleton = makeQueryClient()
   return clientSingleton
 }

@@ -3,6 +3,7 @@
 import * as React from 'react'
 import { cn } from '@/pkg/theme'
 
+// interface
 export interface ISelectOption {
   label: string
   value: string

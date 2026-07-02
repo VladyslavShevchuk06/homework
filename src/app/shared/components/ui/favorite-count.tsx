@@ -1,6 +1,7 @@
 import * as React from 'react'
 import { cn } from '@/pkg/theme'
 
+// interface
 interface IFavoriteCountProps {
   count: number
   className?: string

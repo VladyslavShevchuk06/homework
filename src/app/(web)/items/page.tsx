@@ -1,37 +1,33 @@
-import { Suspense } from 'react'
+import { type NextPage } from 'next'
+import { cacheLife } from 'next/cache'
 import { HydrationBoundary, dehydrate } from '@tanstack/react-query'
 import { getQueryClient } from '@/pkg/query'
 import { itemsListServerQueryOptions } from '@/app/entities/api/items/items.query.server'
 import { ItemsListModule } from '@/app/modules/items-list'
 
-interface IItemsPageProps {
-  searchParams: Promise<{ page?: string; search?: string; team?: string }>
-}
+// shell
+async function ItemsListShell() {
+  'use cache'
+  cacheLife({ revalidate: 3600 })
 
-async function ItemsPageContent({ searchParams }: IItemsPageProps) {
-  const { page: pageParam, search: searchParam, team: teamParam } = await searchParams
-  const page = Number(pageParam) || 1
-  const search = searchParam ?? ''
-  const team = teamParam ?? ''
-
+  // cache
   const queryClient = getQueryClient()
-  await queryClient.prefetchQuery(itemsListServerQueryOptions({ page, search, team }))
+  await queryClient.prefetchQuery(itemsListServerQueryOptions())
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
-      <Suspense fallback={<div>Loading...</div>}>
-        <ItemsListModule />
-      </Suspense>
+      <ItemsListModule />
     </HydrationBoundary>
   )
 }
 
-export default function ItemsPage({ searchParams }: IItemsPageProps) {
+// page
+const ItemsPage: NextPage = () => {
   return (
     <main className="container mx-auto px-4 py-8">
-      <Suspense fallback={<div>Loading...</div>}>
-        <ItemsPageContent searchParams={searchParams} />
-      </Suspense>
+      <ItemsListShell />
     </main>
   )
 }
+
+export default ItemsPage

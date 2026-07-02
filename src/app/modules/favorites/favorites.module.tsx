@@ -1,30 +1,13 @@
-'use client'
-
 import Link from 'next/link'
 import Image from 'next/image'
-import { useQuery } from '@tanstack/react-query'
-import { favoritesListQueryOptions } from '@/app/entities/api'
 import { Card, CardContent, FavoriteCount } from '@/app/shared/components/ui'
+import { IFavoritesModuleProps } from './favorites.interface'
 
-export function FavoritesModule() {
-  const { data: favorites = [], isLoading, error } = useQuery(favoritesListQueryOptions())
+// module
+export function FavoritesModule(props: Readonly<IFavoritesModuleProps>) {
+  const { favorites } = props
 
-  if (isLoading) {
-    return (
-      <div className="flex h-96 items-center justify-center">
-        <p className="text-lg text-slate-600">Loading favorites...</p>
-      </div>
-    )
-  }
-
-  if (error) {
-    return (
-      <div className="flex h-96 items-center justify-center">
-        <p className="text-lg text-red-600">Failed to load favorites</p>
-      </div>
-    )
-  }
-
+  // return
   return (
     <div className="space-y-6">
       <div>

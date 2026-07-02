@@ -1,5 +1,9 @@
+import { type NextPage } from 'next'
 import { LoginModule } from '@/app/modules/login'
 
-export default function LoginPage() {
+// page
+const LoginPage: NextPage = () => {
   return <LoginModule />
 }
+
+export default LoginPage

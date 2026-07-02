@@ -23,7 +23,7 @@ Do **not** touch the Better Auth tables (`user`, `session`, `account`, `verifica
 
 ## Step 2 — Generate and apply the migration
 
-Migrations live in `src/db/migrations/` and are a **generated artifact** — never hand-edit them.
+Migrations live in `drizzle/` and are a **generated artifact** — never hand-edit them.
 
 1. `yarn db:generate` — diffs `schema.ts` against the last snapshot and writes a new SQL migration + snapshot.
 2. `yarn db:migrate` — applies pending migrations through Drizzle's migration table (use this when you want a tracked, reproducible history — e.g. shared/staging DBs).

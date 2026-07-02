@@ -1,9 +1,9 @@
 import { type NextRequest, NextResponse } from 'next/server'
-import { auth } from '@/lib/auth'
+import { auth } from '@/app/shared/lib/auth'
 
-// Route protection:
-//  - /favorites is auth-only (guests → /login)
-//  - /login, /register are guest-only (authenticated users → /items)
+// route protection
+//  - /favorites is auth-only (guests -> /login)
+//  - /login, /register are guest-only (authed users -> /items)
 export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl
 

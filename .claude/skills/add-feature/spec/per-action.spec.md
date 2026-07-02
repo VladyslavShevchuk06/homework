@@ -13,7 +13,7 @@ Self-contained checks for the one action this skill performs. Each item is a `MU
 - MUST add an index for any column the route handler orders by or filters on; a `uniqueIndex` for natural/uniqueness keys.
   - Check: `grep -nE "index\(|uniqueIndex\(" src/db/schema.ts`.
 - MUST generate a migration and NOT hand-edit it.
-  - Check: `git status src/db/migrations/` shows a new generated `.sql` + snapshot; no manual edits to existing migration files.
+  - Check: `git status drizzle/` shows a new generated `.sql` + snapshot; no manual edits to existing migration files.
 - MUST seed demo rows for the new table.
   - Check: `grep -n "<entity>" src/db/seed.ts` (the new table is inserted); `yarn seed` succeeds.
 

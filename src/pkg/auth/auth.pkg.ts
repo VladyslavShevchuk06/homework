@@ -1,6 +1,7 @@
 import { createAuthClient } from 'better-auth/react'
 import { envClient } from '@/config/env/env.client'
 
+// auth client
 export const authClient = createAuthClient({
   baseURL: envClient.NEXT_PUBLIC_APP_URL,
 })

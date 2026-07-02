@@ -24,6 +24,7 @@ const TEAM_OPTIONS: ISelectOption[] = [
   { label: 'Williams', value: 'Williams' },
 ]
 
+// component
 export function SearchForm({ className }: ISearchFormProps) {
   const router = useRouter()
   const searchParams = useSearchParams()
@@ -64,6 +65,7 @@ export function SearchForm({ className }: ISearchFormProps) {
 
   const hasActiveFilter = currentSearch !== '' || currentTeam !== 'all'
 
+  // return
   return (
     <form onSubmit={handleSubmit(onSubmit)} className={cn('flex flex-wrap gap-2', className)}>
       <Input placeholder="Search drivers by name or team..." {...register('search')} className="max-w-sm" />

@@ -7,6 +7,7 @@ import { IItem, IItemsListParams, IItemsListResponse } from '@/app/entities/mode
 
 const PAGE_SIZE = 11
 
+// get items list
 export async function getItemsList({
   page = 1,
   search = '',
@@ -41,6 +42,13 @@ export async function getItemsList({
   }
 }
 
+// get all slugs
+export async function getAllItemSlugs(): Promise<string[]> {
+  const rows = await db.select({ slug: items.slug }).from(items)
+  return rows.map((row) => row.slug)
+}
+
+// get item detail
 export async function getItemDetail(slug: string): Promise<IItem | null> {
   const result = await db
     .select({ ...getTableColumns(items), favoritesCount })

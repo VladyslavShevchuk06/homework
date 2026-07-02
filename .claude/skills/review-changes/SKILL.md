@@ -26,7 +26,7 @@ The canonical structural invariants live in `.claude/skills/client-structure/spe
 | Touched in the diff | Run these check-groups |
 |---|---|
 | `src/app/entities/api/**` (`*.api.ts` / `*.query.ts` / `*.mutation.ts`) | query-key from `EEntityKey`; `'use client'` on `*.mutation.ts` only; optimistic `onMutate` ⇒ `onSettled` invalidate; no `useQuery`/`useMutation`/`queryOptions` outside this folder |
-| `src/db/schema.ts` | a migration was generated (`yarn db:generate` → new file in `src/db/migrations/`); `src/db/seed.ts` still matches the schema; counts use `db.$count` |
+| `src/db/schema.ts` | a migration was generated (`yarn db:generate` → new file in `drizzle/`); `src/db/seed.ts` still matches the schema; counts use `db.$count` |
 | any `(api)` route handler (`route.ts`) | data via Drizzle (`db` from `@/db`), never `@supabase/supabase-js`; user-scoped handlers call `auth.api.getSession({ headers })`; env via `config/env/` |
 | `src/proxy.ts` | a new private/guest path is in BOTH the gating logic AND `config.matcher`; all page gating stays in this one file; `process.env.NODE_ENV` is the only `process.env` allowed here |
 | `src/config/env/**` | new var declared in the Zod schema AND wired in `runtimeEnv`; `NEXT_PUBLIC_*` on `envClient`, secrets on `envServer`; OAuth `*_CLIENT_SECRET` is `.optional()` |
@@ -50,7 +50,7 @@ Then run `yarn format` and confirm it passes.
 | Reviewing only the changed hunks | A missing `onSettled` or unregistered matcher entry is an *absence* — read the whole changed file. |
 | Adding `'use client'` to a new `*.api.ts`/`*.query.ts` | Only `*.mutation.ts` carries it; api/query stay server-composable. |
 | New env var read via `process.env` | Declare it in the Zod schema, consume via `envClient`/`envServer`. |
-| New `schema.ts` change with no migration | `yarn db:generate` must produce a file under `src/db/migrations/`. |
+| New `schema.ts` change with no migration | `yarn db:generate` must produce a file under `drizzle/`. |
 | Running this for a security or generic bug review | Use `/security-review` or `/code-review` instead. |
 
 ## Resources

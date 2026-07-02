@@ -4,6 +4,7 @@ import { db } from '@/db'
 import * as schema from '@/db/schema'
 import { envServer } from '@/config/env'
 
+// auth
 export const auth = betterAuth({
   database: drizzleAdapter(db, {
     provider: 'pg',

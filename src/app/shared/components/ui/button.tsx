@@ -1,11 +1,13 @@
 import * as React from 'react'
 import { cn } from '@/pkg/theme'
 
+// interface
 interface IButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: 'default' | 'outline' | 'ghost'
   size?: 'sm' | 'md' | 'lg'
 }
 
+// component
 const Button = React.forwardRef<HTMLButtonElement, IButtonProps>(
   ({ className, variant = 'default', size = 'md', ...props }, ref) => {
     const variantStyles = {

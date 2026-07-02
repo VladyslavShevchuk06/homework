@@ -28,7 +28,7 @@ For each step below, the **file shape and placement come from `client-structure`
 Build bottom-up (data first) so each layer can import the one below it as it is created. Full reasoning, commands, and cross-boundary notes are in `references/recipe.md`.
 
 1. **DB shape** — add the table to `src/db/schema.ts` (uuid PK `.defaultRandom()`, FKs `.references(… { onDelete: 'cascade' })` to `user`/owning tables, indexes for filtered/ordered columns). Better Auth tables are off-limits.
-2. **Migration** — `yarn db:generate` to emit SQL into `src/db/migrations/`, then `yarn db:migrate` (or `yarn db:push` for throwaway local iteration). See recipe for generate vs push vs migrate.
+2. **Migration** — `yarn db:generate` to emit SQL into `drizzle/`, then `yarn db:migrate` (or `yarn db:push` for throwaway local iteration). See recipe for generate vs push vs migrate.
 3. **Seed** — extend `src/db/seed.ts` so the new table has demo rows (respect unique constraints / slug de-duping).
 4. **Types** — add `src/app/entities/models/<entity>.model.ts` (`I<Entity>`, params/response interfaces); re-export from the models barrel.
 5. **Query key** — add a new value to `EEntityKey` in `src/app/shared/interfaces/entities.interface.ts` (single source of cache keys).
@@ -43,7 +43,7 @@ These are the cross-boundary invariants this skill owns. (Layer/import/barrel/en
 
 1. **Build data-first.** Schema → migration → seed must land before the api slice; the api slice before the route handler; the route handler before the page that prefetches it.
 2. **One query key per resource, in `EEntityKey`.** Never inline a string cache key — add an `EEntityKey.*` value and reference it from both `<api>.query.ts` and any mutation that invalidates it.
-3. **Migration is generated, never hand-edited.** `src/db/migrations/*` is a derived artifact from `yarn db:generate`; change `schema.ts` and regenerate.
+3. **Migration is generated, never hand-edited.** `drizzle/*` is a derived artifact from `yarn db:generate`; change `schema.ts` and regenerate.
 4. **User-scoped reads/writes call `auth.api.getSession({ headers })` in the handler.** Page-level gating additionally goes in `proxy.ts`; never rely on the proxy alone for API auth.
 5. **Aggregate counts use `db.$count(...)`** (correlated sub-select), never a `.length` over a fetched list.
 
@@ -61,7 +61,7 @@ After running the recipe, verify in two places:
 
 | Mistake | Reality |
 |---|---|
-| Hand-editing a file in `src/db/migrations/` | It is generated — edit `schema.ts`, rerun `yarn db:generate`. |
+| Hand-editing a file in `drizzle/` | It is generated — edit `schema.ts`, rerun `yarn db:generate`. |
 | Inlining a string query key (`['my-thing']`) | Add an `EEntityKey.*` value; reference it from query + mutation. |
 | Counting in app code (`rows.length`) for an aggregate | Use `db.$count(...)` correlated sub-select. |
 | Trusting `proxy.ts` for API auth | Proxy gates pages; each user-scoped handler must call `getSession`. |

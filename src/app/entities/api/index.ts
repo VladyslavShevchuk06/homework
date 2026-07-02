@@ -1,5 +1,5 @@
 // items
-export { itemsListQueryOptions, itemDetailQueryOptions } from './items'
+export { itemsListQueryOptions } from './items'
 
 // favorites
-export { favoritesListQueryOptions, useFavoriteToggleMutation } from './favorites'
+export { favoritesListQueryOptions, favoritesListQueryKey, toggleFavorite } from './favorites'

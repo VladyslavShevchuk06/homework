@@ -1,3 +1,6 @@
+import { IItem } from '@/app/entities/models'
+
+// interface
 export interface IItemDetailModuleProps {
-  slug: string
+  item: IItem
 }

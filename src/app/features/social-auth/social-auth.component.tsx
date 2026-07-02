@@ -8,6 +8,7 @@ import { ISocialAuthProps } from './social-auth.interface'
 
 type TProvider = 'github' | 'google'
 
+// component
 export function SocialAuth({ className }: ISocialAuthProps) {
   const [loadingProvider, setLoadingProvider] = useState<TProvider | null>(null)
 
@@ -23,6 +24,7 @@ export function SocialAuth({ className }: ISocialAuthProps) {
 
   const isLoading = loadingProvider !== null
 
+  // return
   return (
     <div className={cn('space-y-4', className)}>
       <div className="relative">

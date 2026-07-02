@@ -22,7 +22,7 @@ Run only the groups whose trigger paths appear in the diff. Read the whole chang
 ## B. Touched `src/db/schema.ts`
 
 - A migration was generated for the schema change.
-  Check: `yarn db:generate` then confirm a new `*.sql` under `src/db/migrations/` (and its `meta/*_snapshot.json`).
+  Check: `yarn db:generate` then confirm a new `*.sql` under `drizzle/` (and its `meta/*_snapshot.json`).
 - `src/db/seed.ts` still matches the schema shape.
   Check: read `seed.ts` — new non-nullable columns have seed values; removed columns are no longer referenced.
 - Aggregate counts use `db.$count(...)`, never `.length` over a fetched array.

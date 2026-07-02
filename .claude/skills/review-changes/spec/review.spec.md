@@ -27,5 +27,5 @@ This spec is self-contained. After scoping a diff, run these alongside the canon
 
 ## Schema changes
 
-- A diff that changes `src/db/schema.ts` **MUST** include a generated migration under `src/db/migrations/`, and **MUST** keep `src/db/seed.ts` consistent with the new shape.
+- A diff that changes `src/db/schema.ts` **MUST** include a generated migration under `drizzle/`, and **MUST** keep `src/db/seed.ts` consistent with the new shape.
   Check: a new `*.sql` migration file accompanies the schema change; `seed.ts` references no dropped column and supplies values for new required columns.

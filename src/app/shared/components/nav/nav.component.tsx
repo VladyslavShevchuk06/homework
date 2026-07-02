@@ -7,6 +7,7 @@ import { authClient } from '@/pkg/auth'
 import { Button } from '@/app/shared/components/ui'
 import { cn } from '@/pkg/theme'
 
+// interface
 interface INavProps {
   className?: string
 }
@@ -16,6 +17,7 @@ interface INavLink {
   label: string
 }
 
+// component
 export function Nav({ className }: INavProps) {
   const router = useRouter()
   const pathname = usePathname()
@@ -43,6 +45,7 @@ export function Nav({ className }: INavProps) {
     router.refresh()
   }
 
+  // return
   return (
     <nav className={cn('border-b border-slate-200 bg-white', className)}>
       <div className="mx-auto max-w-7xl px-4 py-4 sm:px-6 lg:px-8">

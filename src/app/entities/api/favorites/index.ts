@@ -1,2 +1,2 @@
-export { favoritesListQueryOptions } from './favorites.query'
-export { useFavoriteToggleMutation } from './favorites.mutation'
+export { favoritesListQueryOptions, favoritesListQueryKey } from './favorites.query'
+export { toggleFavorite } from './favorites.action'
