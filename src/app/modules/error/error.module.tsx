@@ -16,9 +16,9 @@ const ErrorModule: FC<Readonly<IErrorModuleProps>> = (props) => {
   // return
   return (
     <div className="flex min-h-[24rem] flex-col items-center justify-center gap-4 text-center">
-      <h2 className="text-2xl font-semibold text-slate-900">{title}</h2>
-      <p className="max-w-md text-slate-600">{description}</p>
-      {error?.digest && <p className="text-sm text-slate-400">Reference: {error.digest}</p>}
+      <h2 className="text-2xl font-semibold text-slate-900 dark:text-slate-100">{title}</h2>
+      <p className="max-w-md text-slate-600 dark:text-slate-400">{description}</p>
+      {error?.digest && <p className="text-sm text-slate-400 dark:text-slate-500">Reference: {error.digest}</p>}
       {reset && (
         <Button onClick={reset} className="mt-2">
           Try again

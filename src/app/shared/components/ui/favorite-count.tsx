@@ -13,7 +13,7 @@ function FavoriteCount({ count, className }: IFavoriteCountProps) {
     <span
       aria-label={`Favorited ${count} time${count === 1 ? '' : 's'}`}
       className={cn(
-        'inline-flex items-center gap-1 rounded-full bg-slate-100 px-2 py-0.5 text-xs font-medium text-slate-600',
+        'inline-flex items-center gap-1 rounded-full bg-slate-100 px-2 py-0.5 text-xs font-medium text-slate-600 dark:bg-slate-800 dark:text-slate-400',
         className,
       )}
     >

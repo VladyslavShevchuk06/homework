@@ -59,19 +59,23 @@ export function RegisterModule() {
 
   // return
   return (
-    <div className="flex min-h-[calc(100vh-80px)] items-center justify-center bg-slate-50 px-4 py-12">
+    <div className="flex min-h-[calc(100vh-80px)] items-center justify-center bg-slate-50 px-4 py-12 dark:bg-slate-950">
       <Card className="w-full max-w-md">
         <CardHeader>
           <CardTitle>Create Account</CardTitle>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-            {serverError && <div className="rounded-md bg-red-50 p-3 text-sm text-red-700">{serverError}</div>}
+            {serverError && (
+              <div className="rounded-md bg-red-50 p-3 text-sm text-red-700 dark:bg-red-950 dark:text-red-300">
+                {serverError}
+              </div>
+            )}
 
             <div className="space-y-2">
               <Label htmlFor="name">Name</Label>
               <Input id="name" type="text" placeholder="John Doe" {...register('name')} disabled={isLoading} />
-              {errors.name && <p className="text-sm text-red-600">{errors.name.message}</p>}
+              {errors.name && <p className="text-sm text-red-600 dark:text-red-400">{errors.name.message}</p>}
             </div>
 
             <div className="space-y-2">
@@ -83,7 +87,7 @@ export function RegisterModule() {
                 {...register('email')}
                 disabled={isLoading}
               />
-              {errors.email && <p className="text-sm text-red-600">{errors.email.message}</p>}
+              {errors.email && <p className="text-sm text-red-600 dark:text-red-400">{errors.email.message}</p>}
             </div>
 
             <div className="space-y-2">
@@ -95,7 +99,7 @@ export function RegisterModule() {
                 {...register('password')}
                 disabled={isLoading}
               />
-              {errors.password && <p className="text-sm text-red-600">{errors.password.message}</p>}
+              {errors.password && <p className="text-sm text-red-600 dark:text-red-400">{errors.password.message}</p>}
             </div>
 
             <div className="space-y-2">
@@ -107,7 +111,9 @@ export function RegisterModule() {
                 {...register('confirmPassword')}
                 disabled={isLoading}
               />
-              {errors.confirmPassword && <p className="text-sm text-red-600">{errors.confirmPassword.message}</p>}
+              {errors.confirmPassword && (
+                <p className="text-sm text-red-600 dark:text-red-400">{errors.confirmPassword.message}</p>
+              )}
             </div>
 
             <Button type="submit" className="w-full" disabled={isLoading}>
@@ -119,7 +125,10 @@ export function RegisterModule() {
 
           <div className="mt-4 text-center text-sm">
             Already have an account?{' '}
-            <Link href="/login" className="font-medium text-blue-600 hover:text-blue-700">
+            <Link
+              href="/login"
+              className="font-medium text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300"
+            >
               Sign In
             </Link>
           </div>

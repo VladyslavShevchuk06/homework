@@ -36,15 +36,17 @@ export function ItemsListContent() {
 
       {isPending ? (
         <div className="flex h-96 items-center justify-center">
-          <p className="text-lg text-slate-600">Loading drivers...</p>
+          <p className="text-lg text-slate-600 dark:text-slate-400">Loading drivers...</p>
         </div>
       ) : isError ? (
         <div className="flex h-96 items-center justify-center">
-          <p className="text-lg text-red-600">Failed to load drivers</p>
+          <p className="text-lg text-red-600 dark:text-red-400">Failed to load drivers</p>
         </div>
       ) : items.length === 0 ? (
         <div className="flex h-96 items-center justify-center">
-          <p className="text-lg text-slate-600">{search ? `No drivers match "${search}"` : 'No drivers found'}</p>
+          <p className="text-lg text-slate-600 dark:text-slate-400">
+            {search ? `No drivers match "${search}"` : 'No drivers found'}
+          </p>
         </div>
       ) : (
         <>
@@ -62,7 +64,7 @@ export function ItemsListContent() {
             <Button variant="outline" onClick={() => goToPage(currentPage - 1)} disabled={currentPage <= 1}>
               ← Previous
             </Button>
-            <span className="text-sm text-slate-600">
+            <span className="text-sm text-slate-600 dark:text-slate-400">
               Page {currentPage} of {totalPages}
             </span>
             <Button variant="outline" onClick={() => goToPage(currentPage + 1)} disabled={currentPage >= totalPages}>

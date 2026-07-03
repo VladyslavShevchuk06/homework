@@ -13,7 +13,7 @@ export function ItemDetailModule(props: Readonly<IItemDetailModuleProps>) {
   // return
   return (
     <div className="space-y-6">
-      <Link href="/items" className="text-blue-600 hover:text-blue-700">
+      <Link href="/items" className="text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300">
         ← Back to drivers
       </Link>
 
@@ -22,7 +22,7 @@ export function ItemDetailModule(props: Readonly<IItemDetailModuleProps>) {
           <Card>
             <CardContent className="p-0">
               {item.imageUrl && (
-                <div className="relative h-96 w-full bg-slate-100">
+                <div className="relative h-96 w-full bg-slate-100 dark:bg-slate-800">
                   <Image
                     src={item.imageUrl}
                     alt={item.title}
@@ -48,20 +48,20 @@ export function ItemDetailModule(props: Readonly<IItemDetailModuleProps>) {
               <CardContent className="space-y-4">
                 {team && (
                   <div>
-                    <h3 className="text-sm font-medium text-slate-600">Team</h3>
-                    <p className="mt-1 text-lg font-semibold text-slate-900">{team}</p>
+                    <h3 className="text-sm font-medium text-slate-600 dark:text-slate-400">Team</h3>
+                    <p className="mt-1 text-lg font-semibold text-slate-900 dark:text-slate-100">{team}</p>
                   </div>
                 )}
                 {number && (
                   <div>
-                    <h3 className="text-sm font-medium text-slate-600">Number</h3>
-                    <p className="mt-1 text-lg font-semibold text-slate-900">#{number}</p>
+                    <h3 className="text-sm font-medium text-slate-600 dark:text-slate-400">Number</h3>
+                    <p className="mt-1 text-lg font-semibold text-slate-900 dark:text-slate-100">#{number}</p>
                   </div>
                 )}
                 {country && (
                   <div>
-                    <h3 className="text-sm font-medium text-slate-600">Nationality</h3>
-                    <p className="mt-1 text-lg font-semibold text-slate-900">{country}</p>
+                    <h3 className="text-sm font-medium text-slate-600 dark:text-slate-400">Nationality</h3>
+                    <p className="mt-1 text-lg font-semibold text-slate-900 dark:text-slate-100">{country}</p>
                   </div>
                 )}
               </CardContent>

@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 import { type FC, type ReactNode } from 'react'
 import { fontPrimary } from '@/config/fonts'
 import { QueryProvider } from '@/pkg/query'
-import { cn } from '@/pkg/theme'
+import { cn, ThemeProvider } from '@/pkg/theme'
 import { Nav } from '@/app/shared/components/nav'
 import '@/config/styles/global.css'
 
@@ -23,12 +23,19 @@ const RootLayout: FC<Readonly<IProps>> = (props) => {
 
   // return
   return (
-    <html lang="en" className={fontPrimary.variable}>
-      <body className={cn('bg-white text-slate-950 antialiased', fontPrimary.className)}>
-        <QueryProvider>
-          <Nav />
-          {children}
-        </QueryProvider>
+    <html lang="en" className={fontPrimary.variable} suppressHydrationWarning>
+      <body
+        className={cn(
+          'bg-white text-slate-950 antialiased dark:bg-slate-950 dark:text-slate-100',
+          fontPrimary.className,
+        )}
+      >
+        <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
+          <QueryProvider>
+            <Nav />
+            {children}
+          </QueryProvider>
+        </ThemeProvider>
       </body>
     </html>
   )

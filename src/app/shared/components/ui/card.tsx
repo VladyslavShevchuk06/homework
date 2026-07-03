@@ -3,14 +3,25 @@ import { cn } from '@/pkg/theme'
 
 // component
 const Card = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(({ className, ...props }, ref) => (
-  <div ref={ref} className={cn('rounded-lg border border-slate-200 bg-white shadow-sm', className)} {...props} />
+  <div
+    ref={ref}
+    className={cn(
+      'rounded-lg border border-slate-200 bg-white shadow-sm dark:border-slate-700 dark:bg-slate-800',
+      className,
+    )}
+    {...props}
+  />
 ))
 
 Card.displayName = 'Card'
 
 const CardHeader = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
   ({ className, ...props }, ref) => (
-    <div ref={ref} className={cn('flex flex-col space-y-1.5 border-b border-slate-200 p-6', className)} {...props} />
+    <div
+      ref={ref}
+      className={cn('flex flex-col space-y-1.5 border-b border-slate-200 p-6 dark:border-slate-700', className)}
+      {...props}
+    />
   ),
 )
 

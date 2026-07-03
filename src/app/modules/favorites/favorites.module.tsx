@@ -11,8 +11,8 @@ export function FavoritesModule(props: Readonly<IFavoritesModuleProps>) {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-bold text-slate-900">My Favorite Drivers</h1>
-        <p className="mt-2 text-slate-600">
+        <h1 className="text-3xl font-bold text-slate-900 dark:text-slate-100">My Favorite Drivers</h1>
+        <p className="mt-2 text-slate-600 dark:text-slate-400">
           {favorites.length === 0
             ? "You haven't added any favorites yet. Browse drivers to add them!"
             : `You have ${favorites.length} favorite driver${favorites.length !== 1 ? 's' : ''}`}
@@ -22,8 +22,11 @@ export function FavoritesModule(props: Readonly<IFavoritesModuleProps>) {
       {favorites.length === 0 ? (
         <Card>
           <CardContent className="py-12 text-center">
-            <p className="mb-4 text-slate-600">No favorites yet</p>
-            <Link href="/items" className="text-blue-600 hover:text-blue-700">
+            <p className="mb-4 text-slate-600 dark:text-slate-400">No favorites yet</p>
+            <Link
+              href="/items"
+              className="text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300"
+            >
               Browse drivers →
             </Link>
           </CardContent>
@@ -35,7 +38,7 @@ export function FavoritesModule(props: Readonly<IFavoritesModuleProps>) {
               <Card className="h-full cursor-pointer transition-all hover:shadow-lg hover:ring-2 hover:ring-blue-500">
                 <CardContent className="p-0">
                   {favorite.imageUrl && (
-                    <div className="relative h-48 w-full bg-slate-100">
+                    <div className="relative h-48 w-full bg-slate-100 dark:bg-slate-800">
                       <Image
                         src={favorite.imageUrl}
                         alt={favorite.title}
@@ -47,10 +50,12 @@ export function FavoritesModule(props: Readonly<IFavoritesModuleProps>) {
                   )}
                   <div className="p-4">
                     <div className="flex items-start justify-between gap-2">
-                      <h3 className="text-lg font-semibold text-slate-900">{favorite.title}</h3>
+                      <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100">{favorite.title}</h3>
                       <FavoriteCount count={favorite.favoritesCount} className="mt-1 shrink-0" />
                     </div>
-                    {favorite.description && <p className="mt-2 text-sm text-slate-600">{favorite.description}</p>}
+                    {favorite.description && (
+                      <p className="mt-2 text-sm text-slate-600 dark:text-slate-400">{favorite.description}</p>
+                    )}
                   </div>
                 </CardContent>
               </Card>

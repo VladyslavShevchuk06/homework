@@ -4,7 +4,7 @@ import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
 import { useQueryClient } from '@tanstack/react-query'
 import { authClient } from '@/pkg/auth'
-import { Button } from '@/app/shared/components/ui'
+import { Button, ThemeToggle } from '@/app/shared/components/ui'
 import { cn } from '@/pkg/theme'
 
 // interface
@@ -47,10 +47,10 @@ export function Nav({ className }: INavProps) {
 
   // return
   return (
-    <nav className={cn('border-b border-slate-200 bg-white', className)}>
+    <nav className={cn('border-b border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-950', className)}>
       <div className="mx-auto max-w-7xl px-4 py-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between">
-          <Link href="/items" className="text-xl font-bold text-slate-900">
+          <Link href="/items" className="text-xl font-bold text-slate-900 dark:text-slate-100">
             F1 Catalog
           </Link>
 
@@ -62,7 +62,9 @@ export function Nav({ className }: INavProps) {
                 aria-current={isActive(link.href) ? 'page' : undefined}
                 className={cn(
                   'text-sm font-medium transition-colors',
-                  isActive(link.href) ? 'font-semibold text-blue-600' : 'text-slate-600 hover:text-slate-900',
+                  isActive(link.href)
+                    ? 'font-semibold text-blue-600 dark:text-blue-400'
+                    : 'text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-100',
                 )}
               >
                 {link.label}
@@ -70,10 +72,11 @@ export function Nav({ className }: INavProps) {
             ))}
 
             <div className="flex items-center gap-2">
+              <ThemeToggle />
               {!isPending &&
                 (user ? (
                   <>
-                    <span className="hidden text-sm text-slate-600 sm:inline">{user.email}</span>
+                    <span className="hidden text-sm text-slate-600 dark:text-slate-400 sm:inline">{user.email}</span>
                     <Button variant="outline" size="sm" onClick={handleLogout}>
                       Logout
                     </Button>

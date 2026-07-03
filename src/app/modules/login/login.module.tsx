@@ -58,14 +58,18 @@ export function LoginModule() {
 
   // return
   return (
-    <div className="flex min-h-[calc(100vh-80px)] items-center justify-center bg-slate-50 px-4 py-12">
+    <div className="flex min-h-[calc(100vh-80px)] items-center justify-center bg-slate-50 px-4 py-12 dark:bg-slate-950">
       <Card className="w-full max-w-md">
         <CardHeader>
           <CardTitle>Sign In</CardTitle>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-            {serverError && <div className="rounded-md bg-red-50 p-3 text-sm text-red-700">{serverError}</div>}
+            {serverError && (
+              <div className="rounded-md bg-red-50 p-3 text-sm text-red-700 dark:bg-red-950 dark:text-red-300">
+                {serverError}
+              </div>
+            )}
 
             <div className="space-y-2">
               <Label htmlFor="email">Email</Label>
@@ -76,7 +80,7 @@ export function LoginModule() {
                 {...register('email')}
                 disabled={isLoading}
               />
-              {errors.email && <p className="text-sm text-red-600">{errors.email.message}</p>}
+              {errors.email && <p className="text-sm text-red-600 dark:text-red-400">{errors.email.message}</p>}
             </div>
 
             <div className="space-y-2">
@@ -88,7 +92,7 @@ export function LoginModule() {
                 {...register('password')}
                 disabled={isLoading}
               />
-              {errors.password && <p className="text-sm text-red-600">{errors.password.message}</p>}
+              {errors.password && <p className="text-sm text-red-600 dark:text-red-400">{errors.password.message}</p>}
             </div>
 
             <Button type="submit" className="w-full" disabled={isLoading}>
@@ -100,7 +104,10 @@ export function LoginModule() {
 
           <div className="mt-4 text-center text-sm">
             Don&apos;t have an account?{' '}
-            <Link href="/register" className="font-medium text-blue-600 hover:text-blue-700">
+            <Link
+              href="/register"
+              className="font-medium text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300"
+            >
               Register
             </Link>
           </div>
