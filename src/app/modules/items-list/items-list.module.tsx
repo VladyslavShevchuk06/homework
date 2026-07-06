@@ -1,6 +1,5 @@
 import { Suspense } from 'react'
 import { ItemsListContent } from './elements/items-list-content'
-import { ItemsListSkeleton } from './elements/items-list-skeleton'
 
 // module
 export function ItemsListModule() {
@@ -11,7 +10,7 @@ export function ItemsListModule() {
         <p className="mt-2 text-slate-600 dark:text-slate-400">Browse the drivers of the 2026 F1 season</p>
       </div>
 
-      <Suspense fallback={<ItemsListSkeleton />}>
+      <Suspense fallback={<div className="flex justify-center p-4 text-slate-500 dark:text-slate-400">Loading...</div>}>
         <ItemsListContent />
       </Suspense>
     </div>

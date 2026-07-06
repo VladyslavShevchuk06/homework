@@ -1,17 +1,34 @@
 import { type NextRequest, NextResponse } from 'next/server'
+import createMiddleware from 'next-intl/middleware'
+import { routing } from '@/pkg/locale'
 import { auth } from '@/app/shared/lib/auth'
 
-// route protection
-//  - /favorites is auth-only (guests -> /login)
-//  - /login, /register are guest-only (authed users -> /items)
+const handleI18nRouting = createMiddleware(routing)
+
+function stripLocale(pathname: string) {
+  const segments = pathname.split('/')
+  const candidate = segments[1]
+
+  if (routing.locales.includes(candidate as (typeof routing.locales)[number])) {
+    const rest = '/' + segments.slice(2).join('/')
+    return { locale: candidate, path: rest === '/' ? '/' : rest.replace(/\/$/, '') }
+  }
+
+  return { locale: routing.defaultLocale, path: pathname }
+}
+
+function localizedUrl(path: string, locale: string, request: NextRequest) {
+  const prefix = locale === routing.defaultLocale ? '' : `/${locale}`
+  return new URL(`${prefix}${path}`, request.url)
+}
+
 export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl
+  const { locale, path } = stripLocale(pathname)
 
-  const isFavorites = pathname === '/favorites'
-  const isGuestOnly = pathname === '/login' || pathname === '/register'
+  const isFavorites = path === '/favorites'
+  const isGuestOnly = path === '/login' || path === '/register'
 
-  // only the page routes need a session lookup; /api/favorites/* falls through
-  // to the route handler, which enforces auth itself
   if (isFavorites || isGuestOnly) {
     let session = null
     try {
@@ -21,13 +38,17 @@ export async function proxy(request: NextRequest) {
     }
 
     if (isFavorites && !session) {
-      return NextResponse.redirect(new URL('/login', request.url))
+      return NextResponse.redirect(localizedUrl('/login', locale, request))
     }
 
     if (isGuestOnly && session) {
-      return NextResponse.redirect(new URL('/items', request.url))
+      return NextResponse.redirect(localizedUrl('/items', locale, request))
     }
   }
 
-  return NextResponse.next()
+  return handleI18nRouting(request)
+}
+
+export const config = {
+  matcher: ['/((?!api|_next|_vercel|.*\\..*).*)'],
 }

@@ -3,10 +3,9 @@
 import { headers } from 'next/headers'
 import { updateTag } from 'next/cache'
 import { auth } from '@/app/shared/lib/auth'
-import { itemDetailCacheTag } from '@/app/shared/interfaces'
+import { itemDetailCacheTag, itemsListCacheTag } from '@/app/shared/interfaces'
 import { addFavorite, removeFavorite } from './favorites.service'
 
-// toggle favorite
 export async function toggleFavorite(itemId: string, slug: string): Promise<void> {
   const session = await auth.api.getSession({ headers: await headers() })
 
@@ -21,4 +20,5 @@ export async function toggleFavorite(itemId: string, slug: string): Promise<void
   }
 
   updateTag(itemDetailCacheTag(slug))
+  updateTag(itemsListCacheTag())
 }

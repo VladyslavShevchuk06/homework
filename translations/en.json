@@ -1,0 +1,19 @@
+{
+  "Nav": {
+    "brand": "F1 Catalog",
+    "items": "Drivers",
+    "favorites": "Favorites",
+    "login": "Login",
+    "register": "Register",
+    "logout": "Logout"
+  },
+  "LocaleSwitcher": {
+    "en": "EN",
+    "uk": "UK",
+    "switchTo": "Switch language to {label}"
+  },
+  "ItemsPage": {
+    "title": "F1 Drivers",
+    "searchPlaceholder": "Search drivers"
+  }
+}

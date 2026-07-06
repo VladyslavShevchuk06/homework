@@ -1,13 +1,12 @@
 'use client'
 
-import Link from 'next/link'
-import { usePathname, useRouter } from 'next/navigation'
+import { useTranslations } from 'next-intl'
 import { useQueryClient } from '@tanstack/react-query'
 import { authClient } from '@/pkg/auth'
-import { Button, ThemeToggle } from '@/app/shared/components/ui'
+import { Link, usePathname, useRouter } from '@/pkg/locale'
+import { Button, LocaleSwitcher, ThemeToggle } from '@/app/shared/components/ui'
 import { cn } from '@/pkg/theme'
 
-// interface
 interface INavProps {
   className?: string
 }
@@ -17,8 +16,8 @@ interface INavLink {
   label: string
 }
 
-// component
 export function Nav({ className }: INavProps) {
+  const t = useTranslations('Nav')
   const router = useRouter()
   const pathname = usePathname()
   const queryClient = useQueryClient()
@@ -26,35 +25,29 @@ export function Nav({ className }: INavProps) {
 
   const user = session?.user
 
-  // primary links shown in the bar; Favorites is gated behind auth
   const links: INavLink[] = [
-    { href: '/items', label: 'Drivers' },
-    ...(user ? [{ href: '/favorites', label: 'Favorites' }] : []),
+    { href: '/items', label: t('items') },
+    ...(user ? [{ href: '/favorites', label: t('favorites') }] : []),
   ]
 
-  // a link is active when the pathname matches it or sits beneath it
-  // (e.g. /items/max-verstappen still highlights "Drivers")
   const isActive = (href: string) => pathname === href || pathname.startsWith(`${href}/`)
 
   const handleLogout = async () => {
     await authClient.signOut()
-    // drop the previous user's cached data and clear the router cache so the nav
-    // and any user-scoped queries reset without a manual browser refresh
     queryClient.clear()
     router.push('/login')
     router.refresh()
   }
 
-  // return
   return (
     <nav className={cn('border-b border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-950', className)}>
-      <div className="mx-auto max-w-7xl px-4 py-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between">
-          <Link href="/items" className="text-xl font-bold text-slate-900 dark:text-slate-100">
-            F1 Catalog
+      <div className='mx-auto max-w-7xl px-4 py-4 sm:px-6 lg:px-8'>
+        <div className='flex items-center justify-between'>
+          <Link href='/items' className='text-xl font-bold text-slate-900 dark:text-slate-100'>
+            {t('brand')}
           </Link>
 
-          <div className="flex items-center gap-6">
+          <div className='flex items-center gap-6'>
             {links.map((link) => (
               <Link
                 key={link.href}
@@ -71,25 +64,26 @@ export function Nav({ className }: INavProps) {
               </Link>
             ))}
 
-            <div className="flex items-center gap-2">
+            <div className='flex items-center gap-2'>
+              <LocaleSwitcher />
               <ThemeToggle />
               {!isPending &&
                 (user ? (
                   <>
-                    <span className="hidden text-sm text-slate-600 dark:text-slate-400 sm:inline">{user.email}</span>
-                    <Button variant="outline" size="sm" onClick={handleLogout}>
-                      Logout
+                    <span className='hidden text-sm text-slate-600 dark:text-slate-400 sm:inline'>{user.email}</span>
+                    <Button variant='outline' size='sm' onClick={handleLogout}>
+                      {t('logout')}
                     </Button>
                   </>
                 ) : (
                   <>
-                    <Link href="/login">
-                      <Button variant="outline" size="sm">
-                        Login
+                    <Link href='/login'>
+                      <Button variant='outline' size='sm'>
+                        {t('login')}
                       </Button>
                     </Link>
-                    <Link href="/register">
-                      <Button size="sm">Register</Button>
+                    <Link href='/register'>
+                      <Button size='sm'>{t('register')}</Button>
                     </Link>
                   </>
                 ))}

@@ -1,7 +1,8 @@
 'use client'
 
 import { useEffect } from 'react'
-import { useRouter, useSearchParams } from 'next/navigation'
+import { useSearchParams } from 'next/navigation'
+import { useRouter } from '@/pkg/locale'
 import { Controller, useForm } from 'react-hook-form'
 import { Button, Input, Select, type ISelectOption } from '@/app/shared/components/ui'
 import { cn } from '@/pkg/theme'

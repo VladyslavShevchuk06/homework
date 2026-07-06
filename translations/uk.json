@@ -1,0 +1,19 @@
+{
+  "Nav": {
+    "brand": "F1 Каталог",
+    "items": "Пілоти",
+    "favorites": "Обране",
+    "login": "Увійти",
+    "register": "Реєстрація",
+    "logout": "Вийти"
+  },
+  "LocaleSwitcher": {
+    "en": "EN",
+    "uk": "UK",
+    "switchTo": "Змінити мову на {label}"
+  },
+  "ItemsPage": {
+    "title": "Пілоти Формули-1",
+    "searchPlaceholder": "Пошук пілотів"
+  }
+}

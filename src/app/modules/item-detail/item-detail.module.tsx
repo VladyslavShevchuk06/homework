@@ -1,19 +1,20 @@
-import Link from 'next/link'
 import Image from 'next/image'
+import Link from 'next/link'
+import { routing } from '@/pkg/locale'
 import { Card, CardContent, CardHeader, CardTitle } from '@/app/shared/components/ui'
 import { FavoriteToggle, FavoriteToggleProvider, FavoriteCountLive } from '@/app/features/favorite-toggle'
 import { parseDriverMeta } from '@/app/shared/utils'
 import { IItemDetailModuleProps } from './item-detail.interface'
 
-// module
 export function ItemDetailModule(props: Readonly<IItemDetailModuleProps>) {
-  const { item } = props
+  const { item, locale } = props
   const { team, number, country } = parseDriverMeta(item.description)
 
-  // return
+  const backHref = locale === routing.defaultLocale ? '/items' : `/${locale}/items`
+
   return (
-    <div className="space-y-6">
-      <Link href="/items" className="text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300">
+    <div className='space-y-6'>
+      <Link href={backHref} className='text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300'>
         ← Back to drivers
       </Link>
 

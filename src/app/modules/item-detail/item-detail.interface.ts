@@ -1,6 +1,7 @@
+import { type Locale } from 'next-intl'
 import { IItem } from '@/app/entities/models'
 
-// interface
 export interface IItemDetailModuleProps {
   item: IItem
+  locale: Locale
 }

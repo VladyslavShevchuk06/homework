@@ -2,52 +2,51 @@ import { Suspense } from 'react'
 import { type NextPage } from 'next'
 import { notFound } from 'next/navigation'
 import { cacheLife, cacheTag } from 'next/cache'
+import { type Locale } from 'next-intl'
+import { setRequestLocale } from 'next-intl/server'
 import { getItemDetail, getAllItemSlugs } from '@/app/entities/api/items/items.service'
 import { itemDetailCacheTag } from '@/app/shared/interfaces'
+import { routing } from '@/pkg/locale'
 import { ItemDetailModule } from '@/app/modules/item-detail'
 
-// interface
 interface IProps {
-  params: Promise<{ slug: string }>
+  params: Promise<{ locale: Locale; slug: string }>
 }
 
-// static params
 export async function generateStaticParams() {
   const slugs = await getAllItemSlugs()
-  return slugs.map((slug) => ({ slug }))
+  return routing.locales.flatMap((locale) => slugs.map((slug) => ({ locale, slug })))
 }
 
-// content
-async function ItemDetailContent(props: { slug: string }) {
+async function ItemDetailContent(props: { slug: string; locale: Locale }) {
   'use cache'
   cacheLife({ revalidate: 3600 })
   cacheTag(itemDetailCacheTag(props.slug))
 
-  const { slug } = props
+  const { slug, locale } = props
   const item = await getItemDetail(slug)
 
   if (!item) {
     notFound()
   }
 
-  return <ItemDetailModule item={item} />
+  return <ItemDetailModule item={item} locale={locale} />
 }
 
-// resolver
 async function ItemDetailResolver(props: IProps) {
   const { params } = props
-  const { slug } = await params
+  const { locale, slug } = await params
+  setRequestLocale(locale)
 
-  return <ItemDetailContent slug={slug} />
+  return <ItemDetailContent slug={slug} locale={locale} />
 }
 
-// page
 const ItemDetailPage: NextPage<Readonly<IProps>> = (props) => {
   const { params } = props
 
   return (
-    <main className="container mx-auto px-4 py-8">
-      <Suspense fallback={<div>Loading...</div>}>
+    <main className='container mx-auto px-4 py-8'>
+      <Suspense fallback={<div className='flex justify-center p-4 text-slate-500 dark:text-slate-400'>Loading...</div>}>
         <ItemDetailResolver params={params} />
       </Suspense>
     </main>
