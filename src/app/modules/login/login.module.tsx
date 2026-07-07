@@ -8,10 +8,10 @@ import { useQueryClient } from '@tanstack/react-query'
 import { loginSchema, TLoginInput } from '@/app/shared/validation'
 import { authClient } from '@/pkg/auth'
 import { Button, Card, CardContent, CardHeader, CardTitle, Input, Label } from '@/app/shared/components/ui'
+import { type TSocialProvider } from '@/app/shared/interfaces'
 import { SocialAuth } from '@/app/features/social-auth'
 
-// module
-export function LoginModule() {
+export function LoginModule({ enabledProviders }: Readonly<{ enabledProviders: TSocialProvider[] }>) {
   const router = useRouter()
   const queryClient = useQueryClient()
   const [serverError, setServerError] = useState<string | null>(null)
@@ -99,7 +99,7 @@ export function LoginModule() {
             </Button>
           </form>
 
-          <SocialAuth className="mt-6" />
+          <SocialAuth enabledProviders={enabledProviders} className="mt-6" />
 
           <div className="mt-4 text-center text-sm">
             Don&apos;t have an account?{' '}
