@@ -1,10 +1,19 @@
+import type { Metadata } from 'next'
+import { type ReactNode } from 'react'
 import { notFound } from 'next/navigation'
 import { hasLocale, NextIntlClientProvider } from 'next-intl'
 import { setRequestLocale } from 'next-intl/server'
-import { type ReactNode } from 'react'
+import { fontPrimary } from '@/config/fonts'
+import { QueryProvider } from '@/pkg/query'
+import { cn, ThemeProvider } from '@/pkg/theme'
 import { routing } from '@/pkg/locale'
-import { HtmlLang } from '@/app/shared/components/ui'
 import { Nav } from '@/app/shared/components/nav'
+import '@/config/styles/global.css'
+
+export const metadata: Metadata = {
+  title: 'F1 Drives',
+  description: 'Browse and save your favorite F1 drivers from the 2026 season',
+}
 
 export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }))
@@ -26,11 +35,24 @@ async function LocaleLayout(props: Readonly<IProps>) {
   setRequestLocale(locale)
 
   return (
-    <NextIntlClientProvider>
-      <HtmlLang locale={locale} />
-      <Nav />
-      {children}
-    </NextIntlClientProvider>
+    <html lang={locale} suppressHydrationWarning>
+      <body
+        className={cn(
+          'bg-white text-slate-950 antialiased dark:bg-slate-950 dark:text-slate-100',
+          fontPrimary.variable,
+          fontPrimary.className,
+        )}
+      >
+        <ThemeProvider attribute='class' defaultTheme='system' enableSystem disableTransitionOnChange>
+          <QueryProvider>
+            <NextIntlClientProvider>
+              <Nav />
+              {children}
+            </NextIntlClientProvider>
+          </QueryProvider>
+        </ThemeProvider>
+      </body>
+    </html>
   )
 }
 

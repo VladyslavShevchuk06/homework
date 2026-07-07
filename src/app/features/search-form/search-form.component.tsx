@@ -1,15 +1,12 @@
 'use client'
 
 import { useEffect } from 'react'
-import { useSearchParams } from 'next/navigation'
 import { useRouter } from '@/pkg/locale'
 import { Controller, useForm } from 'react-hook-form'
 import { Button, Input, Select, type ISelectOption } from '@/app/shared/components/ui'
 import { cn } from '@/pkg/theme'
 import { ISearchFormProps, ISearchFormValues } from './search-form.interface'
 
-// 2026 grid; `value` is substring-matched against "Team: <value>" in the
-// description, so "Red Bull" matches "Red Bull Racing". "all" means no filter.
 const TEAM_OPTIONS: ISelectOption[] = [
   { label: 'All Teams', value: 'all' },
   { label: 'Red Bull', value: 'Red Bull' },
@@ -25,26 +22,19 @@ const TEAM_OPTIONS: ISelectOption[] = [
   { label: 'Williams', value: 'Williams' },
 ]
 
-// component
-export function SearchForm({ className }: ISearchFormProps) {
+export function SearchForm({ search, team, className }: ISearchFormProps) {
   const router = useRouter()
-  const searchParams = useSearchParams()
-  const currentSearch = searchParams.get('search') ?? ''
-  const currentTeam = searchParams.get('team') ?? 'all'
+  const currentSearch = search
+  const currentTeam = team || 'all'
 
   const { register, handleSubmit, reset, control, getValues } = useForm<ISearchFormValues>({
     defaultValues: { search: currentSearch, team: currentTeam },
   })
 
-  // keep the visible controls in sync with the URL: clears on a fresh /items
-  // (or the "Drivers" nav link that drops params), restores on browser Back to
-  // a filtered URL. Listens to BOTH search and team.
   useEffect(() => {
     reset({ search: currentSearch, team: currentTeam })
   }, [currentSearch, currentTeam, reset])
 
-  // single source of truth for navigation: a search and/or team filter always
-  // resets pagination to the first page.
   const pushParams = ({ search, team }: ISearchFormValues) => {
     const params = new URLSearchParams()
     const trimmed = search.trim()
@@ -56,7 +46,6 @@ export function SearchForm({ className }: ISearchFormProps) {
 
   const onSubmit = (values: ISearchFormValues) => pushParams(values)
 
-  // selecting a team navigates immediately, preserving the current search text
   const onTeamChange = (team: string) => pushParams({ search: getValues('search'), team })
 
   const onClear = () => {
@@ -66,7 +55,6 @@ export function SearchForm({ className }: ISearchFormProps) {
 
   const hasActiveFilter = currentSearch !== '' || currentTeam !== 'all'
 
-  // return
   return (
     <form onSubmit={handleSubmit(onSubmit)} className={cn('flex flex-wrap gap-2', className)}>
       <Input placeholder="Search drivers by name or team..." {...register('search')} className="max-w-sm" />

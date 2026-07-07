@@ -1,16 +1,18 @@
 import { NextResponse, type NextRequest } from 'next/server'
+import { z } from 'zod'
 import { getItemsList } from '@/app/entities/api/items/items.service'
 
-// GET /api/items?page=1&search=&team=
+const itemsQuerySchema = z.object({
+  page: z.coerce.number().int().positive().catch(1),
+  search: z.string().max(100).catch(''),
+  team: z.string().max(50).catch(''),
+})
+
 export async function GET(request: NextRequest) {
   try {
-    const params = request.nextUrl.searchParams
+    const { page, search, team } = itemsQuerySchema.parse(Object.fromEntries(request.nextUrl.searchParams))
 
-    const result = await getItemsList({
-      page: Number(params.get('page')) || 1,
-      search: params.get('search') ?? '',
-      team: params.get('team') ?? '',
-    })
+    const result = await getItemsList({ page, search, team })
 
     return NextResponse.json(result)
   } catch (error) {

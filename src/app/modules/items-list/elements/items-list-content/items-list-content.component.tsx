@@ -1,20 +1,15 @@
 'use client'
 
-import { useSearchParams } from 'next/navigation'
 import { useRouter } from '@/pkg/locale'
 import { useQuery } from '@tanstack/react-query'
 import { itemsListQueryOptions } from '@/app/entities/api'
 import { Button } from '@/app/shared/components/ui'
 import { SearchForm } from '@/app/features/search-form'
+import { type IItemsListParams } from '@/app/entities/models'
 import { ItemCard } from '../item-card'
 
-// component
-export function ItemsListContent() {
+export function ItemsListContent({ page, search, team }: Readonly<Required<IItemsListParams>>) {
   const router = useRouter()
-  const searchParams = useSearchParams()
-  const page = Number(searchParams.get('page')) || 1
-  const search = searchParams.get('search') ?? ''
-  const team = searchParams.get('team') ?? ''
 
   const { data, isPending, isError, isFetching } = useQuery(itemsListQueryOptions({ page, search, team }))
 
@@ -30,10 +25,9 @@ export function ItemsListContent() {
     router.push(`/items?${params.toString()}`)
   }
 
-  // return
   return (
     <div className="space-y-6">
-      <SearchForm />
+      <SearchForm search={search} team={team} />
 
       {isPending ? (
         <div className="flex h-96 items-center justify-center">
