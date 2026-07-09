@@ -4,7 +4,7 @@ import { headers } from 'next/headers'
 import { type Locale } from 'next-intl'
 import { setRequestLocale } from 'next-intl/server'
 import { getFavoritesList } from '@/app/entities/api/favorites/favorites.service'
-import { auth } from '@/app/shared/lib/auth'
+import { auth } from '@/lib/auth'
 import { redirect } from '@/pkg/locale'
 import { FavoritesModule } from '@/app/modules/favorites'
 

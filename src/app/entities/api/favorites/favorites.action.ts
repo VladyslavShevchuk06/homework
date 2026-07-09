@@ -3,7 +3,7 @@
 import { headers } from 'next/headers'
 import { updateTag } from 'next/cache'
 import { z } from 'zod'
-import { auth } from '@/app/shared/lib/auth'
+import { auth } from '@/lib/auth'
 import { itemDetailCacheTag, itemsListCacheTag } from '@/app/shared/interfaces'
 import { addFavorite, removeFavorite } from './favorites.service'
 

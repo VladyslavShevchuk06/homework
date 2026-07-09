@@ -33,6 +33,7 @@
     "zod": "^3.22.4"
   },
   "devDependencies": {
+    "@tanstack/react-query-devtools": "^5.101.2",
     "@types/node": "22.5.0",
     "@types/react": "19.0.0",
     "@types/react-dom": "19.0.0",

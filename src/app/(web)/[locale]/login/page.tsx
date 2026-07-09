@@ -1,7 +1,7 @@
 import { type NextPage } from 'next'
 import { type Locale } from 'next-intl'
 import { setRequestLocale } from 'next-intl/server'
-import { enabledSocialProviders } from '@/app/shared/lib/social-providers'
+import { enabledSocialProviders } from '@/lib/social-providers'
 import { LoginModule } from '@/app/modules/login'
 
 interface IProps {

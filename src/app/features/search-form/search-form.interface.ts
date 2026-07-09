@@ -3,8 +3,3 @@ export interface ISearchFormProps {
   team: string
   className?: string
 }
-
-export interface ISearchFormValues {
-  search: string
-  team: string
-}

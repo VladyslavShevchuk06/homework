@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server'
-import { auth } from '@/app/shared/lib/auth'
+import { auth } from '@/lib/auth'
 import { getFavoritesList } from '@/app/entities/api/favorites/favorites.service'
 
 // GET /api/favorites

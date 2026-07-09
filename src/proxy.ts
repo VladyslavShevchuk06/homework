@@ -1,7 +1,7 @@
 import { type NextRequest, NextResponse } from 'next/server'
 import createMiddleware from 'next-intl/middleware'
 import { routing } from '@/pkg/locale'
-import { auth } from '@/app/shared/lib/auth'
+import { auth } from '@/lib/auth'
 
 const handleI18nRouting = createMiddleware(routing)
 

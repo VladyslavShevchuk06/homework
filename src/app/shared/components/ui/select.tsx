@@ -15,13 +15,14 @@ interface ISelectProps {
   options: ISelectOption[]
   placeholder?: string
   className?: string
+  name?: string
 }
 
 // lightweight, controlled dropdown built in the project's custom-UI style
 // (no Radix). Exposes a value + onValueChange contract so it binds cleanly to
 // react-hook-form's Controller.
 const Select = React.forwardRef<HTMLButtonElement, ISelectProps>(
-  ({ value, onValueChange, options, placeholder = 'Select...', className }, ref) => {
+  ({ value, onValueChange, options, placeholder = 'Select...', className, name }, ref) => {
     const [open, setOpen] = React.useState(false)
     const containerRef = React.useRef<HTMLDivElement>(null)
 
@@ -55,6 +56,8 @@ const Select = React.forwardRef<HTMLButtonElement, ISelectProps>(
 
     return (
       <div ref={containerRef} className={cn('relative', className)}>
+        {/* mirror the value so a native <Form> serializes this control into the URL */}
+        <input type="hidden" name={name} value={value ?? ''} />
         <button
           ref={ref}
           type="button"

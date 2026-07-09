@@ -1,6 +1,5 @@
 'use client'
 
-import { useState } from 'react'
 import { Link, useRouter } from '@/pkg/locale'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -8,27 +7,24 @@ import { useQueryClient } from '@tanstack/react-query'
 import { registerSchema, TRegisterInput } from '@/app/shared/validation'
 import { authClient } from '@/pkg/auth'
 import { Button, Card, CardContent, CardHeader, CardTitle, Input, Label } from '@/app/shared/components/ui'
-import { type TSocialProvider } from '@/app/shared/interfaces'
+import { EEntityKey, type TSocialProvider } from '@/app/shared/interfaces'
 import { SocialAuth } from '@/app/features/social-auth'
 
 export function RegisterModule({ enabledProviders }: Readonly<{ enabledProviders: TSocialProvider[] }>) {
   const router = useRouter()
   const queryClient = useQueryClient()
-  const [serverError, setServerError] = useState<string | null>(null)
-  const [isLoading, setIsLoading] = useState(false)
 
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    setError,
+    formState: { errors, isSubmitting },
   } = useForm<TRegisterInput>({
     resolver: zodResolver(registerSchema),
+    defaultValues: { name: '', email: '', password: '', confirmPassword: '' },
   })
 
   const onSubmit = async (data: TRegisterInput) => {
-    setIsLoading(true)
-    setServerError(null)
-
     try {
       await authClient.signUp.email(
         {
@@ -40,19 +36,25 @@ export function RegisterModule({ enabledProviders }: Readonly<{ enabledProviders
           onSuccess: () => {
             // drop stale query state and clear the router cache so the nav +
             // user-scoped data reflect the new session without a reload
-            queryClient.invalidateQueries()
+            queryClient.invalidateQueries({ queryKey: [EEntityKey.FAVORITES_LIST] })
             router.push('/items')
             router.refresh()
           },
           onError: (error) => {
-            setServerError(error.error.message || 'Failed to sign up')
+            const message = error.error.message || 'Failed to sign up'
+            // map email-specific failures (e.g. already registered) to the field
+            if (/email|exist/i.test(message)) {
+              setError('email', { message })
+            } else {
+              setError('root', { message })
+            }
           },
         },
       )
-    } catch (error: any) {
-      setServerError(error?.message || 'An error occurred during sign up')
-    } finally {
-      setIsLoading(false)
+    } catch (error) {
+      setError('root', {
+        message: error instanceof Error ? error.message : 'An error occurred during sign up',
+      })
     }
   }
 
@@ -65,15 +67,15 @@ export function RegisterModule({ enabledProviders }: Readonly<{ enabledProviders
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-            {serverError && (
+            {errors.root && (
               <div className="rounded-md bg-red-50 p-3 text-sm text-red-700 dark:bg-red-950 dark:text-red-300">
-                {serverError}
+                {errors.root.message}
               </div>
             )}
 
             <div className="space-y-2">
               <Label htmlFor="name">Name</Label>
-              <Input id="name" type="text" placeholder="John Doe" {...register('name')} disabled={isLoading} />
+              <Input id="name" type="text" placeholder="John Doe" {...register('name')} disabled={isSubmitting} />
               {errors.name && <p className="text-sm text-red-600 dark:text-red-400">{errors.name.message}</p>}
             </div>
 
@@ -84,7 +86,7 @@ export function RegisterModule({ enabledProviders }: Readonly<{ enabledProviders
                 type="email"
                 placeholder="you@example.com"
                 {...register('email')}
-                disabled={isLoading}
+                disabled={isSubmitting}
               />
               {errors.email && <p className="text-sm text-red-600 dark:text-red-400">{errors.email.message}</p>}
             </div>
@@ -96,7 +98,7 @@ export function RegisterModule({ enabledProviders }: Readonly<{ enabledProviders
                 type="password"
                 placeholder="••••••••"
                 {...register('password')}
-                disabled={isLoading}
+                disabled={isSubmitting}
               />
               {errors.password && <p className="text-sm text-red-600 dark:text-red-400">{errors.password.message}</p>}
             </div>
@@ -108,15 +110,15 @@ export function RegisterModule({ enabledProviders }: Readonly<{ enabledProviders
                 type="password"
                 placeholder="••••••••"
                 {...register('confirmPassword')}
-                disabled={isLoading}
+                disabled={isSubmitting}
               />
               {errors.confirmPassword && (
                 <p className="text-sm text-red-600 dark:text-red-400">{errors.confirmPassword.message}</p>
               )}
             </div>
 
-            <Button type="submit" className="w-full" disabled={isLoading}>
-              {isLoading ? 'Creating account...' : 'Sign Up'}
+            <Button type="submit" className="w-full" disabled={isSubmitting}>
+              {isSubmitting ? 'Creating account...' : 'Sign Up'}
             </Button>
           </form>
 
