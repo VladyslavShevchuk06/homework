@@ -7,6 +7,7 @@ import { IFavoriteWithItem } from '@/app/entities/models'
 
 // get favorites list
 export async function getFavoritesList(userId: string): Promise<IFavoriteWithItem[]> {
+  
   const rows = await db
     .select({
       id: favorites.id,

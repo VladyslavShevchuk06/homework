@@ -45,8 +45,8 @@ const ItemDetailPage: NextPage<Readonly<IProps>> = (props) => {
   const { params } = props
 
   return (
-    <main className='container mx-auto px-4 py-8'>
-      <Suspense fallback={<div className='flex justify-center p-4 text-slate-500 dark:text-slate-400'>Loading...</div>}>
+    <main className="container mx-auto px-4 py-8">
+      <Suspense fallback={<div className="flex justify-center p-4 text-slate-500 dark:text-slate-400">Loading...</div>}>
         <ItemDetailResolver params={params} />
       </Suspense>
     </main>

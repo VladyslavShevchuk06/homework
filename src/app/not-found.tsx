@@ -6,7 +6,7 @@ import '@/config/styles/global.css'
 
 const NotFound: FC = () => {
   return (
-    <html lang='en'>
+    <html lang="en">
       <body className={cn('bg-white text-slate-950 antialiased', fontPrimary.variable, fontPrimary.className)}>
         <NotFoundModule />
       </body>

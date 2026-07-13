@@ -8,6 +8,7 @@ import { QueryProvider } from '@/pkg/query'
 import { cn, ThemeProvider } from '@/pkg/theme'
 import { routing } from '@/pkg/locale'
 import { Nav } from '@/app/shared/components/nav'
+import { Toaster } from '@/app/shared/components/ui'
 import '@/config/styles/global.css'
 
 export const metadata: Metadata = {
@@ -43,11 +44,12 @@ async function LocaleLayout(props: Readonly<IProps>) {
           fontPrimary.className,
         )}
       >
-        <ThemeProvider attribute='class' defaultTheme='system' enableSystem disableTransitionOnChange>
+        <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
           <QueryProvider>
             <NextIntlClientProvider>
               <Nav />
               {children}
+              <Toaster />
             </NextIntlClientProvider>
           </QueryProvider>
         </ThemeProvider>

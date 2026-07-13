@@ -1,13 +1,18 @@
+'use client'
+
 import Image from 'next/image'
+import { useQuery } from '@tanstack/react-query'
 import { Link } from '@/pkg/locale'
+import { favoritesListQueryOptions } from '@/app/entities/api'
 import { Card, CardContent, FavoriteCount } from '@/app/shared/components/ui'
-import { IFavoritesModuleProps } from './favorites.interface'
 
 // module
-export function FavoritesModule(props: Readonly<IFavoritesModuleProps>) {
-  const { favorites } = props
+export function FavoritesModule() {
+  
+  const { data, isPending, isError } = useQuery(favoritesListQueryOptions())
 
-  // return
+  const favorites = data ?? []
+
   return (
     <div className="space-y-6">
       <div>
@@ -19,7 +24,25 @@ export function FavoritesModule(props: Readonly<IFavoritesModuleProps>) {
         </p>
       </div>
 
-      {favorites.length === 0 ? (
+      {isPending ? (
+        <Card>
+          <CardContent className="py-12 text-center">
+            <p className="text-slate-600 dark:text-slate-400">Loading favorites...</p>
+          </CardContent>
+        </Card>
+      ) : isError ? (
+        <Card>
+          <CardContent className="py-12 text-center">
+            <p className="mb-4 text-red-600 dark:text-red-400">Failed to load favorites</p>
+            <Link
+              href="/items"
+              className="text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300"
+            >
+              Browse drivers →
+            </Link>
+          </CardContent>
+        </Card>
+      ) : favorites.length === 0 ? (
         <Card>
           <CardContent className="py-12 text-center">
             <p className="mb-4 text-slate-600 dark:text-slate-400">No favorites yet</p>

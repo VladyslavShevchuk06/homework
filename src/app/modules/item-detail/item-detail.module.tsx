@@ -13,8 +13,8 @@ export function ItemDetailModule(props: Readonly<IItemDetailModuleProps>) {
   const backHref = locale === routing.defaultLocale ? '/items' : `/${locale}/items`
 
   return (
-    <div className='space-y-6'>
-      <Link href={backHref} className='text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300'>
+    <div className="space-y-6">
+      <Link href={backHref} className="text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300">
         ← Back to drivers
       </Link>
 

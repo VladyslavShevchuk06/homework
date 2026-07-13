@@ -41,13 +41,13 @@ export function Nav({ className }: INavProps) {
 
   return (
     <nav className={cn('border-b border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-950', className)}>
-      <div className='mx-auto max-w-7xl px-4 py-4 sm:px-6 lg:px-8'>
-        <div className='flex items-center justify-between'>
-          <Link href='/items' className='text-xl font-bold text-slate-900 dark:text-slate-100'>
+      <div className="mx-auto max-w-7xl px-4 py-4 sm:px-6 lg:px-8">
+        <div className="flex items-center justify-between">
+          <Link href="/items" className="text-xl font-bold text-slate-900 dark:text-slate-100">
             {t('brand')}
           </Link>
 
-          <div className='flex items-center gap-6'>
+          <div className="flex items-center gap-6">
             {links.map((link) => (
               <Link
                 key={link.href}
@@ -64,26 +64,26 @@ export function Nav({ className }: INavProps) {
               </Link>
             ))}
 
-            <div className='flex items-center gap-2'>
+            <div className="flex items-center gap-2">
               <LocaleSwitcher />
               <ThemeToggle />
               {!isPending &&
                 (user ? (
                   <>
-                    <span className='hidden text-sm text-slate-600 dark:text-slate-400 sm:inline'>{user.email}</span>
-                    <Button variant='outline' size='sm' onClick={handleLogout}>
+                    <span className="hidden text-sm text-slate-600 dark:text-slate-400 sm:inline">{user.email}</span>
+                    <Button variant="outline" size="sm" onClick={handleLogout}>
                       {t('logout')}
                     </Button>
                   </>
                 ) : (
                   <>
-                    <Link href='/login'>
-                      <Button variant='outline' size='sm'>
+                    <Link href="/login">
+                      <Button variant="outline" size="sm">
                         {t('login')}
                       </Button>
                     </Link>
-                    <Link href='/register'>
-                      <Button size='sm'>{t('register')}</Button>
+                    <Link href="/register">
+                      <Button size="sm">{t('register')}</Button>
                     </Link>
                   </>
                 ))}

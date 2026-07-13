@@ -28,8 +28,8 @@ export function LocaleSwitcher() {
 
   return (
     <Button
-      variant='ghost'
-      size='sm'
+      variant="ghost"
+      size="sm"
       disabled={isPending}
       aria-label={t('switchTo', { label: LABELS[nextLocale] })}
       title={t('switchTo', { label: LABELS[nextLocale] })}

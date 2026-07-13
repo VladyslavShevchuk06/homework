@@ -4,6 +4,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { favoritesListQueryKey } from './favorites.query'
 import { toggleFavorite } from './favorites.action'
 import { EEntityKey } from '@/app/shared/interfaces'
+import { toast } from '@/app/shared/components/ui'
 import { IFavoriteWithItem } from '@/app/entities/models'
 
 // interface
@@ -33,7 +34,13 @@ export function useToggleFavoriteMutation() {
   const queryKey = favoritesListQueryKey()
 
   return useMutation({
-    mutationFn: ({ itemId, slug }: IToggleFavoriteVariables) => toggleFavorite(itemId, slug),
+    mutationFn: async ({ itemId, slug }: IToggleFavoriteVariables) => {
+      const result = await toggleFavorite(itemId, slug)
+
+      if (!result.ok) {
+        throw new Error(result.error)
+      }
+    },
     onMutate: async ({ itemId, slug, favorited }) => {
       await queryClient.cancelQueries({ queryKey })
 
@@ -49,6 +56,8 @@ export function useToggleFavoriteMutation() {
       if (context?.previous) {
         queryClient.setQueryData(queryKey, context.previous)
       }
+
+      toast.error('Could not update favorite. Please try again.')
     },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey })

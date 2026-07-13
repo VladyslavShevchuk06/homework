@@ -4,22 +4,23 @@ import { headers } from 'next/headers'
 import { updateTag } from 'next/cache'
 import { z } from 'zod'
 import { auth } from '@/lib/auth'
-import { itemDetailCacheTag, itemsListCacheTag } from '@/app/shared/interfaces'
+import { itemDetailCacheTag, itemsListCacheTag, type IActionResult } from '@/app/shared/interfaces'
 import { addFavorite, removeFavorite } from './favorites.service'
 
 const itemIdSchema = z.string().uuid()
 
-export async function toggleFavorite(itemId: string, slug: string): Promise<void> {
+export async function toggleFavorite(itemId: string, slug: string): Promise<IActionResult> {
+  
   const session = await auth.api.getSession({ headers: await headers() })
 
   if (!session?.user) {
-    throw new Error('Unauthorized')
+    return { ok: false, error: 'UNAUTHORIZED' }
   }
 
   const parsed = itemIdSchema.safeParse(itemId)
 
   if (!parsed.success) {
-    throw new Error('Invalid item id')
+    return { ok: false, error: 'INVALID_ITEM_ID' }
   }
 
   const wasFavorited = await removeFavorite(session.user.id, parsed.data)
@@ -30,4 +31,6 @@ export async function toggleFavorite(itemId: string, slug: string): Promise<void
 
   updateTag(itemDetailCacheTag(slug))
   updateTag(itemsListCacheTag())
+
+  return { ok: true, data: undefined }
 }

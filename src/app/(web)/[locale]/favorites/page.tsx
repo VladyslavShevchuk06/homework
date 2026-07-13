@@ -3,7 +3,9 @@ import { type NextPage } from 'next'
 import { headers } from 'next/headers'
 import { type Locale } from 'next-intl'
 import { setRequestLocale } from 'next-intl/server'
-import { getFavoritesList } from '@/app/entities/api/favorites/favorites.service'
+import { HydrationBoundary, dehydrate } from '@tanstack/react-query'
+import { getQueryClient } from '@/pkg/query'
+import { favoritesListServerQueryOptions } from '@/app/entities/api/favorites/favorites.query.server'
 import { auth } from '@/lib/auth'
 import { redirect } from '@/pkg/locale'
 import { FavoritesModule } from '@/app/modules/favorites'
@@ -17,9 +19,14 @@ async function FavoritesContent({ locale }: { locale: Locale }) {
     return null
   }
 
-  const favorites = await getFavoritesList(user.id)
+  const queryClient = getQueryClient()
+  await queryClient.prefetchQuery(favoritesListServerQueryOptions(user.id))
 
-  return <FavoritesModule favorites={favorites} />
+  return (
+    <HydrationBoundary state={dehydrate(queryClient)}>
+      <FavoritesModule />
+    </HydrationBoundary>
+  )
 }
 
 interface IProps {
@@ -31,8 +38,8 @@ const FavoritesPage: NextPage<Readonly<IProps>> = async (props) => {
   setRequestLocale(locale)
 
   return (
-    <main className='container mx-auto px-4 py-8'>
-      <Suspense fallback={<div className='flex justify-center p-4 text-slate-500 dark:text-slate-400'>Loading...</div>}>
+    <main className="container mx-auto px-4 py-8">
+      <Suspense fallback={<div className="flex justify-center p-4 text-slate-500 dark:text-slate-400">Loading...</div>}>
         <FavoritesContent locale={locale} />
       </Suspense>
     </main>
