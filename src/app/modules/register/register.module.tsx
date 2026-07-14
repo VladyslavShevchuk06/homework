@@ -36,7 +36,7 @@ export function RegisterModule({ enabledProviders }: Readonly<{ enabledProviders
           onSuccess: () => {
             // drop stale query state and clear the router cache so the nav +
             // user-scoped data reflect the new session without a reload
-            queryClient.invalidateQueries({ queryKey: [EEntityKey.FAVORITES_LIST] })
+            queryClient.invalidateQueries({ queryKey: [EEntityKey.QUERY_FAVORITES_LIST] })
             router.push('/items')
             router.refresh()
           },

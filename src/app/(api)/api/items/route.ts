@@ -1,6 +1,6 @@
 import { NextResponse, type NextRequest } from 'next/server'
 import { z } from 'zod'
-import { getItemsList } from '@/app/entities/api/items/items.service'
+import { getItemsList } from '@/app/entities/api/items/index.server'
 
 const itemsQuerySchema = z.object({
   page: z.coerce.number().int().positive().catch(1),

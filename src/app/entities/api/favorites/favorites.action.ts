@@ -4,13 +4,13 @@ import { headers } from 'next/headers'
 import { updateTag } from 'next/cache'
 import { z } from 'zod'
 import { auth } from '@/lib/auth'
-import { itemDetailCacheTag, itemsListCacheTag, type IActionResult } from '@/app/shared/interfaces'
+import { type IActionResult } from '@/app/shared/interfaces'
+import { itemDetailCacheTag, itemsListCacheTag } from '@/app/shared/utils'
 import { addFavorite, removeFavorite } from './favorites.service'
 
 const itemIdSchema = z.string().uuid()
 
 export async function toggleFavorite(itemId: string, slug: string): Promise<IActionResult> {
-  
   const session = await auth.api.getSession({ headers: await headers() })
 
   if (!session?.user) {

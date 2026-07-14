@@ -2,7 +2,7 @@
 
 import { useRouter } from '@/pkg/locale'
 import { useQuery } from '@tanstack/react-query'
-import { itemsListQueryOptions } from '@/app/entities/api'
+import { itemsListQueryOptions } from '@/app/entities/api/items'
 import { Button } from '@/app/shared/components/ui'
 import { SearchForm } from '@/app/features/search-form'
 import { type IItemsListParams } from '@/app/entities/models'

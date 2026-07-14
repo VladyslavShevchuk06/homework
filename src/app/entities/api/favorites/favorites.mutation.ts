@@ -61,7 +61,7 @@ export function useToggleFavoriteMutation() {
     },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey })
-      queryClient.invalidateQueries({ queryKey: [EEntityKey.ITEMS_LIST] })
+      queryClient.invalidateQueries({ queryKey: [EEntityKey.QUERY_ITEMS_LIST] })
     },
   })
 }

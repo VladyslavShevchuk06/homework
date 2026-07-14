@@ -1,7 +1,7 @@
 'use client'
 
 import { Button } from '@/app/shared/components/ui'
-import { useFavoriteToggle } from './favorite-toggle.context'
+import { useFavoriteToggle } from './favorite-toggle.hook'
 
 // component
 export function FavoriteToggle() {

@@ -5,7 +5,7 @@ import { EEntityKey } from '@/app/shared/interfaces'
 
 // items list query key
 export function itemsListQueryKey({ page = 1, search = '', team = '' }: IItemsListParams = {}) {
-  return [EEntityKey.ITEMS_LIST, page, search, team] as const
+  return [EEntityKey.QUERY_ITEMS_LIST, page, search, team] as const
 }
 
 // items list query options

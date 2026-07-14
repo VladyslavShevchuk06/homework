@@ -4,7 +4,7 @@ import { EEntityKey } from '@/app/shared/interfaces'
 
 // favorites list query key
 export function favoritesListQueryKey() {
-  return [EEntityKey.FAVORITES_LIST] as const
+  return [EEntityKey.QUERY_FAVORITES_LIST] as const
 }
 
 // favorites list query options

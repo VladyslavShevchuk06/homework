@@ -1,6 +1,6 @@
 // query key enum
 export enum EEntityKey {
-  ITEMS_LIST = 'items-list',
-  ITEM_DETAIL = 'item-detail',
-  FAVORITES_LIST = 'favorites-list',
+  QUERY_ITEMS_LIST = 'query-items-list',
+  QUERY_ITEM_DETAIL = 'query-item-detail',
+  QUERY_FAVORITES_LIST = 'query-favorites-list',
 }

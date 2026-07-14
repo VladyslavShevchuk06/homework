@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 import { auth } from '@/lib/auth'
-import { getFavoritesList } from '@/app/entities/api/favorites/favorites.service'
+import { getFavoritesList } from '@/app/entities/api/favorites/index.server'
 
 // GET /api/favorites
 export async function GET(request: Request) {

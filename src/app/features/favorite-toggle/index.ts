@@ -1,4 +1,5 @@
-export { FavoriteToggleProvider } from './favorite-toggle.context'
+export { FavoriteToggleProvider } from './favorite-toggle.provider'
+export { useFavoriteToggle } from './favorite-toggle.hook'
 export { FavoriteToggle } from './favorite-toggle.component'
 export { FavoriteCountLive } from './favorite-toggle-count.component'
 export type { IFavoriteToggleProviderProps, IFavoriteCountLiveProps } from './favorite-toggle.interface'
