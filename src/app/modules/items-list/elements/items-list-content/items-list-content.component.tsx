@@ -1,5 +1,6 @@
 'use client'
 
+import { type FC } from 'react'
 import { useRouter } from '@/pkg/locale'
 import { useQuery } from '@tanstack/react-query'
 import { itemsListQueryOptions } from '@/app/entities/api/items'
@@ -8,7 +9,7 @@ import { SearchForm } from '@/app/features/search-form'
 import { type IItemsListParams } from '@/app/entities/models'
 import { ItemCard } from '../item-card'
 
-export function ItemsListContent({ page, search, team }: Readonly<Required<IItemsListParams>>) {
+export const ItemsListContent: FC<Readonly<Required<IItemsListParams>>> = ({ page, search, team }) => {
   const router = useRouter()
 
   const { data, isPending, isError, isFetching } = useQuery(itemsListQueryOptions({ page, search, team }))

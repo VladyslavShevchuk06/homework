@@ -1,5 +1,6 @@
 'use client'
 
+import { type FC } from 'react'
 import { useTranslations } from 'next-intl'
 import { useQueryClient } from '@tanstack/react-query'
 import { authClient } from '@/pkg/auth'
@@ -16,7 +17,7 @@ interface INavLink {
   label: string
 }
 
-export function Nav({ className }: INavProps) {
+export const Nav: FC<Readonly<INavProps>> = ({ className }) => {
   const t = useTranslations('Nav')
   const router = useRouter()
   const pathname = usePathname()

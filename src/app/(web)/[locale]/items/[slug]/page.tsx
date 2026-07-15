@@ -18,7 +18,7 @@ export async function generateStaticParams() {
   return routing.locales.flatMap((locale) => slugs.map((slug) => ({ locale, slug })))
 }
 
-async function ItemDetailContent(props: { slug: string; locale: Locale }) {
+async function ItemDetailContent(props: Readonly<{ slug: string; locale: Locale }>) {
   'use cache'
   cacheLife({ revalidate: 3600 })
   cacheTag(itemDetailCacheTag(props.slug))
@@ -33,7 +33,7 @@ async function ItemDetailContent(props: { slug: string; locale: Locale }) {
   return <ItemDetailModule item={item} locale={locale} />
 }
 
-async function ItemDetailResolver(props: IProps) {
+async function ItemDetailResolver(props: Readonly<IProps>) {
   const { params } = props
   const { locale, slug } = await params
   setRequestLocale(locale)

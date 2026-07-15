@@ -1,3 +1,4 @@
+import { type FC } from 'react'
 import Image from 'next/image'
 import { Link } from '@/pkg/locale'
 import { Card, CardContent, CountBadge } from '@/app/shared/components/ui'
@@ -10,7 +11,7 @@ interface IItemCardProps {
 }
 
 // component
-export function ItemCard({ item }: IItemCardProps) {
+export const ItemCard: FC<Readonly<IItemCardProps>> = ({ item }) => {
   const { team, number, country } = parseDriverMeta(item.description)
 
   // return

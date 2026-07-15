@@ -1,10 +1,11 @@
 'use client'
 
+import { type FC } from 'react'
 import { CountBadge } from '@/app/shared/components/ui'
 import { useFavoriteToggle } from './favorite-toggle.hook'
 import { IFavoriteCountLiveProps } from './favorite-toggle.interface'
 
-export function FavoriteCountLive(props: Readonly<IFavoriteCountLiveProps>) {
+export const FavoriteCountLive: FC<Readonly<IFavoriteCountLiveProps>> = (props) => {
   const { className } = props
   const { count } = useFavoriteToggle()
 

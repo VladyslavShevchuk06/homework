@@ -1,6 +1,6 @@
 'use client'
 
-import { createContext, useState, useSyncExternalStore } from 'react'
+import { type FC, createContext, useState, useSyncExternalStore } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { favoritesListQueryOptions, useToggleFavoriteMutation } from '@/app/entities/api/favorites'
 import { IFavoriteToggleContextValue, IFavoriteToggleProviderProps } from './favorite-toggle.interface'
@@ -10,7 +10,7 @@ const emptySubscribe = () => () => {}
 
 export const FavoriteToggleContext = createContext<IFavoriteToggleContextValue | null>(null)
 
-export function FavoriteToggleProvider(props: Readonly<IFavoriteToggleProviderProps>) {
+export const FavoriteToggleProvider: FC<Readonly<IFavoriteToggleProviderProps>> = (props) => {
   const { itemId, slug, initialCount, children } = props
 
   const mounted = useSyncExternalStore(

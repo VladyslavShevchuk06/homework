@@ -8,7 +8,7 @@ interface ICountBadgeProps {
   className?: string
 }
 
-function CountBadge({ count, icon, label, className }: ICountBadgeProps) {
+const CountBadge: React.FC<Readonly<ICountBadgeProps>> = ({ count, icon, label, className }) => {
   return (
     <span
       aria-label={label}

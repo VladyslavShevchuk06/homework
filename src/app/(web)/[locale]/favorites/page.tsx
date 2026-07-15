@@ -10,7 +10,7 @@ import { auth } from '@/lib/auth'
 import { redirect } from '@/pkg/locale'
 import { FavoritesModule } from '@/app/modules/favorites'
 
-async function FavoritesContent({ locale }: { locale: Locale }) {
+async function FavoritesContent({ locale }: Readonly<{ locale: Locale }>) {
   const session = await auth.api.getSession({ headers: await headers() })
   const user = session?.user
 

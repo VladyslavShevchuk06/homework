@@ -1,6 +1,6 @@
 'use client'
 
-import { useRef, useState } from 'react'
+import { type FC, useRef, useState } from 'react'
 import Form from 'next/form'
 import { useLocale } from 'next-intl'
 import { getPathname, useRouter } from '@/pkg/locale'
@@ -23,7 +23,7 @@ const TEAM_OPTIONS: ISelectOption[] = [
   { label: 'Williams', value: 'Williams' },
 ]
 
-export function SearchForm({ search, team, className }: ISearchFormProps) {
+export const SearchForm: FC<Readonly<ISearchFormProps>> = ({ search, team, className }) => {
   const locale = useLocale()
   const router = useRouter()
 
@@ -58,7 +58,7 @@ export function SearchForm({ search, team, className }: ISearchFormProps) {
   )
 }
 
-function TeamSelect({ defaultTeam }: { defaultTeam: string }) {
+const TeamSelect: FC<Readonly<{ defaultTeam: string }>> = ({ defaultTeam }) => {
   const [team, setTeam] = useState(defaultTeam)
   const selectRef = useRef<HTMLButtonElement>(null)
 

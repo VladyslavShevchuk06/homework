@@ -1,3 +1,4 @@
+import { type FC } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { routing } from '@/pkg/locale'
@@ -6,7 +7,7 @@ import { FavoriteToggle, FavoriteToggleProvider, FavoriteCountLive } from '@/app
 import { parseDriverMeta } from '@/app/shared/utils'
 import { IItemDetailModuleProps } from './item-detail.interface'
 
-export function ItemDetailModule(props: Readonly<IItemDetailModuleProps>) {
+export const ItemDetailModule: FC<Readonly<IItemDetailModuleProps>> = (props) => {
   const { item, locale } = props
   const { team, number, country } = parseDriverMeta(item.description)
 

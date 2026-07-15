@@ -1,6 +1,6 @@
 'use client'
 
-import { useTransition } from 'react'
+import { type FC, useTransition } from 'react'
 import { useLocale, useTranslations } from 'next-intl'
 import { usePathname, useRouter } from '@/pkg/locale'
 import { Button } from './button'
@@ -10,7 +10,7 @@ const LABELS: Record<string, string> = {
   uk: 'UK',
 }
 
-export function LocaleSwitcher() {
+export const LocaleSwitcher: FC = () => {
   const t = useTranslations('LocaleSwitcher')
   const locale = useLocale()
   const pathname = usePathname()

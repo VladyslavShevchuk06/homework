@@ -1,5 +1,6 @@
 'use client'
 
+import { type FC } from 'react'
 import Image from 'next/image'
 import { useQuery } from '@tanstack/react-query'
 import { Link } from '@/pkg/locale'
@@ -7,7 +8,7 @@ import { favoritesListQueryOptions } from '@/app/entities/api/favorites'
 import { Card, CardContent, CountBadge } from '@/app/shared/components/ui'
 
 // module
-export function FavoritesModule() {
+export const FavoritesModule: FC = () => {
   const { data, isPending, isError } = useQuery(favoritesListQueryOptions())
 
   const favorites = data ?? []

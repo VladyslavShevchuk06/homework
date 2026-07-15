@@ -1,6 +1,6 @@
 'use client'
 
-import { type ReactNode, useState } from 'react'
+import { type FC, type ReactNode, useState } from 'react'
 import { useLocale } from 'next-intl'
 import { Button } from '@/app/shared/components/ui'
 import { type TSocialProvider } from '@/app/shared/interfaces'
@@ -48,7 +48,7 @@ const PROVIDERS: IProviderMeta[] = [
   },
 ]
 
-export function SocialAuth({ enabledProviders, className }: ISocialAuthProps) {
+export const SocialAuth: FC<Readonly<ISocialAuthProps>> = ({ enabledProviders, className }) => {
   const locale = useLocale()
   const [loadingProvider, setLoadingProvider] = useState<TSocialProvider | null>(null)
   const [serverError, setServerError] = useState<string | null>(null)

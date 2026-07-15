@@ -1,13 +1,13 @@
 'use client'
 
-import { useSyncExternalStore } from 'react'
+import { type FC, useSyncExternalStore } from 'react'
 import { useTheme } from 'next-themes'
 import { Button } from './button'
 
 const emptySubscribe = () => () => {}
 
 // component
-export function ThemeToggle() {
+export const ThemeToggle: FC = () => {
   const { resolvedTheme, setTheme } = useTheme()
   const mounted = useSyncExternalStore(
     emptySubscribe,

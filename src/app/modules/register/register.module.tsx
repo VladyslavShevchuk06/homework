@@ -1,5 +1,6 @@
 'use client'
 
+import { type FC } from 'react'
 import { Link, useRouter } from '@/pkg/locale'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -10,7 +11,7 @@ import { Button, Card, CardContent, CardHeader, CardTitle, Input, Label } from '
 import { EEntityKey, type TSocialProvider } from '@/app/shared/interfaces'
 import { SocialAuth } from '@/app/features/social-auth'
 
-export function RegisterModule({ enabledProviders }: Readonly<{ enabledProviders: TSocialProvider[] }>) {
+export const RegisterModule: FC<Readonly<{ enabledProviders: TSocialProvider[] }>> = ({ enabledProviders }) => {
   const router = useRouter()
   const queryClient = useQueryClient()
 
