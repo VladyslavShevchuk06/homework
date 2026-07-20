@@ -2,7 +2,7 @@
 // auto-load .env.local, so load it explicitly before reading process.env below.
 // Must come before `defineConfig` so DATABASE_URL is populated when it's read.
 import { config } from 'dotenv'
-config({ path: '.env.local' })
+config({ path: process.env.DRIZZLE_ENV_FILE ?? '.env.local' })
 
 import { defineConfig } from 'drizzle-kit'
 
