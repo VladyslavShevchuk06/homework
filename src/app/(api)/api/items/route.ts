@@ -1,4 +1,4 @@
-import { NextResponse, type NextRequest } from 'next/server'
+import { NextResponse, connection, type NextRequest } from 'next/server'
 import { z } from 'zod'
 import { getItemsList } from '@/app/entities/api/items/index.server'
 
@@ -10,6 +10,9 @@ const itemsQuerySchema = z.object({
 })
 
 export async function GET(request: NextRequest) {
+  // opt into dynamic rendering before touching request data (cacheComponents)
+  await connection()
+
   try {
     const { page, search, team, locale } = itemsQuerySchema.parse(Object.fromEntries(request.nextUrl.searchParams))
 

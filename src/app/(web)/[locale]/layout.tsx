@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 import { type ReactNode } from 'react'
 import { notFound } from 'next/navigation'
 import { hasLocale, type Locale, NextIntlClientProvider } from 'next-intl'
-import { getTranslations, setRequestLocale } from 'next-intl/server'
+import { getMessages, getTranslations, setRequestLocale } from 'next-intl/server'
 import { fontPrimary } from '@/config/fonts'
 import { QueryProvider } from '@/pkg/query'
 import { cn, ThemeProvider } from '@/pkg/theme'
@@ -42,6 +42,9 @@ async function LocaleLayout(props: Readonly<IProps>) {
 
   setRequestLocale(locale)
 
+  // pass messages explicitly so client translations prerender statically (cacheComponents)
+  const messages = await getMessages()
+
   return (
     <html lang={locale} suppressHydrationWarning>
       <body
@@ -53,7 +56,7 @@ async function LocaleLayout(props: Readonly<IProps>) {
       >
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
           <QueryProvider>
-            <NextIntlClientProvider>
+            <NextIntlClientProvider locale={locale} messages={messages}>
               <Nav />
               {children}
               <Toaster />

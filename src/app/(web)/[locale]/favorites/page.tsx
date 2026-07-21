@@ -2,7 +2,7 @@ import { Suspense } from 'react'
 import { type NextPage } from 'next'
 import { headers } from 'next/headers'
 import { type Locale } from 'next-intl'
-import { getTranslations, setRequestLocale } from 'next-intl/server'
+import { setRequestLocale } from 'next-intl/server'
 import { HydrationBoundary, dehydrate } from '@tanstack/react-query'
 import { getQueryClient } from '@/pkg/query'
 import { favoritesListServerQueryOptions } from '@/app/entities/api/favorites/index.server'
@@ -37,13 +37,10 @@ interface IProps {
 const FavoritesPage: NextPage<Readonly<IProps>> = async (props) => {
   const { locale } = await props.params
   setRequestLocale(locale)
-  const t = await getTranslations('Favorites')
 
   return (
     <main className="container mx-auto px-4 py-8">
-      <Suspense
-        fallback={<div className="flex justify-center p-4 text-slate-500 dark:text-slate-400">{t('loadingPage')}</div>}
-      >
+      <Suspense fallback={null}>
         <FavoritesContent locale={locale} />
       </Suspense>
     </main>
