@@ -11,7 +11,9 @@ import { Button, Card, CardContent, CardHeader, CardTitle, Input, Label } from '
 import { EEntityKey, type TSocialProvider } from '@/app/shared/interfaces'
 import { SocialAuth } from '@/app/features/social-auth'
 
-export const LoginModule: FC<Readonly<{ enabledProviders: TSocialProvider[] }>> = ({ enabledProviders }) => {
+// module
+const LoginModule: FC<Readonly<{ enabledProviders: TSocialProvider[] }>> = (props) => {
+  const { enabledProviders } = props
   const router = useRouter()
   const queryClient = useQueryClient()
 
@@ -34,14 +36,13 @@ export const LoginModule: FC<Readonly<{ enabledProviders: TSocialProvider[] }>> 
         },
         {
           onSuccess: () => {
-            // drop stale (logged-out) query state and clear the router cache so
-            // the nav + user-scoped data reflect the new session without a reload
+            // refresh session-scoped state
             queryClient.invalidateQueries({ queryKey: [EEntityKey.QUERY_FAVORITES_LIST] })
             router.push('/items')
             router.refresh()
           },
           onError: (error) => {
-            // form-level: never reveal which field failed on a login attempt
+            // form-level error
             setError('root', { message: error.error.message || 'Failed to sign in' })
           },
         },
@@ -63,7 +64,10 @@ export const LoginModule: FC<Readonly<{ enabledProviders: TSocialProvider[] }>> 
         <CardContent>
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
             {errors.root && (
-              <div className="rounded-md bg-red-50 p-3 text-sm text-red-700 dark:bg-red-950 dark:text-red-300">
+              <div
+                role="alert"
+                className="rounded-md bg-red-50 p-3 text-sm text-red-700 dark:bg-red-950 dark:text-red-300"
+              >
                 {errors.root.message}
               </div>
             )}
@@ -113,3 +117,5 @@ export const LoginModule: FC<Readonly<{ enabledProviders: TSocialProvider[] }>> 
     </div>
   )
 }
+
+export default LoginModule

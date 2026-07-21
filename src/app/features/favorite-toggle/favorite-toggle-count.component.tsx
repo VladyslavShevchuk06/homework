@@ -5,6 +5,7 @@ import { CountBadge } from '@/app/shared/components/ui'
 import { useFavoriteToggle } from './favorite-toggle.hook'
 import { IFavoriteCountLiveProps } from './favorite-toggle.interface'
 
+// component
 export const FavoriteCountLive: FC<Readonly<IFavoriteCountLiveProps>> = (props) => {
   const { className } = props
   const { count } = useFavoriteToggle()

@@ -17,7 +17,9 @@ interface INavLink {
   label: string
 }
 
-export const Nav: FC<Readonly<INavProps>> = ({ className }) => {
+// component
+export const Nav: FC<Readonly<INavProps>> = (props) => {
+  const { className } = props
   const t = useTranslations('Nav')
   const router = useRouter()
   const pathname = usePathname()

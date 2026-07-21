@@ -48,7 +48,9 @@ const PROVIDERS: IProviderMeta[] = [
   },
 ]
 
-export const SocialAuth: FC<Readonly<ISocialAuthProps>> = ({ enabledProviders, className }) => {
+// component
+export const SocialAuth: FC<Readonly<ISocialAuthProps>> = (props) => {
+  const { enabledProviders, className } = props
   const locale = useLocale()
   const [loadingProvider, setLoadingProvider] = useState<TSocialProvider | null>(null)
   const [serverError, setServerError] = useState<string | null>(null)

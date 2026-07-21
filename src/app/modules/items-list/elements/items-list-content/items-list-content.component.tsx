@@ -9,7 +9,9 @@ import { SearchForm } from '@/app/features/search-form'
 import { type IItemsListParams } from '@/app/entities/models'
 import { ItemCard } from '../item-card'
 
-export const ItemsListContent: FC<Readonly<Required<IItemsListParams>>> = ({ page, search, team }) => {
+// component
+export const ItemsListContent: FC<Readonly<Required<IItemsListParams>>> = (props) => {
+  const { page, search, team } = props
   const router = useRouter()
 
   const { data, isPending, isError, isFetching } = useQuery(itemsListQueryOptions({ page, search, team }))

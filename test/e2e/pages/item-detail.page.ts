@@ -10,7 +10,7 @@ export class ItemDetailPage {
     this.backLink = page.getByRole('link', { name: '← Back to drivers' })
     this.addButton = page.getByRole('button', { name: '☆ Add to Favorites' })
     this.removeButton = page.getByRole('button', { name: '★ Remove from Favorites' })
-    this.favoriteToggle = page.getByRole('button', { name: /to Favorites/ })
+    this.favoriteToggle = page.getByRole('button', { name: /(Add to|Remove from) Favorites/ })
   }
 
   async goto(slug: string) {

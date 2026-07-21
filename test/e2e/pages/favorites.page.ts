@@ -8,7 +8,7 @@ export class FavoritesPage {
   constructor(private readonly page: Page) {
     this.heading = page.getByRole('heading', { name: 'My Favorite Drivers' })
     this.emptyMessage = page.getByText('No favorites yet')
-    this.cards = page.locator('a[href^="/items/"]')
+    this.cards = page.getByTestId('driver-card')
   }
 
   async goto() {

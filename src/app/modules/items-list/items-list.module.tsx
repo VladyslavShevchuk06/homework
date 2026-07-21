@@ -2,7 +2,10 @@ import { type FC } from 'react'
 import { ItemsListContent } from './elements/items-list-content'
 import { type IItemsListParams } from '@/app/entities/models'
 
-export const ItemsListModule: FC<Readonly<Required<IItemsListParams>>> = ({ page, search, team }) => {
+// module
+const ItemsListModule: FC<Readonly<Required<IItemsListParams>>> = (props) => {
+  const { page, search, team } = props
+
   return (
     <div className="space-y-6">
       <div>
@@ -14,3 +17,5 @@ export const ItemsListModule: FC<Readonly<Required<IItemsListParams>>> = ({ page
     </div>
   )
 }
+
+export default ItemsListModule

@@ -16,7 +16,7 @@ export class ItemsListPage {
     this.searchInput = page.getByPlaceholder('Search drivers by name or team...')
     this.searchButton = page.getByRole('button', { name: 'Search' })
     this.clearButton = page.getByRole('button', { name: 'Clear' })
-    this.cards = page.locator('a[href^="/items/"]')
+    this.cards = page.getByTestId('driver-card')
     this.pageIndicator = page.getByText(/Page \d+ of \d+/)
     this.nextButton = page.getByRole('button', { name: 'Next →' })
     this.previousButton = page.getByRole('button', { name: '← Previous' })

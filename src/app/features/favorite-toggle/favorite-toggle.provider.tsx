@@ -10,6 +10,7 @@ const emptySubscribe = () => () => {}
 
 export const FavoriteToggleContext = createContext<IFavoriteToggleContextValue | null>(null)
 
+// provider
 export const FavoriteToggleProvider: FC<Readonly<IFavoriteToggleProviderProps>> = (props) => {
   const { itemId, slug, initialCount, children } = props
 

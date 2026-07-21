@@ -41,6 +41,7 @@ interface IProps {
   searchParams: Promise<Record<string, string | undefined>>
 }
 
+// page
 const ItemsPage: NextPage<Readonly<IProps>> = async (props) => {
   const { locale } = await props.params
   setRequestLocale(locale)

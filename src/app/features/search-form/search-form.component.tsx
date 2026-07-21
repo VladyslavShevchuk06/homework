@@ -23,7 +23,9 @@ const TEAM_OPTIONS: ISelectOption[] = [
   { label: 'Williams', value: 'Williams' },
 ]
 
-export const SearchForm: FC<Readonly<ISearchFormProps>> = ({ search, team, className }) => {
+// component
+export const SearchForm: FC<Readonly<ISearchFormProps>> = (props) => {
+  const { search, team, className } = props
   const locale = useLocale()
   const router = useRouter()
 
@@ -33,10 +35,10 @@ export const SearchForm: FC<Readonly<ISearchFormProps>> = ({ search, team, class
 
   return (
     <Form action={action} className={cn('flex flex-wrap gap-2', className)}>
-      {/* reset to the first page whenever a new search/filter is applied */}
+      {/* reset to first page */}
       <input type="hidden" name="page" value="1" />
 
-      {/* key reseeds the uncontrolled input from the URL on navigation — no resync effect */}
+      {/* reseed input from url */}
       <Input
         key={search}
         name="search"
@@ -45,7 +47,7 @@ export const SearchForm: FC<Readonly<ISearchFormProps>> = ({ search, team, class
         className="max-w-sm"
       />
 
-      {/* keyed so the dropdown reseeds from the URL on navigation */}
+      {/* reseed select from url */}
       <TeamSelect key={currentTeam} defaultTeam={currentTeam} />
 
       <Button type="submit">Search</Button>
@@ -58,7 +60,9 @@ export const SearchForm: FC<Readonly<ISearchFormProps>> = ({ search, team, class
   )
 }
 
-const TeamSelect: FC<Readonly<{ defaultTeam: string }>> = ({ defaultTeam }) => {
+// component
+const TeamSelect: FC<Readonly<{ defaultTeam: string }>> = (props) => {
+  const { defaultTeam } = props
   const [team, setTeam] = useState(defaultTeam)
   const selectRef = useRef<HTMLButtonElement>(null)
 

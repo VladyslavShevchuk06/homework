@@ -7,7 +7,8 @@ import { FavoriteToggle, FavoriteToggleProvider, FavoriteCountLive } from '@/app
 import { parseDriverMeta } from '@/app/shared/utils'
 import { IItemDetailModuleProps } from './item-detail.interface'
 
-export const ItemDetailModule: FC<Readonly<IItemDetailModuleProps>> = (props) => {
+// module
+const ItemDetailModule: FC<Readonly<IItemDetailModuleProps>> = (props) => {
   const { item, locale } = props
   const { team, number, country } = parseDriverMeta(item.description)
 
@@ -76,3 +77,5 @@ export const ItemDetailModule: FC<Readonly<IItemDetailModuleProps>> = (props) =>
     </div>
   )
 }
+
+export default ItemDetailModule
