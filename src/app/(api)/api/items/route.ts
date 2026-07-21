@@ -6,13 +6,14 @@ const itemsQuerySchema = z.object({
   page: z.coerce.number().int().positive().catch(1),
   search: z.string().max(100).catch(''),
   team: z.string().max(50).catch(''),
+  locale: z.enum(['en', 'uk']).catch('en'),
 })
 
 export async function GET(request: NextRequest) {
   try {
-    const { page, search, team } = itemsQuerySchema.parse(Object.fromEntries(request.nextUrl.searchParams))
+    const { page, search, team, locale } = itemsQuerySchema.parse(Object.fromEntries(request.nextUrl.searchParams))
 
-    const result = await getItemsList({ page, search, team })
+    const result = await getItemsList({ page, search, team, locale })
 
     return NextResponse.json(result)
   } catch (error) {

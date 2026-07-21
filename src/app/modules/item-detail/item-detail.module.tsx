@@ -1,23 +1,26 @@
+'use client'
+
 import { type FC } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
+import { useTranslations } from 'next-intl'
 import { routing } from '@/pkg/locale'
 import { Card, CardContent, CardHeader, CardTitle } from '@/app/shared/components/ui'
 import { FavoriteToggle, FavoriteToggleProvider, FavoriteCountLive } from '@/app/features/favorite-toggle'
-import { parseDriverMeta } from '@/app/shared/utils'
 import { IItemDetailModuleProps } from './item-detail.interface'
 
 // module
 const ItemDetailModule: FC<Readonly<IItemDetailModuleProps>> = (props) => {
   const { item, locale } = props
-  const { team, number, country } = parseDriverMeta(item.description)
+  const t = useTranslations('ItemDetail')
+  const { team, number, country } = item
 
   const backHref = locale === routing.defaultLocale ? '/items' : `/${locale}/items`
 
   return (
     <div className="space-y-6">
       <Link href={backHref} className="text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300">
-        ← Back to drivers
+        {t('back')}
       </Link>
 
       <div className="grid gap-6 lg:grid-cols-3">
@@ -51,19 +54,19 @@ const ItemDetailModule: FC<Readonly<IItemDetailModuleProps>> = (props) => {
               <CardContent className="space-y-4">
                 {team && (
                   <div>
-                    <h3 className="text-sm font-medium text-slate-600 dark:text-slate-400">Team</h3>
+                    <h3 className="text-sm font-medium text-slate-600 dark:text-slate-400">{t('team')}</h3>
                     <p className="mt-1 text-lg font-semibold text-slate-900 dark:text-slate-100">{team}</p>
                   </div>
                 )}
                 {number && (
                   <div>
-                    <h3 className="text-sm font-medium text-slate-600 dark:text-slate-400">Number</h3>
+                    <h3 className="text-sm font-medium text-slate-600 dark:text-slate-400">{t('number')}</h3>
                     <p className="mt-1 text-lg font-semibold text-slate-900 dark:text-slate-100">#{number}</p>
                   </div>
                 )}
                 {country && (
                   <div>
-                    <h3 className="text-sm font-medium text-slate-600 dark:text-slate-400">Nationality</h3>
+                    <h3 className="text-sm font-medium text-slate-600 dark:text-slate-400">{t('nationality')}</h3>
                     <p className="mt-1 text-lg font-semibold text-slate-900 dark:text-slate-100">{country}</p>
                   </div>
                 )}

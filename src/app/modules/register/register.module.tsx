@@ -1,11 +1,12 @@
 'use client'
 
 import { type FC } from 'react'
+import { useTranslations } from 'next-intl'
 import { Link, useRouter } from '@/pkg/locale'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useQueryClient } from '@tanstack/react-query'
-import { registerSchema, TRegisterInput } from '@/app/shared/validation'
+import { buildRegisterSchema, TRegisterInput } from '@/app/shared/validation'
 import { authClient } from '@/pkg/auth'
 import { Button, Card, CardContent, CardHeader, CardTitle, Input, Label } from '@/app/shared/components/ui'
 import { EEntityKey, type TSocialProvider } from '@/app/shared/interfaces'
@@ -14,6 +15,8 @@ import { SocialAuth } from '@/app/features/social-auth'
 // module
 const RegisterModule: FC<Readonly<{ enabledProviders: TSocialProvider[] }>> = (props) => {
   const { enabledProviders } = props
+  const t = useTranslations('Auth')
+  const tv = useTranslations('Validation')
   const router = useRouter()
   const queryClient = useQueryClient()
 
@@ -23,7 +26,14 @@ const RegisterModule: FC<Readonly<{ enabledProviders: TSocialProvider[] }>> = (p
     setError,
     formState: { errors, isSubmitting },
   } = useForm<TRegisterInput>({
-    resolver: zodResolver(registerSchema),
+    resolver: zodResolver(
+      buildRegisterSchema({
+        name: tv('name'),
+        email: tv('email'),
+        password: tv('password'),
+        passwordsMatch: tv('passwordsMatch'),
+      }),
+    ),
     defaultValues: { name: '', email: '', password: '', confirmPassword: '' },
   })
 
@@ -43,7 +53,7 @@ const RegisterModule: FC<Readonly<{ enabledProviders: TSocialProvider[] }>> = (p
             router.refresh()
           },
           onError: (error) => {
-            const message = error.error.message || 'Failed to sign up'
+            const message = error.error.message || t('signUpFailed')
             // map email errors to field
             if (/email|exist/i.test(message)) {
               setError('email', { message })
@@ -55,7 +65,7 @@ const RegisterModule: FC<Readonly<{ enabledProviders: TSocialProvider[] }>> = (p
       )
     } catch (error) {
       setError('root', {
-        message: error instanceof Error ? error.message : 'An error occurred during sign up',
+        message: error instanceof Error ? error.message : t('signUpError'),
       })
     }
   }
@@ -65,7 +75,7 @@ const RegisterModule: FC<Readonly<{ enabledProviders: TSocialProvider[] }>> = (p
     <div className="flex min-h-[calc(100vh-80px)] items-center justify-center bg-slate-50 px-4 py-12 dark:bg-slate-950">
       <Card className="w-full max-w-md">
         <CardHeader>
-          <CardTitle>Create Account</CardTitle>
+          <CardTitle>{t('createAccount')}</CardTitle>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
@@ -79,8 +89,14 @@ const RegisterModule: FC<Readonly<{ enabledProviders: TSocialProvider[] }>> = (p
             )}
 
             <div className="space-y-2">
-              <Label htmlFor="name">Name</Label>
-              <Input id="name" type="text" placeholder="John Doe" {...register('name')} disabled={isSubmitting} />
+              <Label htmlFor="name">{t('name')}</Label>
+              <Input
+                id="name"
+                type="text"
+                placeholder={t('namePlaceholder')}
+                {...register('name')}
+                disabled={isSubmitting}
+              />
               {errors.name && (
                 <p data-testid="name-error" className="text-sm text-red-600 dark:text-red-400">
                   {errors.name.message}
@@ -89,11 +105,11 @@ const RegisterModule: FC<Readonly<{ enabledProviders: TSocialProvider[] }>> = (p
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
+              <Label htmlFor="email">{t('email')}</Label>
               <Input
                 id="email"
                 type="email"
-                placeholder="you@example.com"
+                placeholder={t('emailPlaceholder')}
                 {...register('email')}
                 disabled={isSubmitting}
               />
@@ -105,11 +121,11 @@ const RegisterModule: FC<Readonly<{ enabledProviders: TSocialProvider[] }>> = (p
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="password">Password</Label>
+              <Label htmlFor="password">{t('password')}</Label>
               <Input
                 id="password"
                 type="password"
-                placeholder="••••••••"
+                placeholder={t('passwordPlaceholder')}
                 {...register('password')}
                 disabled={isSubmitting}
               />
@@ -121,11 +137,11 @@ const RegisterModule: FC<Readonly<{ enabledProviders: TSocialProvider[] }>> = (p
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="confirmPassword">Confirm Password</Label>
+              <Label htmlFor="confirmPassword">{t('confirmPassword')}</Label>
               <Input
                 id="confirmPassword"
                 type="password"
-                placeholder="••••••••"
+                placeholder={t('passwordPlaceholder')}
                 {...register('confirmPassword')}
                 disabled={isSubmitting}
               />
@@ -137,19 +153,19 @@ const RegisterModule: FC<Readonly<{ enabledProviders: TSocialProvider[] }>> = (p
             </div>
 
             <Button type="submit" className="w-full" disabled={isSubmitting}>
-              {isSubmitting ? 'Creating account...' : 'Sign Up'}
+              {isSubmitting ? t('signUpLoading') : t('signUp')}
             </Button>
           </form>
 
           <SocialAuth enabledProviders={enabledProviders} className="mt-6" />
 
           <div className="mt-4 text-center text-sm">
-            Already have an account?{' '}
+            {t('haveAccount')}{' '}
             <Link
               href="/login"
               className="font-medium text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300"
             >
-              Sign In
+              {t('signIn')}
             </Link>
           </div>
         </CardContent>

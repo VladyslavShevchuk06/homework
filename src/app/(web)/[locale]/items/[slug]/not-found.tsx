@@ -1,15 +1,17 @@
-import { type FC } from 'react'
+import { getTranslations } from 'next-intl/server'
 import { NotFoundModule } from '@/app/modules/not-found'
 
 // not found
-const DriverNotFound: FC = () => {
+const DriverNotFound = async () => {
+  const t = await getTranslations('NotFound')
+
   // return
   return (
     <NotFoundModule
-      title="Driver not found"
-      description="We couldn't find the driver you're looking for. They may have retired or the link is incorrect."
+      title={t('driverTitle')}
+      description={t('driverDescription')}
       returnHref="/items"
-      returnLabel="Back to drivers"
+      returnLabel={t('backToDrivers')}
     />
   )
 }

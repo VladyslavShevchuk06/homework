@@ -1,6 +1,7 @@
 'use client'
 
 import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { useLocale, useTranslations } from 'next-intl'
 import { favoritesListQueryKey } from './favorites.query'
 import { toggleFavorite } from './favorites.action'
 import { EEntityKey } from '@/app/shared/interfaces'
@@ -31,7 +32,9 @@ function optimisticFavorite(itemId: string, slug: string): IFavoriteWithItem {
 // favorites toggle hook
 export function useToggleFavoriteMutation() {
   const queryClient = useQueryClient()
-  const queryKey = favoritesListQueryKey()
+  const locale = useLocale()
+  const t = useTranslations('Favorites')
+  const queryKey = favoritesListQueryKey(locale)
 
   return useMutation({
     mutationFn: async ({ itemId, slug }: IToggleFavoriteVariables) => {
@@ -57,10 +60,11 @@ export function useToggleFavoriteMutation() {
         queryClient.setQueryData(queryKey, context.previous)
       }
 
-      toast.error('Could not update favorite. Please try again.')
+      toast.error(t('toggleError'))
     },
     onSettled: () => {
-      queryClient.invalidateQueries({ queryKey })
+      // invalidate every locale's favorites + items lists so both language caches re-sync
+      queryClient.invalidateQueries({ queryKey: [EEntityKey.QUERY_FAVORITES_LIST] })
       queryClient.invalidateQueries({ queryKey: [EEntityKey.QUERY_ITEMS_LIST] })
     },
   })

@@ -5,8 +5,9 @@ export async function itemsListApi({
   page = 1,
   search = '',
   team = '',
+  locale = 'en',
 }: IItemsListParams = {}): Promise<IItemsListResponse> {
-  const params = new URLSearchParams({ page: String(page) })
+  const params = new URLSearchParams({ page: String(page), locale })
   if (search) params.set('search', search)
   if (team && team !== 'all') params.set('team', team)
 

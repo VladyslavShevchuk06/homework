@@ -1,8 +1,8 @@
 import type { Metadata } from 'next'
 import { type ReactNode } from 'react'
 import { notFound } from 'next/navigation'
-import { hasLocale, NextIntlClientProvider } from 'next-intl'
-import { setRequestLocale } from 'next-intl/server'
+import { hasLocale, type Locale, NextIntlClientProvider } from 'next-intl'
+import { getTranslations, setRequestLocale } from 'next-intl/server'
 import { fontPrimary } from '@/config/fonts'
 import { QueryProvider } from '@/pkg/query'
 import { cn, ThemeProvider } from '@/pkg/theme'
@@ -11,9 +11,15 @@ import { Nav } from '@/app/shared/components/nav'
 import { Toaster } from '@/app/shared/components/ui'
 import '@/config/styles/global.css'
 
-export const metadata: Metadata = {
-  title: 'F1 Drives',
-  description: 'Browse and save your favorite F1 drivers from the 2026 season',
+// metadata
+export async function generateMetadata(props: Readonly<{ params: Promise<{ locale: Locale }> }>): Promise<Metadata> {
+  const { locale } = await props.params
+  const t = await getTranslations({ locale, namespace: 'Metadata' })
+
+  return {
+    title: t('title'),
+    description: t('description'),
+  }
 }
 
 export function generateStaticParams() {

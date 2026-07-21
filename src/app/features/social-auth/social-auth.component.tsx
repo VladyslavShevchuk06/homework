@@ -1,7 +1,7 @@
 'use client'
 
 import { type FC, type ReactNode, useState } from 'react'
-import { useLocale } from 'next-intl'
+import { useLocale, useTranslations } from 'next-intl'
 import { Button } from '@/app/shared/components/ui'
 import { type TSocialProvider } from '@/app/shared/interfaces'
 import { authClient } from '@/pkg/auth'
@@ -52,6 +52,7 @@ const PROVIDERS: IProviderMeta[] = [
 export const SocialAuth: FC<Readonly<ISocialAuthProps>> = (props) => {
   const { enabledProviders, className } = props
   const locale = useLocale()
+  const t = useTranslations('Auth')
   const [loadingProvider, setLoadingProvider] = useState<TSocialProvider | null>(null)
   const [serverError, setServerError] = useState<string | null>(null)
 
@@ -71,7 +72,7 @@ export const SocialAuth: FC<Readonly<ISocialAuthProps>> = (props) => {
       { provider, callbackURL: getPathname({ href: '/items', locale }) },
       {
         onError: ({ error }) => {
-          setServerError(error.message || 'Failed to sign in')
+          setServerError(error.message || t('signInFailed'))
           setLoadingProvider(null)
         },
       },
@@ -85,7 +86,9 @@ export const SocialAuth: FC<Readonly<ISocialAuthProps>> = (props) => {
           <span className="w-full border-t border-slate-200 dark:border-slate-700" />
         </div>
         <div className="relative flex justify-center text-sm">
-          <span className="bg-white px-2 text-slate-500 dark:bg-slate-800 dark:text-slate-400">Or continue with</span>
+          <span className="bg-white px-2 text-slate-500 dark:bg-slate-800 dark:text-slate-400">
+            {t('orContinueWith')}
+          </span>
         </div>
       </div>
 
@@ -106,7 +109,7 @@ export const SocialAuth: FC<Readonly<ISocialAuthProps>> = (props) => {
             onClick={() => handleSignIn(provider.key)}
           >
             {provider.icon}
-            {loadingProvider === provider.key ? 'Redirecting...' : `Sign in with ${provider.label}`}
+            {loadingProvider === provider.key ? t('redirecting') : t('signInWith', { provider: provider.label })}
           </Button>
         ))}
       </div>

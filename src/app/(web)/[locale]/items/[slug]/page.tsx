@@ -3,7 +3,7 @@ import { type NextPage } from 'next'
 import { notFound } from 'next/navigation'
 import { cacheLife, cacheTag } from 'next/cache'
 import { type Locale } from 'next-intl'
-import { setRequestLocale } from 'next-intl/server'
+import { getTranslations, setRequestLocale } from 'next-intl/server'
 import { getItemDetail, getAllItemSlugs } from '@/app/entities/api/items/index.server'
 import { itemDetailCacheTag } from '@/app/shared/utils'
 import { routing } from '@/pkg/locale'
@@ -24,7 +24,7 @@ async function ItemDetailContent(props: Readonly<{ slug: string; locale: Locale 
   cacheTag(itemDetailCacheTag(props.slug))
 
   const { slug, locale } = props
-  const item = await getItemDetail(slug)
+  const item = await getItemDetail(slug, locale)
 
   if (!item) {
     notFound()
@@ -42,12 +42,17 @@ async function ItemDetailResolver(props: Readonly<IProps>) {
 }
 
 // page
-const ItemDetailPage: NextPage<Readonly<IProps>> = (props) => {
+const ItemDetailPage: NextPage<Readonly<IProps>> = async (props) => {
   const { params } = props
+  const { locale } = await params
+  setRequestLocale(locale)
+  const t = await getTranslations('ItemDetail')
 
   return (
     <main className="container mx-auto px-4 py-8">
-      <Suspense fallback={<div className="flex justify-center p-4 text-slate-500 dark:text-slate-400">Loading...</div>}>
+      <Suspense
+        fallback={<div className="flex justify-center p-4 text-slate-500 dark:text-slate-400">{t('loading')}</div>}
+      >
         <ItemDetailResolver params={params} />
       </Suspense>
     </main>

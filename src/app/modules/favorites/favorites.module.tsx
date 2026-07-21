@@ -2,55 +2,61 @@
 
 import { type FC } from 'react'
 import Image from 'next/image'
+import { type Locale, useTranslations } from 'next-intl'
 import { useQuery } from '@tanstack/react-query'
 import { Link } from '@/pkg/locale'
 import { favoritesListQueryOptions } from '@/app/entities/api/favorites'
 import { Card, CardContent, CountBadge } from '@/app/shared/components/ui'
 
+// interface
+interface IFavoritesModuleProps {
+  locale: Locale
+}
+
 // module
-const FavoritesModule: FC = () => {
-  const { data, isPending, isError } = useQuery(favoritesListQueryOptions())
+const FavoritesModule: FC<Readonly<IFavoritesModuleProps>> = (props) => {
+  const { locale } = props
+  const t = useTranslations('Favorites')
+  const { data, isPending, isError } = useQuery(favoritesListQueryOptions(locale))
 
   const favorites = data ?? []
 
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-bold text-slate-900 dark:text-slate-100">My Favorite Drivers</h1>
+        <h1 className="text-3xl font-bold text-slate-900 dark:text-slate-100">{t('title')}</h1>
         <p className="mt-2 text-slate-600 dark:text-slate-400">
-          {favorites.length === 0
-            ? "You haven't added any favorites yet. Browse drivers to add them!"
-            : `You have ${favorites.length} favorite driver${favorites.length !== 1 ? 's' : ''}`}
+          {favorites.length === 0 ? t('empty') : t('count', { count: favorites.length })}
         </p>
       </div>
 
       {isPending ? (
         <Card>
           <CardContent className="py-12 text-center">
-            <p className="text-slate-600 dark:text-slate-400">Loading favorites...</p>
+            <p className="text-slate-600 dark:text-slate-400">{t('loading')}</p>
           </CardContent>
         </Card>
       ) : isError ? (
         <Card>
           <CardContent className="py-12 text-center">
-            <p className="mb-4 text-red-600 dark:text-red-400">Failed to load favorites</p>
+            <p className="mb-4 text-red-600 dark:text-red-400">{t('error')}</p>
             <Link
               href="/items"
               className="text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300"
             >
-              Browse drivers →
+              {t('browse')}
             </Link>
           </CardContent>
         </Card>
       ) : favorites.length === 0 ? (
         <Card>
           <CardContent className="py-12 text-center">
-            <p className="mb-4 text-slate-600 dark:text-slate-400">No favorites yet</p>
+            <p className="mb-4 text-slate-600 dark:text-slate-400">{t('none')}</p>
             <Link
               href="/items"
               className="text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300"
             >
-              Browse drivers →
+              {t('browse')}
             </Link>
           </CardContent>
         </Card>
@@ -76,7 +82,7 @@ const FavoritesModule: FC = () => {
                       <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100">{favorite.title}</h3>
                       <CountBadge
                         count={favorite.favoritesCount}
-                        label={`Favorited ${favorite.favoritesCount} time${favorite.favoritesCount === 1 ? '' : 's'}`}
+                        label={t('favoritedAria', { count: favorite.favoritesCount })}
                         icon={
                           <svg
                             className="h-3.5 w-3.5 text-rose-500"

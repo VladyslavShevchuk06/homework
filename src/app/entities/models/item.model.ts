@@ -1,9 +1,14 @@
+import { type Locale } from 'next-intl'
+
 // item models
 
 export interface IItem {
   id: string
   slug: string
   title: string
+  team: string
+  number: string
+  country: string
   description: string | null
   imageUrl: string | null
   createdAt: Date
@@ -14,6 +19,7 @@ export interface IItemsListParams {
   page?: number
   search?: string
   team?: string
+  locale?: Locale
 }
 
 export interface IItemsListMeta {

@@ -12,8 +12,94 @@
     "uk": "UK",
     "switchTo": "Switch language to {label}"
   },
-  "ItemsPage": {
+  "ItemsList": {
+    "title": "F1 2026 Drivers",
+    "subtitle": "Browse the drivers of the 2026 F1 season",
+    "loading": "Loading drivers...",
+    "error": "Failed to load drivers",
+    "emptyWithSearch": "No drivers match \"{search}\"",
+    "empty": "No drivers found",
+    "previous": "← Previous",
+    "pagination": "Page {currentPage} of {totalPages}",
+    "next": "Next →"
+  },
+  "SearchForm": {
+    "allTeams": "All Teams",
+    "placeholder": "Search drivers by name or team...",
+    "search": "Search",
+    "clear": "Clear"
+  },
+  "DriverCard": {
+    "team": "Team:",
+    "number": "No:",
+    "country": "Country:",
+    "favoritedAria": "Favorited {count, plural, one {# time} other {# times}}"
+  },
+  "ItemDetail": {
+    "back": "← Back to drivers",
+    "team": "Team",
+    "number": "Number",
+    "nationality": "Nationality",
+    "loading": "Loading...",
+    "favoritedAria": "Favorited {count, plural, one {# time} other {# times}}"
+  },
+  "Favorites": {
+    "title": "My Favorite Drivers",
+    "empty": "You haven't added any favorites yet. Browse drivers to add them!",
+    "count": "You have {count, plural, one {# favorite driver} other {# favorite drivers}}",
+    "loading": "Loading favorites...",
+    "error": "Failed to load favorites",
+    "browse": "Browse drivers →",
+    "none": "No favorites yet",
+    "favoritedAria": "Favorited {count, plural, one {# time} other {# times}}",
+    "loadingPage": "Loading...",
+    "add": "☆ Add to Favorites",
+    "remove": "★ Remove from Favorites",
+    "toggleError": "Could not update favorite. Please try again."
+  },
+  "Auth": {
+    "signIn": "Sign In",
+    "signInLoading": "Signing in...",
+    "createAccount": "Create Account",
+    "signUp": "Sign Up",
+    "signUpLoading": "Creating account...",
+    "name": "Name",
+    "namePlaceholder": "John Doe",
+    "email": "Email",
+    "emailPlaceholder": "you@example.com",
+    "password": "Password",
+    "passwordPlaceholder": "••••••••",
+    "confirmPassword": "Confirm Password",
+    "noAccount": "Don't have an account?",
+    "haveAccount": "Already have an account?",
+    "register": "Register",
+    "signInFailed": "Failed to sign in",
+    "signInError": "An error occurred during sign in",
+    "signUpFailed": "Failed to sign up",
+    "signUpError": "An error occurred during sign up",
+    "orContinueWith": "Or continue with",
+    "redirecting": "Redirecting...",
+    "signInWith": "Sign in with {provider}"
+  },
+  "Validation": {
+    "email": "Invalid email address",
+    "password": "Password must be at least 8 characters",
+    "name": "Name must be at least 2 characters",
+    "passwordsMatch": "Passwords don't match"
+  },
+  "Errors": {
+    "title": "Something went wrong",
+    "description": "An unexpected error occurred. Please try again.",
+    "reference": "Reference:",
+    "tryAgain": "Try again"
+  },
+  "NotFound": {
+    "driverTitle": "Driver not found",
+    "driverDescription": "We couldn't find the driver you're looking for. They may have retired or the link is incorrect.",
+    "backToDrivers": "Back to drivers"
+  },
+  "Metadata": {
     "title": "F1 Drivers",
-    "searchPlaceholder": "Search drivers"
+    "description": "Browse and save your favorite F1 drivers from the 2026 season"
   }
 }

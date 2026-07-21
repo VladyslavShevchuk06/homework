@@ -1,19 +1,22 @@
 import 'server-only'
 import { and, eq } from 'drizzle-orm'
+import { type Locale } from 'next-intl'
 import { db } from '@/db'
 import { favorites, items } from '@/db/schema'
 import { favoritesCount } from '@/db/favorites-count'
 import { IFavoriteWithItem } from '@/app/entities/models'
 
 // get favorites list
-export async function getFavoritesList(userId: string): Promise<IFavoriteWithItem[]> {
+export async function getFavoritesList(userId: string, locale: Locale = 'en'): Promise<IFavoriteWithItem[]> {
+  const isUk = locale === 'uk'
+
   const rows = await db
     .select({
       id: favorites.id,
       itemId: favorites.itemId,
       slug: items.slug,
-      title: items.title,
-      description: items.description,
+      title: isUk ? items.titleUk : items.titleEn,
+      description: isUk ? items.descriptionUk : items.descriptionEn,
       imageUrl: items.imageUrl,
       createdAt: favorites.createdAt,
       favoritesCount,

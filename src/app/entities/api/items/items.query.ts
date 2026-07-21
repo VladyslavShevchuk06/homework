@@ -4,15 +4,15 @@ import { IItemsListParams } from '@/app/entities/models'
 import { EEntityKey } from '@/app/shared/interfaces'
 
 // items list query key
-export function itemsListQueryKey({ page = 1, search = '', team = '' }: IItemsListParams = {}) {
-  return [EEntityKey.QUERY_ITEMS_LIST, page, search, team] as const
+export function itemsListQueryKey({ page = 1, search = '', team = '', locale = 'en' }: IItemsListParams = {}) {
+  return [EEntityKey.QUERY_ITEMS_LIST, page, search, team, locale] as const
 }
 
 // items list query options
-export function itemsListQueryOptions({ page = 1, search = '', team = '' }: IItemsListParams = {}) {
+export function itemsListQueryOptions({ page = 1, search = '', team = '', locale = 'en' }: IItemsListParams = {}) {
   return queryOptions({
-    queryKey: itemsListQueryKey({ page, search, team }),
-    queryFn: () => itemsListApi({ page, search, team }),
+    queryKey: itemsListQueryKey({ page, search, team, locale }),
+    queryFn: () => itemsListApi({ page, search, team, locale }),
     placeholderData: keepPreviousData,
   })
 }

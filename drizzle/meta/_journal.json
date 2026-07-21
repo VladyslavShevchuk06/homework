@@ -15,6 +15,13 @@
       "when": 1781599705381,
       "tag": "0001_sloppy_pestilence",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1784627537025,
+      "tag": "0002_tan_fantastic_four",
+      "breakpoints": true
     }
   ]
 }

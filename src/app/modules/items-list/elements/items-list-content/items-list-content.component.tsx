@@ -1,6 +1,7 @@
 'use client'
 
 import { type FC } from 'react'
+import { useTranslations } from 'next-intl'
 import { useRouter } from '@/pkg/locale'
 import { useQuery } from '@tanstack/react-query'
 import { itemsListQueryOptions } from '@/app/entities/api/items'
@@ -11,10 +12,11 @@ import { ItemCard } from '../item-card'
 
 // component
 export const ItemsListContent: FC<Readonly<Required<IItemsListParams>>> = (props) => {
-  const { page, search, team } = props
+  const { page, search, team, locale } = props
+  const t = useTranslations('ItemsList')
   const router = useRouter()
 
-  const { data, isPending, isError, isFetching } = useQuery(itemsListQueryOptions({ page, search, team }))
+  const { data, isPending, isError, isFetching } = useQuery(itemsListQueryOptions({ page, search, team, locale }))
 
   const items = data?.data ?? []
   const totalPages = data?.meta.totalPages ?? 1
@@ -34,16 +36,16 @@ export const ItemsListContent: FC<Readonly<Required<IItemsListParams>>> = (props
 
       {isPending ? (
         <div className="flex h-96 items-center justify-center">
-          <p className="text-lg text-slate-600 dark:text-slate-400">Loading drivers...</p>
+          <p className="text-lg text-slate-600 dark:text-slate-400">{t('loading')}</p>
         </div>
       ) : isError ? (
         <div className="flex h-96 items-center justify-center">
-          <p className="text-lg text-red-600 dark:text-red-400">Failed to load drivers</p>
+          <p className="text-lg text-red-600 dark:text-red-400">{t('error')}</p>
         </div>
       ) : items.length === 0 ? (
         <div className="flex h-96 items-center justify-center">
           <p className="text-lg text-slate-600 dark:text-slate-400">
-            {search ? `No drivers match "${search}"` : 'No drivers found'}
+            {search ? t('emptyWithSearch', { search }) : t('empty')}
           </p>
         </div>
       ) : (
@@ -60,13 +62,13 @@ export const ItemsListContent: FC<Readonly<Required<IItemsListParams>>> = (props
 
           <div className="flex items-center justify-center gap-4">
             <Button variant="outline" onClick={() => goToPage(currentPage - 1)} disabled={currentPage <= 1}>
-              ← Previous
+              {t('previous')}
             </Button>
             <span className="text-sm text-slate-600 dark:text-slate-400">
-              Page {currentPage} of {totalPages}
+              {t('pagination', { currentPage, totalPages })}
             </span>
             <Button variant="outline" onClick={() => goToPage(currentPage + 1)} disabled={currentPage >= totalPages}>
-              Next →
+              {t('next')}
             </Button>
           </div>
         </>

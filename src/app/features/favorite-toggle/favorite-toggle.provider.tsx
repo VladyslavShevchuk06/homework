@@ -1,6 +1,7 @@
 'use client'
 
 import { type FC, createContext, useState, useSyncExternalStore } from 'react'
+import { useLocale } from 'next-intl'
 import { useQuery } from '@tanstack/react-query'
 import { favoritesListQueryOptions, useToggleFavoriteMutation } from '@/app/entities/api/favorites'
 import { IFavoriteToggleContextValue, IFavoriteToggleProviderProps } from './favorite-toggle.interface'
@@ -20,10 +21,11 @@ export const FavoriteToggleProvider: FC<Readonly<IFavoriteToggleProviderProps>> 
     () => false,
   )
 
+  const locale = useLocale()
   const { data: session, isPending: sessionPending } = authClient.useSession()
   const user = session?.user
 
-  const { data: favorites = [] } = useQuery({ ...favoritesListQueryOptions(), enabled: !!user })
+  const { data: favorites = [] } = useQuery({ ...favoritesListQueryOptions(locale), enabled: !!user })
   const favorited = favorites.some((favorite) => favorite.itemId === itemId)
 
   const mutation = useToggleFavoriteMutation()

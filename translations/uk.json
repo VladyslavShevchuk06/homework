@@ -12,8 +12,94 @@
     "uk": "UK",
     "switchTo": "Змінити мову на {label}"
   },
-  "ItemsPage": {
+  "ItemsList": {
+    "title": "Пілоти Ф1 2026",
+    "subtitle": "Перегляньте пілотів сезону Формули-1 2026 року",
+    "loading": "Завантаження пілотів...",
+    "error": "Не вдалося завантажити пілотів",
+    "emptyWithSearch": "Немає пілотів за запитом «{search}»",
+    "empty": "Пілотів не знайдено",
+    "previous": "← Назад",
+    "pagination": "Сторінка {currentPage} з {totalPages}",
+    "next": "Далі →"
+  },
+  "SearchForm": {
+    "allTeams": "Усі команди",
+    "placeholder": "Пошук пілотів за іменем або командою...",
+    "search": "Пошук",
+    "clear": "Очистити"
+  },
+  "DriverCard": {
+    "team": "Команда:",
+    "number": "№:",
+    "country": "Країна:",
+    "favoritedAria": "В обраному {count, plural, one {# раз} few {# рази} many {# разів} other {# разів}}"
+  },
+  "ItemDetail": {
+    "back": "← Назад до пілотів",
+    "team": "Команда",
+    "number": "Номер",
+    "nationality": "Національність",
+    "loading": "Завантаження...",
+    "favoritedAria": "В обраному {count, plural, one {# раз} few {# рази} many {# разів} other {# разів}}"
+  },
+  "Favorites": {
+    "title": "Мої улюблені пілоти",
+    "empty": "Ви ще не додали жодного пілота в обране. Перегляньте пілотів, щоб додати їх!",
+    "count": "У вас {count, plural, one {# улюблений пілот} few {# улюблені пілоти} many {# улюблених пілотів} other {# улюблених пілотів}}",
+    "loading": "Завантаження обраного...",
+    "error": "Не вдалося завантажити обране",
+    "browse": "Переглянути пілотів →",
+    "none": "Обраного ще немає",
+    "favoritedAria": "В обраному {count, plural, one {# раз} few {# рази} many {# разів} other {# разів}}",
+    "loadingPage": "Завантаження...",
+    "add": "☆ Додати в обране",
+    "remove": "★ Видалити з обраного",
+    "toggleError": "Не вдалося оновити обране. Спробуйте ще раз."
+  },
+  "Auth": {
+    "signIn": "Увійти",
+    "signInLoading": "Вхід...",
+    "createAccount": "Створити акаунт",
+    "signUp": "Зареєструватися",
+    "signUpLoading": "Створення акаунту...",
+    "name": "Ім’я",
+    "namePlaceholder": "Іван Петренко",
+    "email": "Електронна пошта",
+    "emailPlaceholder": "you@example.com",
+    "password": "Пароль",
+    "passwordPlaceholder": "••••••••",
+    "confirmPassword": "Підтвердьте пароль",
+    "noAccount": "Немає акаунту?",
+    "haveAccount": "Вже маєте акаунт?",
+    "register": "Реєстрація",
+    "signInFailed": "Не вдалося увійти",
+    "signInError": "Під час входу сталася помилка",
+    "signUpFailed": "Не вдалося зареєструватися",
+    "signUpError": "Під час реєстрації сталася помилка",
+    "orContinueWith": "Або продовжити з",
+    "redirecting": "Перенаправлення...",
+    "signInWith": "Увійти через {provider}"
+  },
+  "Validation": {
+    "email": "Некоректна електронна пошта",
+    "password": "Пароль має містити щонайменше 8 символів",
+    "name": "Ім’я має містити щонайменше 2 символи",
+    "passwordsMatch": "Паролі не збігаються"
+  },
+  "Errors": {
+    "title": "Щось пішло не так",
+    "description": "Сталася неочікувана помилка. Спробуйте ще раз.",
+    "reference": "Референс:",
+    "tryAgain": "Спробувати ще раз"
+  },
+  "NotFound": {
+    "driverTitle": "Пілота не знайдено",
+    "driverDescription": "Не вдалося знайти пілота, якого ви шукаєте. Можливо, він завершив кар’єру або посилання некоректне.",
+    "backToDrivers": "Назад до пілотів"
+  },
+  "Metadata": {
     "title": "Пілоти Формули-1",
-    "searchPlaceholder": "Пошук пілотів"
+    "description": "Переглядайте та зберігайте улюблених пілотів Формули-1 сезону 2026 року"
   }
 }
