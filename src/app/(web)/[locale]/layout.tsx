@@ -25,6 +25,7 @@ interface IProps {
   params: Promise<{ locale: string }>
 }
 
+// layout
 async function LocaleLayout(props: Readonly<IProps>) {
   const { children, params } = props
   const { locale } = await params

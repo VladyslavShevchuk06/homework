@@ -4,6 +4,7 @@ import { cn } from '@/pkg/theme'
 import { NotFoundModule } from '@/app/modules/not-found'
 import '@/config/styles/global.css'
 
+// not found
 const NotFound: FC = () => {
   return (
     <html lang="en">

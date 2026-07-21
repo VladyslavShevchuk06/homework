@@ -1,7 +1,7 @@
 import { pgTable, text, timestamp, uuid, boolean, uniqueIndex, index } from 'drizzle-orm/pg-core'
 
 // Better Auth: user table
-// JS keys MUST match Better Auth field names — Drizzle resolves columns by key, not SQL column name
+// keys must match Better Auth field names
 export const user = pgTable('user', {
   id: text('id').primaryKey(),
   name: text('name').notNull(),

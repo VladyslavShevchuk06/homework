@@ -20,9 +20,9 @@ export class RegisterPage {
     this.passwordInput = page.locator('#password')
     this.confirmPasswordInput = page.locator('#confirmPassword')
     this.submitButton = page.getByRole('button', { name: 'Sign Up', exact: true })
-    this.emailError = page.locator('#email ~ p')
-    this.passwordError = page.locator('#password ~ p')
-    this.confirmPasswordError = page.locator('#confirmPassword ~ p')
+    this.emailError = page.getByTestId('email-error')
+    this.passwordError = page.getByTestId('password-error')
+    this.confirmPasswordError = page.getByTestId('confirmPassword-error')
   }
 
   async goto() {

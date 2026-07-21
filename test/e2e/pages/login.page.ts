@@ -14,7 +14,7 @@ export class LoginPage {
     this.emailInput = page.locator('#email')
     this.passwordInput = page.locator('#password')
     this.submitButton = page.getByRole('button', { name: 'Sign In', exact: true })
-    this.rootError = page.locator('form div.bg-red-50')
+    this.rootError = page.getByRole('alert')
   }
 
   async goto() {

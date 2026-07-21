@@ -41,6 +41,7 @@ async function ItemDetailResolver(props: Readonly<IProps>) {
   return <ItemDetailContent slug={slug} locale={locale} />
 }
 
+// page
 const ItemDetailPage: NextPage<Readonly<IProps>> = (props) => {
   const { params } = props
 

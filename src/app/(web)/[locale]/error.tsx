@@ -8,6 +8,7 @@ interface IProps {
   reset: () => void
 }
 
+// error boundary
 const LocaleError: FC<Readonly<IProps>> = (props) => {
   const { error, reset } = props
 

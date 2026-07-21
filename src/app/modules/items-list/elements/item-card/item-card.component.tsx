@@ -11,12 +11,13 @@ interface IItemCardProps {
 }
 
 // component
-export const ItemCard: FC<Readonly<IItemCardProps>> = ({ item }) => {
+export const ItemCard: FC<Readonly<IItemCardProps>> = (props) => {
+  const { item } = props
   const { team, number, country } = parseDriverMeta(item.description)
 
   // return
   return (
-    <Link href={`/items/${item.slug}`}>
+    <Link href={`/items/${item.slug}`} data-testid="driver-card">
       <Card className="h-full cursor-pointer transition-all hover:shadow-lg hover:ring-2 hover:ring-blue-500">
         <CardContent className="p-0">
           {item.imageUrl && (

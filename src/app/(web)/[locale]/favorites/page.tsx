@@ -33,6 +33,7 @@ interface IProps {
   params: Promise<{ locale: Locale }>
 }
 
+// page
 const FavoritesPage: NextPage<Readonly<IProps>> = async (props) => {
   const { locale } = await props.params
   setRequestLocale(locale)

@@ -11,7 +11,9 @@ import { Button, Card, CardContent, CardHeader, CardTitle, Input, Label } from '
 import { EEntityKey, type TSocialProvider } from '@/app/shared/interfaces'
 import { SocialAuth } from '@/app/features/social-auth'
 
-export const RegisterModule: FC<Readonly<{ enabledProviders: TSocialProvider[] }>> = ({ enabledProviders }) => {
+// module
+const RegisterModule: FC<Readonly<{ enabledProviders: TSocialProvider[] }>> = (props) => {
+  const { enabledProviders } = props
   const router = useRouter()
   const queryClient = useQueryClient()
 
@@ -35,15 +37,14 @@ export const RegisterModule: FC<Readonly<{ enabledProviders: TSocialProvider[] }
         },
         {
           onSuccess: () => {
-            // drop stale query state and clear the router cache so the nav +
-            // user-scoped data reflect the new session without a reload
+            // refresh session-scoped state
             queryClient.invalidateQueries({ queryKey: [EEntityKey.QUERY_FAVORITES_LIST] })
             router.push('/items')
             router.refresh()
           },
           onError: (error) => {
             const message = error.error.message || 'Failed to sign up'
-            // map email-specific failures (e.g. already registered) to the field
+            // map email errors to field
             if (/email|exist/i.test(message)) {
               setError('email', { message })
             } else {
@@ -69,7 +70,10 @@ export const RegisterModule: FC<Readonly<{ enabledProviders: TSocialProvider[] }
         <CardContent>
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
             {errors.root && (
-              <div className="rounded-md bg-red-50 p-3 text-sm text-red-700 dark:bg-red-950 dark:text-red-300">
+              <div
+                role="alert"
+                className="rounded-md bg-red-50 p-3 text-sm text-red-700 dark:bg-red-950 dark:text-red-300"
+              >
                 {errors.root.message}
               </div>
             )}
@@ -77,7 +81,11 @@ export const RegisterModule: FC<Readonly<{ enabledProviders: TSocialProvider[] }
             <div className="space-y-2">
               <Label htmlFor="name">Name</Label>
               <Input id="name" type="text" placeholder="John Doe" {...register('name')} disabled={isSubmitting} />
-              {errors.name && <p className="text-sm text-red-600 dark:text-red-400">{errors.name.message}</p>}
+              {errors.name && (
+                <p data-testid="name-error" className="text-sm text-red-600 dark:text-red-400">
+                  {errors.name.message}
+                </p>
+              )}
             </div>
 
             <div className="space-y-2">
@@ -89,7 +97,11 @@ export const RegisterModule: FC<Readonly<{ enabledProviders: TSocialProvider[] }
                 {...register('email')}
                 disabled={isSubmitting}
               />
-              {errors.email && <p className="text-sm text-red-600 dark:text-red-400">{errors.email.message}</p>}
+              {errors.email && (
+                <p data-testid="email-error" className="text-sm text-red-600 dark:text-red-400">
+                  {errors.email.message}
+                </p>
+              )}
             </div>
 
             <div className="space-y-2">
@@ -101,7 +113,11 @@ export const RegisterModule: FC<Readonly<{ enabledProviders: TSocialProvider[] }
                 {...register('password')}
                 disabled={isSubmitting}
               />
-              {errors.password && <p className="text-sm text-red-600 dark:text-red-400">{errors.password.message}</p>}
+              {errors.password && (
+                <p data-testid="password-error" className="text-sm text-red-600 dark:text-red-400">
+                  {errors.password.message}
+                </p>
+              )}
             </div>
 
             <div className="space-y-2">
@@ -114,7 +130,9 @@ export const RegisterModule: FC<Readonly<{ enabledProviders: TSocialProvider[] }
                 disabled={isSubmitting}
               />
               {errors.confirmPassword && (
-                <p className="text-sm text-red-600 dark:text-red-400">{errors.confirmPassword.message}</p>
+                <p data-testid="confirmPassword-error" className="text-sm text-red-600 dark:text-red-400">
+                  {errors.confirmPassword.message}
+                </p>
               )}
             </div>
 
@@ -139,3 +157,5 @@ export const RegisterModule: FC<Readonly<{ enabledProviders: TSocialProvider[] }
     </div>
   )
 }
+
+export default RegisterModule

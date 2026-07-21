@@ -8,7 +8,7 @@ import { favoritesListQueryOptions } from '@/app/entities/api/favorites'
 import { Card, CardContent, CountBadge } from '@/app/shared/components/ui'
 
 // module
-export const FavoritesModule: FC = () => {
+const FavoritesModule: FC = () => {
   const { data, isPending, isError } = useQuery(favoritesListQueryOptions())
 
   const favorites = data ?? []
@@ -57,7 +57,7 @@ export const FavoritesModule: FC = () => {
       ) : (
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {favorites.map((favorite) => (
-            <Link key={favorite.itemId} href={`/items/${favorite.slug}`}>
+            <Link key={favorite.itemId} href={`/items/${favorite.slug}`} data-testid="driver-card">
               <Card className="h-full cursor-pointer transition-all hover:shadow-lg hover:ring-2 hover:ring-blue-500">
                 <CardContent className="p-0">
                   {favorite.imageUrl && (
@@ -103,3 +103,5 @@ export const FavoritesModule: FC = () => {
     </div>
   )
 }
+
+export default FavoritesModule
