@@ -1,10 +1,13 @@
-import { NextResponse } from 'next/server'
+import { NextResponse, connection } from 'next/server'
 import { type Locale } from 'next-intl'
 import { auth } from '@/lib/auth'
 import { getFavoritesList } from '@/app/entities/api/favorites/index.server'
 
 // GET /api/favorites
 export async function GET(request: Request) {
+  // opt into dynamic rendering before touching request data (cacheComponents)
+  await connection()
+
   try {
     const session = await auth.api.getSession({ headers: request.headers })
 

@@ -1,9 +1,12 @@
-import { getTranslations } from 'next-intl/server'
+'use client'
+
+import { type FC } from 'react'
+import { useTranslations } from 'next-intl'
 import { NotFoundModule } from '@/app/modules/not-found'
 
 // not found
-const DriverNotFound = async () => {
-  const t = await getTranslations('NotFound')
+const DriverNotFound: FC = () => {
+  const t = useTranslations('NotFound')
 
   // return
   return (
