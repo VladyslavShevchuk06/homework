@@ -7,6 +7,7 @@ import { fontPrimary } from '@/config/fonts'
 import { QueryProvider } from '@/pkg/query'
 import { cn, ThemeProvider } from '@/pkg/theme'
 import { routing } from '@/pkg/locale'
+import { ExperimentProvider } from '@/app/features/experiment'
 import { Nav } from '@/app/shared/components/nav'
 import { Toaster } from '@/app/shared/components/ui'
 import '@/config/styles/global.css'
@@ -57,9 +58,11 @@ async function LocaleLayout(props: Readonly<IProps>) {
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
           <QueryProvider>
             <NextIntlClientProvider locale={locale} messages={messages}>
-              <Nav />
-              {children}
-              <Toaster />
+              <ExperimentProvider>
+                <Nav />
+                {children}
+                <Toaster />
+              </ExperimentProvider>
             </NextIntlClientProvider>
           </QueryProvider>
         </ThemeProvider>

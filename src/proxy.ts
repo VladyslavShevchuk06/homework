@@ -2,6 +2,9 @@ import { type NextRequest, NextResponse } from 'next/server'
 import createMiddleware from 'next-intl/middleware'
 import { routing } from '@/pkg/locale'
 import { auth } from '@/lib/auth'
+import { isFeatureOn } from '@/pkg/growthbook/growthbook.pkg'
+import { EVariant } from '@/app/shared/interfaces'
+import { AB_ID_COOKIE, AB_ID_MAX_AGE, EXPERIMENT_PATHS, VARIANT_PARAM } from '@/app/shared/constants'
 
 const handleI18nRouting = createMiddleware(routing)
 
@@ -46,7 +49,40 @@ export async function proxy(request: NextRequest) {
     }
   }
 
-  return handleI18nRouting(request)
+  // a/b bucketing
+  const experimentKey = EXPERIMENT_PATHS[path]
+
+  if (!experimentKey) {
+    return handleI18nRouting(request)
+  }
+
+  const existingId = request.cookies.get(AB_ID_COOKIE)?.value
+  const abId = existingId ?? crypto.randomUUID()
+  const isOn = await isFeatureOn(experimentKey, { id: abId })
+  const variant = isOn ? EVariant.VARIANT_B : EVariant.CONTROL
+
+  // inject the variant so next-intl carries it onto its internal rewrite — the browser url stays clean
+  request.nextUrl.searchParams.set(VARIANT_PARAM, variant)
+  const response = handleI18nRouting(request)
+
+  // prefixed-locale paths (e.g. /uk/items) resolve as a passthrough that would drop the injected param;
+  // upgrade that passthrough to a rewrite of the same url so the variant reaches the page for every locale
+  if (!response.headers.has('location') && !response.headers.has('x-middleware-rewrite')) {
+    response.headers.set('x-middleware-rewrite', request.nextUrl.toString())
+    response.headers.delete('x-middleware-next')
+  }
+
+  if (!existingId) {
+    response.cookies.set(AB_ID_COOKIE, abId, {
+      httpOnly: false,
+      sameSite: 'lax',
+      path: '/',
+      maxAge: AB_ID_MAX_AGE,
+      secure: process.env.NODE_ENV === 'production',
+    })
+  }
+
+  return response
 }
 
 export const config = {

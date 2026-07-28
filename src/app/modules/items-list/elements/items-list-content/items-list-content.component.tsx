@@ -8,11 +8,18 @@ import { itemsListQueryOptions } from '@/app/entities/api/items'
 import { Button } from '@/app/shared/components/ui'
 import { SearchForm } from '@/app/features/search-form'
 import { type IItemsListParams } from '@/app/entities/models'
+import { EVariant } from '@/app/shared/interfaces'
 import { ItemCard } from '../item-card'
 
+// denser grid for the variant-b layout experiment
+const GRID_BY_VARIANT: Record<EVariant, string> = {
+  [EVariant.CONTROL]: 'sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4',
+  [EVariant.VARIANT_B]: 'sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5',
+}
+
 // component
-export const ItemsListContent: FC<Readonly<Required<IItemsListParams>>> = (props) => {
-  const { page, search, team, locale } = props
+export const ItemsListContent: FC<Readonly<Required<IItemsListParams> & { variant: EVariant }>> = (props) => {
+  const { page, search, team, locale, variant } = props
   const t = useTranslations('ItemsList')
   const router = useRouter()
 
@@ -51,7 +58,7 @@ export const ItemsListContent: FC<Readonly<Required<IItemsListParams>>> = (props
       ) : (
         <>
           <div
-            className={`grid grid-cols-1 gap-6 transition-opacity sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 ${
+            className={`grid grid-cols-1 gap-6 transition-opacity ${GRID_BY_VARIANT[variant]} ${
               isFetching ? 'opacity-60' : 'opacity-100'
             }`}
           >

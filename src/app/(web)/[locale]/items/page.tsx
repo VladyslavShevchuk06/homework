@@ -9,8 +9,15 @@ import { itemsListServerQueryOptions } from '@/app/entities/api/items/index.serv
 import { itemsListCacheTag } from '@/app/shared/utils'
 import { ItemsListModule } from '@/app/modules/items-list'
 import { type IItemsListParams } from '@/app/entities/models'
+import { EVariant } from '@/app/shared/interfaces'
 
-async function ItemsListShell({ page, search, team, locale }: Readonly<Required<IItemsListParams>>) {
+async function ItemsListShell({
+  page,
+  search,
+  team,
+  locale,
+  variant,
+}: Readonly<Required<IItemsListParams> & { variant: EVariant }>) {
   'use cache'
   cacheLife({ revalidate: 3600 })
   cacheTag(itemsListCacheTag())
@@ -20,7 +27,7 @@ async function ItemsListShell({ page, search, team, locale }: Readonly<Required<
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
-      <ItemsListModule page={page} search={search} team={team} locale={locale} />
+      <ItemsListModule page={page} search={search} team={team} locale={locale} variant={variant} />
     </HydrationBoundary>
   )
 }
@@ -33,8 +40,9 @@ async function ItemsListResolver({
   const page = Number(params.page) || 1
   const search = params.search ?? ''
   const team = params.team ?? ''
+  const variant = params.variant === EVariant.VARIANT_B ? EVariant.VARIANT_B : EVariant.CONTROL
 
-  return <ItemsListShell page={page} search={search} team={team} locale={locale} />
+  return <ItemsListShell page={page} search={search} team={team} locale={locale} variant={variant} />
 }
 
 interface IProps {
