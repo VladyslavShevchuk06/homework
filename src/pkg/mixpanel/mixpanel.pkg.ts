@@ -10,9 +10,7 @@ function ensureInit() {
   if (initialized) return true
   const token = envClient.NEXT_PUBLIC_MIXPANEL_TOKEN
   if (!token) return false
-  mixpanel.init(token, { persistence: 'localStorage', track_pageview: false, 
-    api_host: "https://api-eu.mixpanel.com",
-  })
+  mixpanel.init(token, { persistence: 'localStorage', track_pageview: false, api_host: 'https://api-eu.mixpanel.com' })
   initialized = true
   return true
 }

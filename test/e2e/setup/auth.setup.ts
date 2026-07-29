@@ -14,6 +14,13 @@ setup('authenticate', async ({ request }) => {
       data: { email: TEST_USER.email, password: TEST_USER.password },
       failOnStatusCode: false,
     })
+    // an html body means next served a page instead of the route handler — report that, not 30kb of rsc payload
+    const contentType = response.headers()['content-type'] ?? 'none'
+    expect(
+      contentType.includes('application/json'),
+      `sign-in returned ${response.status()} as ${contentType} — /api/auth route handler not registered (stale build dir?)`,
+    ).toBeTruthy()
+
     expect(response.ok(), `sign-in ${response.status()}: ${await response.text()}`).toBeTruthy()
   }).toPass({ timeout: 30_000 })
 
