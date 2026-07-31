@@ -1,5 +1,6 @@
 import { type NextPage } from 'next'
 import { Suspense } from 'react'
+import { cookies } from 'next/headers'
 import { cacheLife, cacheTag } from 'next/cache'
 import { type Locale } from 'next-intl'
 import { setRequestLocale } from 'next-intl/server'
@@ -10,6 +11,7 @@ import { itemsListCacheTag } from '@/app/shared/utils/cache-tag.util'
 import { ItemsListModule } from '@/app/modules/items-list'
 import { type IItemsListParams } from '@/app/entities/models/item.model'
 import { EVariant } from '@/app/shared/interfaces/experiment.interface'
+import { AB_VARIANT_COOKIE } from '@/app/shared/constants/experiment.constant'
 
 async function ItemsListShell({
   page,
@@ -36,11 +38,13 @@ async function ItemsListResolver({
   searchParams,
   locale,
 }: Readonly<{ searchParams: Promise<Record<string, string | undefined>>; locale: Locale }>) {
-  const params = await searchParams
+  const [params, cookieStore] = await Promise.all([searchParams, cookies()])
   const page = Number(params.page) || 1
   const search = params.search ?? ''
   const team = params.team ?? ''
-  const variant = params.variant === EVariant.VARIANT_B ? EVariant.VARIANT_B : EVariant.CONTROL
+  // bucketing is resolved in the proxy and handed over as a cookie
+  const variant =
+    cookieStore.get(AB_VARIANT_COOKIE)?.value === EVariant.VARIANT_B ? EVariant.VARIANT_B : EVariant.CONTROL
 
   return <ItemsListShell page={page} search={search} team={team} locale={locale} variant={variant} />
 }

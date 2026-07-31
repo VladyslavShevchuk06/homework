@@ -7,8 +7,8 @@ import { EVariant } from '@/app/shared/interfaces/experiment.interface'
 import {
   AB_ID_COOKIE,
   AB_ID_MAX_AGE,
+  AB_VARIANT_COOKIE,
   EXPERIMENT_PATHS,
-  VARIANT_PARAM,
 } from '@/app/shared/constants/experiment.constant'
 
 const handleI18nRouting = createMiddleware(routing)
@@ -66,25 +66,23 @@ export async function proxy(request: NextRequest) {
   const isOn = await isFeatureOn(experimentKey, { id: abId })
   const variant = isOn ? EVariant.VARIANT_B : EVariant.CONTROL
 
-  // inject the variant so next-intl carries it onto its internal rewrite — the browser url stays clean
-  request.nextUrl.searchParams.set(VARIANT_PARAM, variant)
+  // hand the variant to the page as a cookie — a search param would make the rewritten url diverge
+  // from the requested one, which stops client-side navigations from applying the new payload
+  request.cookies.set(AB_VARIANT_COOKIE, variant)
   const response = handleI18nRouting(request)
 
-  // prefixed-locale paths (e.g. /uk/items) resolve as a passthrough that would drop the injected param;
-  // upgrade that passthrough to a rewrite of the same url so the variant reaches the page for every locale
-  if (!response.headers.has('location') && !response.headers.has('x-middleware-rewrite')) {
-    response.headers.set('x-middleware-rewrite', request.nextUrl.toString())
-    response.headers.delete('x-middleware-next')
-  }
+  const cookieOptions = {
+    httpOnly: false,
+    sameSite: 'lax',
+    path: '/',
+    maxAge: AB_ID_MAX_AGE,
+    secure: process.env.NODE_ENV === 'production',
+  } as const
+
+  response.cookies.set(AB_VARIANT_COOKIE, variant, cookieOptions)
 
   if (!existingId) {
-    response.cookies.set(AB_ID_COOKIE, abId, {
-      httpOnly: false,
-      sameSite: 'lax',
-      path: '/',
-      maxAge: AB_ID_MAX_AGE,
-      secure: process.env.NODE_ENV === 'production',
-    })
+    response.cookies.set(AB_ID_COOKIE, abId, cookieOptions)
   }
 
   return response

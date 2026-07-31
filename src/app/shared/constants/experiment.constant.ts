@@ -3,8 +3,8 @@ import { EExperimentKey } from '@/app/shared/interfaces/experiment.interface'
 // bucketing cookie name
 export const AB_ID_COOKIE = 'ab_id'
 
-// internal variant search param
-export const VARIANT_PARAM = 'variant'
+// resolved variant cookie name
+export const AB_VARIANT_COOKIE = 'ab_variant'
 
 // bucketing cookie lifetime — 1 year in seconds
 export const AB_ID_MAX_AGE = 60 * 60 * 24 * 365
