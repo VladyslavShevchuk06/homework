@@ -40,7 +40,15 @@ GOOGLE_CLIENT_ID: z.string().optional(),
 GOOGLE_CLIENT_SECRET: z.string().optional(),
 ```
 
-A provider with unset credentials is simply disabled — the build does not fail. The server config falls back to empty strings (`envServer.GITHUB_CLIENT_ID ?? ''`) so an absent provider stays inert rather than throwing. Required auth vars (`BETTER_AUTH_SECRET`, `BETTER_AUTH_URL`, `DATABASE_URL`) are **not** optional.
+A provider with unset credentials is simply disabled — the build does not fail. `src/lib/social-providers.ts` builds the map by **conditional spread**, including a provider only when both its id and secret are present:
+
+```ts
+...(envServer.GITHUB_CLIENT_ID && envServer.GITHUB_CLIENT_SECRET
+  ? { github: { clientId: envServer.GITHUB_CLIENT_ID, clientSecret: envServer.GITHUB_CLIENT_SECRET } }
+  : {}),
+```
+
+So an unconfigured provider is *absent* from the config rather than present with empty strings. The same file exports `enabledSocialProviders` (the map's keys) so the UI renders only buttons that can work, and it starts with `import 'server-only'`. Required auth vars (`BETTER_AUTH_SECRET`, `BETTER_AUTH_URL`, `DATABASE_URL`) are **not** optional.
 
 ## Sessions on the server
 

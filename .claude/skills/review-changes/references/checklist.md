@@ -6,8 +6,11 @@ Run only the groups whose trigger paths appear in the diff. Read the whole chang
 
 ## A. Touched `src/app/entities/api/**`
 
-- Each `queryKey` starts with an `EEntityKey.*` member from `shared/interfaces/entities.interface.ts`.
-  Check: `grep -RnE "queryKey" src/app/entities/api` — every key array begins with `EEntityKey.`.
+- Each `queryKey` starts with a member of that entity's OWN `E<Entity>Key` enum, declared in
+  `entities/models/<entity>.model.ts`. There is no project-wide key enum; a new member must NOT be
+  added to the legacy `EEntityKey` in `shared/interfaces/`.
+  Check: `grep -RnE "queryKey" src/app/entities/api` — every key array begins with an `E…Key.`
+  member; `grep -rn "EEntityKey" <changed files>` returns nothing new.
 - `'use client'` is on `*.mutation.ts` only; `*.api.ts` / `*.query.ts` stay server-composable.
   Check: `grep -Rl "use client" src/app/entities/api` lists only `*.mutation.ts` files.
 - Optimistic mutation lifecycle: `onMutate` snapshots + cancels, `onError` restores, `onSettled` **always** `invalidateQueries`.
@@ -18,6 +21,11 @@ Run only the groups whose trigger paths appear in the diff. Read the whole chang
   Check: `grep -RlE "queryOptions|useMutation|useQuery" src/app/{modules,widgets,features}` returns nothing.
 - The barrel exports only consumer-facing hooks/option factories, not internal fetchers.
   Check: changed `<api>/index.ts` does not re-export `*Api` fetchers.
+- The two barrels stay separated by runtime: `index.ts` is client-safe, `index.server.ts` publishes
+  the `'server-only'` service surface. No component imports `index.server`, and no route handler or
+  server page reaches a member file directly.
+  Check: `grep -rn "index.server" src/app/{modules,widgets,features,shared}` returns nothing;
+  every `*.service.ts` under `entities/api` starts with `import 'server-only'`.
 
 ## B. Touched `src/db/schema.ts`
 

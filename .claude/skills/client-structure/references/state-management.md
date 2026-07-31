@@ -4,17 +4,36 @@ Server state lives entirely in the `entities/api/<api>/` slice: `<api>.api.ts` (
 
 ## Query keys
 
-Every cache key is sourced from a single `EEntityKey` enum in `shared/interfaces/entities.interface.ts` — the single source of truth for query keys across all entity slices:
+**Each entity owns its own keys.** The enum lives in that entity's model —
+`entities/models/<entity>.model.ts` — beside the `E<Entity>Api` endpoint enum for the same entity:
 
 ```ts
-export enum EEntityKey {
-  ITEMS_LIST = 'items-list',
-  ITEM_DETAIL = 'item-detail',
-  FAVORITES_LIST = 'favorites-list',
+// endpoints
+export enum EItemsApi {
+  LIST = '/api/items',
+  BY_SLUG = '/api/items/:slug',
+}
+
+// TanStack query keys — this entity owns its own, there is no project-wide enum
+export enum EItemsKey {
+  LIST = 'items-list',
+  DETAIL = 'item-detail',
 }
 ```
 
-Query keys are arrays whose first element is an `EEntityKey` value, followed by the parameters that vary the result (`[EEntityKey.ITEMS_LIST, page, search, team]`). Mutations read and invalidate against the same enum values, so list and detail caches stay addressable from one place.
+There is deliberately **no single project-wide key enum**. One enum for every entity is a hub: it
+forces every slice that needs one key to depend on the module that declares all of them, so an
+unrelated entity's change invalidates the import graph of every consumer, and the enum grows into
+the place nobody can safely delete from. Keys are owned where the entity is owned.
+
+Query keys stay arrays whose first element is the enum value, followed by the parameters that vary
+the result (`[EItemsKey.LIST, page, search, team, locale]`). Wrap that in a small exported factory
+next to the query (`itemsListQueryKey(params)`) so a mutation invalidating the same cache cannot
+drift from the query that fills it.
+
+> **Current state.** The codebase still routes every key through one `EEntityKey` in
+> `shared/interfaces/` — decentralising it is a pending refactor. New code adds `E<Entity>Key` to
+> the entity model; do not extend `EEntityKey` with new members.
 
 ## Pagination
 
@@ -22,7 +41,7 @@ List queries keep the previous page on screen while the next one loads, using th
 
 ```ts
 return queryOptions({
-  queryKey: [EEntityKey.ITEMS_LIST, page, search, team],
+  queryKey: [EItemsKey.LIST, page, search, team],
   queryFn: () => itemsListApi({ page, search, team }),
   // v5 standard: keep showing the previous page's data while the next one loads
   placeholderData: keepPreviousData,
@@ -66,6 +85,19 @@ queryClient.setQueriesData<IItemsListResponse>({ queryKey: itemsKey }, (old) =>
 ```
 
 `setQueriesData` (plural) updates every cache entry under a key prefix at once — necessary because list caches are keyed by page/search/team and there may be several live at any time. The subsequent `onSettled` invalidation is what ultimately reconciles these optimistic deltas with the database.
+
+## The other write path — a server action with cache tags
+
+TanStack is not the only mutation mechanism. A slice may also carry `<api>.action.ts` (`'use server'`),
+which reads the session from `await headers()`, validates its input, writes, and then invalidates
+**Next.js** cache tags with `updateTag(...)` — not the TanStack cache. The tags come from builders in
+`shared/utils/cache-tag.util.ts` and are attached by pages using the `'use cache'` directive with
+`cacheTag(...)` / `cacheLife(...)`.
+
+Consequence: a mutation that affects a cached RSC surface needs **both** invalidations — the
+TanStack `onSettled` invalidate for the client cache, and `updateTag` for the cache-components
+cache. Doing only one leaves the two views disagreeing until something else refreshes. When adding a
+mutation, check whether any page caches the affected surface by tag, and invalidate that tag too.
 
 ## Boundaries
 

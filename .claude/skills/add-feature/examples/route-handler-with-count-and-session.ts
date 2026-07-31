@@ -1,7 +1,8 @@
 // Connective snippet: an (api)/api/<route>/route.ts that combines the two idioms
 // this skill cares about — db.$count(...) aggregates and a getSession() guard.
-// For handler placement/dependency rules see the client-structure skill's
-// references/data-layer.md and references/auth.md. Replace every <entity>.
+// For handler placement/dependency rules open the client-structure skill and let its
+// SKILL.md route you (its "Server side" section owns the handler contract).
+// Replace every <entity>.
 
 import { NextResponse, type NextRequest } from 'next/server'
 import { eq, desc, getTableColumns } from 'drizzle-orm'

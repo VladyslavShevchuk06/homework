@@ -18,14 +18,31 @@ The canonical structural invariants live in `.claude/skills/client-structure/spe
 1. **Get the diff.** `git diff` (unstaged), `git diff --staged`, or `git diff <base>...HEAD` for a branch/PR. Read the changed files, not just the hunks — a rule can be violated by a line that wasn't touched (e.g. an `onMutate` added without an `onSettled`).
 2. **Scope by what changed** using the table below — only run the check-groups whose trigger paths appear in the diff.
 3. **Run the checks.** For each selected group, apply the matching block in `references/checklist.md` (project rules, diff-aware) and `spec/review.spec.md` (net-new diff MUSTs). Use the `Check:` grep hints.
-4. **Run the build gate.** `yarn format` (type-check → lint --fix → prettier) must pass before declaring done. Package manager is **yarn**, never npm.
-5. **Report** violations as `file:line → rule → fix`, citing the source-of-truth rule.
+4. **Run the two structural checkers.** They catch the rules no type-checker, linter or bundler
+   sees — import direction and barrel discipline — which is exactly why those regress silently, and
+   they resolve alias and relative specifiers to absolute paths so a grep for one import spelling
+   cannot miss the other:
+
+   ```bash
+   node .claude/skills/client-structure/scripts/check-layer-imports.mjs --root src/app --alias @/=src/
+   node .claude/skills/client-structure/scripts/check-barrels.mjs --root src --alias @/=src/ --ignore index.server
+   ```
+
+   `--ignore index.server` is required, not cosmetic: entering an entity slice through its
+   server-only barrel is the documented runtime split, but the checker reads it as a bypass of
+   `index.ts`. Without the flag those five legitimate imports are reported as violations and the real
+   signal drowns.
+
+   Use these instead of hand-grepping for those two rules. A change may only shrink the reported
+   counts, never grow them.
+5. **Run the build gate.** `yarn format` (type-check → lint --fix → prettier) must pass before declaring done. Package manager is **yarn**, never npm.
+6. **Report** violations as `file:line → rule → fix`, citing the source-of-truth rule.
 
 ## What changed → which checks to run
 
 | Touched in the diff | Run these check-groups |
 |---|---|
-| `src/app/entities/api/**` (`*.api.ts` / `*.query.ts` / `*.mutation.ts`) | query-key from `EEntityKey`; `'use client'` on `*.mutation.ts` only; optimistic `onMutate` ⇒ `onSettled` invalidate; no `useQuery`/`useMutation`/`queryOptions` outside this folder |
+| `src/app/entities/api/**` (`*.api.ts` / `*.query.ts` / `*.mutation.ts` / `*.service.ts`) | query key from the entity's own `E<Entity>Key` (never a new member on the legacy `EEntityKey`); `'use client'` on `*.mutation.ts` only; `import 'server-only'` on `*.service.ts`; the `index.ts` / `index.server.ts` runtime split respected; optimistic `onMutate` ⇒ `onSettled` invalidate; no `useQuery`/`useMutation`/`queryOptions` outside this folder |
 | `src/db/schema.ts` | a migration was generated (`yarn db:generate` → new file in `drizzle/`); `src/db/seed.ts` still matches the schema; counts use `db.$count` |
 | any `(api)` route handler (`route.ts`) | data via Drizzle (`db` from `@/db`), never `@supabase/supabase-js`; user-scoped handlers call `auth.api.getSession({ headers })`; env via `config/env/` |
 | `src/proxy.ts` | a new private/guest path is in BOTH the gating logic AND `config.matcher`; all page gating stays in this one file; `process.env.NODE_ENV` is the only `process.env` allowed here |
@@ -40,7 +57,7 @@ After scoping a diff, confirm the change against:
 2. **`spec/review.spec.md`** — the net-new diff-aware MUSTs (optimistic⇒invalidate, new private route in `proxy` matcher, new env var declared + consumed).
 3. **`client-structure/spec/invariants.spec.md` + the matching `per-action` block** — the canonical structural law, for any new slice/segment.
 
-Then run `yarn format` and confirm it passes.
+Then run both `client-structure/scripts/` checkers and `yarn format`, and confirm all three pass.
 
 ## Common mistakes
 
