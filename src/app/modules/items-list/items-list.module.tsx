@@ -4,8 +4,8 @@ import { type FC } from 'react'
 import { useTranslations } from 'next-intl'
 import { useExperimentExposure } from '@/pkg/growthbook'
 import { ItemsListContent } from './elements/items-list-content'
-import { type IItemsListParams } from '@/app/entities/models'
-import { EExperimentKey, type EVariant } from '@/app/shared/interfaces'
+import { type IItemsListParams } from '@/app/entities/models/item.model'
+import { EExperimentKey, type EVariant } from '@/app/shared/interfaces/experiment.interface'
 
 // module
 const ItemsListModule: FC<Readonly<Required<IItemsListParams> & { variant: EVariant }>> = (props) => {

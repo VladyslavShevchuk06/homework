@@ -2,7 +2,7 @@ import 'server-only'
 import { queryOptions } from '@tanstack/react-query'
 import { getItemsList } from './items.service'
 import { itemsListQueryKey } from './items.query'
-import { IItemsListParams } from '@/app/entities/models'
+import { IItemsListParams } from '@/app/entities/models/item.model'
 
 // items list server query options
 export function itemsListServerQueryOptions({

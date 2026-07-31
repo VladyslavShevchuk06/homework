@@ -7,7 +7,9 @@ import { favoritesListQueryOptions, useToggleFavoriteMutation } from '@/app/enti
 import { IFavoriteToggleContextValue, IFavoriteToggleProviderProps } from './favorite-toggle.interface'
 import { authClient } from '@/pkg/auth'
 
-const emptySubscribe = () => () => {}
+const emptySubscribe = () => {
+  return () => {}
+}
 
 export const FavoriteToggleContext = createContext<IFavoriteToggleContextValue | null>(null)
 

@@ -7,8 +7,8 @@ import { useQuery } from '@tanstack/react-query'
 import { itemsListQueryOptions } from '@/app/entities/api/items'
 import { Button } from '@/app/shared/components/ui'
 import { SearchForm } from '@/app/features/search-form'
-import { type IItemsListParams } from '@/app/entities/models'
-import { EVariant } from '@/app/shared/interfaces'
+import { type IItemsListParams } from '@/app/entities/models/item.model'
+import { EVariant } from '@/app/shared/interfaces/experiment.interface'
 import { ItemCard } from '../item-card'
 
 // denser grid for the variant-b layout experiment

@@ -4,7 +4,9 @@ import { type FC, useSyncExternalStore } from 'react'
 import { useTheme } from 'next-themes'
 import { Button } from './button'
 
-const emptySubscribe = () => () => {}
+const emptySubscribe = () => {
+  return () => {}
+}
 
 // component
 export const ThemeToggle: FC = () => {

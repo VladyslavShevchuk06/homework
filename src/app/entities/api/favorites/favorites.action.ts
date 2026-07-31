@@ -4,8 +4,8 @@ import { headers } from 'next/headers'
 import { updateTag } from 'next/cache'
 import { z } from 'zod'
 import { auth } from '@/lib/auth'
-import { type IActionResult } from '@/app/shared/interfaces'
-import { itemDetailCacheTag, itemsListCacheTag } from '@/app/shared/utils'
+import { type IActionResult } from '@/app/shared/interfaces/action.interface'
+import { itemDetailCacheTag, itemsListCacheTag } from '@/app/shared/utils/cache-tag.util'
 import { addFavorite, removeFavorite } from './favorites.service'
 
 const itemIdSchema = z.string().uuid()

@@ -5,7 +5,7 @@ import Image from 'next/image'
 import { useTranslations } from 'next-intl'
 import { Link } from '@/pkg/locale'
 import { Card, CardContent, CountBadge } from '@/app/shared/components/ui'
-import { IItem } from '@/app/entities/models'
+import { IItem } from '@/app/entities/models/item.model'
 
 // interface
 interface IItemCardProps {

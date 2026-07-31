@@ -1,4 +1,4 @@
-import { EExperimentKey } from '@/app/shared/interfaces'
+import { EExperimentKey } from '@/app/shared/interfaces/experiment.interface'
 
 // bucketing cookie name
 export const AB_ID_COOKIE = 'ab_id'

@@ -3,8 +3,13 @@ import createMiddleware from 'next-intl/middleware'
 import { routing } from '@/pkg/locale'
 import { auth } from '@/lib/auth'
 import { isFeatureOn } from '@/pkg/growthbook/growthbook.pkg'
-import { EVariant } from '@/app/shared/interfaces'
-import { AB_ID_COOKIE, AB_ID_MAX_AGE, EXPERIMENT_PATHS, VARIANT_PARAM } from '@/app/shared/constants'
+import { EVariant } from '@/app/shared/interfaces/experiment.interface'
+import {
+  AB_ID_COOKIE,
+  AB_ID_MAX_AGE,
+  EXPERIMENT_PATHS,
+  VARIANT_PARAM,
+} from '@/app/shared/constants/experiment.constant'
 
 const handleI18nRouting = createMiddleware(routing)
 

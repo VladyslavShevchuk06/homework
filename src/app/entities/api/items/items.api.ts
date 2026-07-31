@@ -1,4 +1,4 @@
-import { IItemsListParams, IItemsListResponse } from '@/app/entities/models'
+import { EItemApi, IItemsListParams, IItemsListResponse } from '@/app/entities/models/item.model'
 
 // items list fetch
 export async function itemsListApi({
@@ -11,7 +11,7 @@ export async function itemsListApi({
   if (search) params.set('search', search)
   if (team && team !== 'all') params.set('team', team)
 
-  const response = await fetch(`/api/items?${params.toString()}`, {
+  const response = await fetch(`${EItemApi.LIST}?${params.toString()}`, {
     method: 'GET',
     headers: { 'Content-Type': 'application/json' },
     cache: 'no-store',

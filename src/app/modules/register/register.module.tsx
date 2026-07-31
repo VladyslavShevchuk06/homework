@@ -6,10 +6,11 @@ import { Link, useRouter } from '@/pkg/locale'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useQueryClient } from '@tanstack/react-query'
-import { buildRegisterSchema, TRegisterInput } from '@/app/shared/validation'
+import { buildRegisterSchema, TRegisterInput } from '@/app/shared/validation/validation'
 import { authClient } from '@/pkg/auth'
 import { Button, Card, CardContent, CardHeader, CardTitle, Input, Label } from '@/app/shared/components/ui'
-import { EEntityKey, type TSocialProvider } from '@/app/shared/interfaces'
+import { type TSocialProvider } from '@/app/shared/interfaces/auth.interface'
+import { EFavoriteKey } from '@/app/entities/models/favorite.model'
 import { SocialAuth } from '@/app/features/social-auth'
 
 // module
@@ -48,7 +49,7 @@ const RegisterModule: FC<Readonly<{ enabledProviders: TSocialProvider[] }>> = (p
         {
           onSuccess: () => {
             // refresh session-scoped state
-            queryClient.invalidateQueries({ queryKey: [EEntityKey.QUERY_FAVORITES_LIST] })
+            queryClient.invalidateQueries({ queryKey: [EFavoriteKey.LIST] })
             router.push('/items')
             router.refresh()
           },

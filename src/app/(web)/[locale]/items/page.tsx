@@ -6,10 +6,10 @@ import { setRequestLocale } from 'next-intl/server'
 import { HydrationBoundary, dehydrate } from '@tanstack/react-query'
 import { getQueryClient } from '@/pkg/query'
 import { itemsListServerQueryOptions } from '@/app/entities/api/items/index.server'
-import { itemsListCacheTag } from '@/app/shared/utils'
+import { itemsListCacheTag } from '@/app/shared/utils/cache-tag.util'
 import { ItemsListModule } from '@/app/modules/items-list'
-import { type IItemsListParams } from '@/app/entities/models'
-import { EVariant } from '@/app/shared/interfaces'
+import { type IItemsListParams } from '@/app/entities/models/item.model'
+import { EVariant } from '@/app/shared/interfaces/experiment.interface'
 
 async function ItemsListShell({
   page,

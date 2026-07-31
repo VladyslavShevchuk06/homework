@@ -33,7 +33,9 @@ export const Nav: FC<Readonly<INavProps>> = (props) => {
     ...(user ? [{ href: '/favorites', label: t('favorites') }] : []),
   ]
 
-  const isActive = (href: string) => pathname === href || pathname.startsWith(`${href}/`)
+  const isActive = (href: string) => {
+    return pathname === href || pathname.startsWith(`${href}/`)
+  }
 
   const handleLogout = async () => {
     await authClient.signOut()
