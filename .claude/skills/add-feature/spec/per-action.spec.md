@@ -19,18 +19,20 @@ Self-contained checks for the one action this skill performs. Each item is a `MU
 
 ### Types + query key
 
-- MUST add `src/app/entities/models/<entity>.model.ts` (types only) and re-export it from the models barrel.
-  - Check: file exists; `grep -n "<Entity>" src/app/entities/models/index.ts`.
-- MUST add a new `EEntityKey.*` member per view; MUST NOT inline a raw string cache key anywhere.
-  - Check: `grep -n "<ENTITY>" src/app/shared/interfaces/entities.interface.ts`; `grep -rn "queryKey: \['" src/app/entities/api/<api>` returns nothing (keys come from `EEntityKey`).
+- MUST add `src/app/entities/models/<entity>.model.ts` (types + this entity's enums). MUST NOT add a barrel to `models/` — it groups independent entities, so consumers import the model by path.
+  - Check: file exists; `ls src/app/entities/models/index.ts` does not exist (or, until the pending cleanup, was not extended for this entity).
+- MUST declare `E<Entity>Api` (endpoints) and `E<Entity>Key` (one member per view) in that model file. MUST NOT add a member to the legacy project-wide `EEntityKey`, and MUST NOT inline a raw string cache key anywhere.
+  - Check: `grep -n "E<Entity>Key\|E<Entity>Api" src/app/entities/models/<entity>.model.ts`; `grep -rn "queryKey: \['" src/app/entities/api/<api>` returns nothing; `git diff src/app/shared/interfaces/` shows no new enum member.
 
 ### Api slice
 
 - MUST create `src/app/entities/api/<api>/` with `<api>.api.ts`, `<api>.query.ts`, `<api>.mutation.ts`, `index.ts`.
   - Check: `ls src/app/entities/api/<api>/`.
-- `<api>.query.ts` MUST key off `EEntityKey` and MUST use `placeholderData: keepPreviousData` for paginated lists. MUST NOT declare `'use client'`.
-  - Check: `grep -n "EEntityKey" src/app/entities/api/<api>/<api>.query.ts`; `grep -n "keepPreviousData"` present; `grep -n "use client"` absent.
-- `<api>.mutation.ts` MUST declare `'use client'` and MUST invalidate the affected `EEntityKey` list(s) in `onSettled`.
+- `<api>.query.ts` MUST key off `E<Entity>Key` and MUST use `placeholderData: keepPreviousData` for paginated lists. MUST NOT declare `'use client'`.
+  - Check: `grep -n "E<Entity>Key" src/app/entities/api/<api>/<api>.query.ts`; `grep -n "keepPreviousData"` present; `grep -n "use client"` absent.
+- When the server also reads this data, `<api>.service.ts` MUST start with `import 'server-only'` and MUST be published through `index.server.ts`, not the client barrel.
+  - Check: `head -1 src/app/entities/api/<api>/<api>.service.ts` is `import 'server-only'`; `grep -n "service" src/app/entities/api/<api>/index.ts` returns nothing.
+- `<api>.mutation.ts` MUST declare `'use client'` and MUST invalidate the affected `E<Entity>Key` list(s) in `onSettled`.
   - Check: head of file is `'use client'`; `grep -n "onSettled" + "invalidateQueries"`.
 
 ### Route handler

@@ -5,7 +5,7 @@ import { cacheLife, cacheTag } from 'next/cache'
 import { type Locale } from 'next-intl'
 import { setRequestLocale } from 'next-intl/server'
 import { getItemDetail, getAllItemSlugs } from '@/app/entities/api/items/index.server'
-import { itemDetailCacheTag } from '@/app/shared/utils'
+import { itemDetailCacheTag } from '@/app/shared/utils/cache-tag.util'
 import { routing } from '@/pkg/locale'
 import { ItemDetailModule } from '@/app/modules/item-detail'
 

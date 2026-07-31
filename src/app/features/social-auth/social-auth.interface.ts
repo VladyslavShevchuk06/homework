@@ -1,4 +1,4 @@
-import { type TSocialProvider } from '@/app/shared/interfaces'
+import { type TSocialProvider } from '@/app/shared/interfaces/auth.interface'
 
 export interface ISocialAuthProps {
   enabledProviders: TSocialProvider[]

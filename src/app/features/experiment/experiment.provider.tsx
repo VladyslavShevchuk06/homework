@@ -4,7 +4,7 @@ import { type ReactNode, useEffect, useMemo } from 'react'
 import { createBrowserGrowthBook, GrowthBookProvider } from '@/pkg/growthbook'
 import { mixpanelClient } from '@/pkg/mixpanel'
 import { authClient } from '@/pkg/auth'
-import { useAbId } from '@/app/shared/hooks'
+import { useAbId } from '@/app/shared/hooks/use-ab-id.hook'
 
 // interface
 interface IProps {

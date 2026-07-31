@@ -1,6 +1,6 @@
 import 'server-only'
 import { envServer } from '@/config/env'
-import { type TSocialProvider } from '@/app/shared/interfaces'
+import { type TSocialProvider } from '@/app/shared/interfaces/auth.interface'
 
 export const socialProviderConfig = {
   ...(envServer.GITHUB_CLIENT_ID && envServer.GITHUB_CLIENT_SECRET

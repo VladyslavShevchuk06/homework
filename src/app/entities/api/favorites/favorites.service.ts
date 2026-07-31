@@ -4,7 +4,7 @@ import { type Locale } from 'next-intl'
 import { db } from '@/db'
 import { favorites, items } from '@/db/schema'
 import { favoritesCount } from '@/db/favorites-count'
-import { IFavoriteWithItem } from '@/app/entities/models'
+import { IFavoriteWithItem } from '@/app/entities/models/favorite.model'
 
 // get favorites list
 export async function getFavoritesList(userId: string, locale: Locale = 'en'): Promise<IFavoriteWithItem[]> {

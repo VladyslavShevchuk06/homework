@@ -43,19 +43,22 @@ Add demo rows for the new table so `yarn seed` produces a usable dataset.
 
 ## Step 4 — Entity model types (`src/app/entities/models/<entity>.model.ts`)
 
-Declare the TypeScript shapes the api slice and UI will consume: `I<Entity>` (the row as the client sees it, including any derived field such as a `favoritesCount`), plus `I<Entity>ListParams` / `I<Entity>ListResponse` / request-body interfaces as needed. Re-export from the models barrel. Types only — no runtime code. Shape and placement: `client-structure/examples/app/entities/models/` and `references/structure.md`.
+Declare the TypeScript shapes the api slice and UI will consume: `I<Entity>` (the row as the client sees it, including any derived field such as a `favoritesCount`), plus `I<Entity>ListParams` / `I<Entity>ListResponse` / request-body interfaces as needed. **No barrel** — `models/` groups independent entities, so consumers import `@/app/entities/models/<entity>.model` by path. Types and enums only — no runtime code. Shape and placement: `client-structure/examples/app/entities/models/` and `references/structure.md`.
 
-## Step 5 — Register the query key (`src/app/shared/interfaces/entities.interface.ts`)
+## Step 5 — Declare the entity's endpoints and query keys (in the same model file)
 
-Add a new member (or members) to the `EEntityKey` enum — this enum is the **single source of truth** for TanStack Query cache keys. A list and a detail view typically each get their own key (e.g. `<ENTITY>_LIST`, `<ENTITY>_DETAIL`). Never inline a raw string key elsewhere; the api slice (step 6) and any cross-cache invalidation reference these members.
+The entity owns its own keys: add `E<Entity>Api` (endpoints) and `E<Entity>Key` (TanStack cache keys) to `src/app/entities/models/<entity>.model.ts`, beside the interfaces from step 4. A list and a detail view typically each get their own key (`LIST`, `DETAIL`). Never inline a raw string key elsewhere; the api slice (step 6) and any cross-cache invalidation reference these members.
+
+There is deliberately **no project-wide key enum**: one enum for every entity forces every slice that needs a single key to depend on the declarations of all the others, and it grows into a file nobody can safely delete from. The legacy `EEntityKey` in `src/app/shared/interfaces/` is what this replaces — do **not** add members to it.
 
 ## Step 6 — Entity api slice (`src/app/entities/api/<api>/`)
 
-Three files plus a barrel — full shapes in `client-structure/examples/app/entities/api/__api__/` and `client-structure/references/state-management.md`:
+Three client files plus a barrel, and — when the data is also read on the server — a `'server-only'` service behind a second barrel. Full shapes in `client-structure/examples/app/entities/api/__api__/` and `client-structure/references/state-management.md`:
 
 - **`<api>.api.ts`** — raw `fetch` wrappers hitting `/api/<route>`. No `'use client'` (these run on the server too, for prefetch).
-- **`<api>.query.ts`** — `queryOptions(...)` factories whose `queryKey` starts with the `EEntityKey.*` value from step 5. For paginated lists set `placeholderData: keepPreviousData` so the previous page stays visible while the next loads. No `'use client'`.
-- **`<api>.mutation.ts`** — `'use client'`; `useMutation` hooks. For optimistic updates: `onMutate` cancels in-flight queries and snapshots the cache, `onError` restores the snapshot, `onSettled` invalidates the affected `EEntityKey` lists so the server truth re-syncs.
+- **`<api>.query.ts`** — `queryOptions(...)` factories whose `queryKey` starts with the `E<Entity>Key.*` value from step 5. For paginated lists set `placeholderData: keepPreviousData` so the previous page stays visible while the next loads. No `'use client'`.
+- **`<api>.mutation.ts`** — `'use client'`; `useMutation` hooks. For optimistic updates: `onMutate` cancels in-flight queries and snapshots the cache, `onError` restores the snapshot, `onSettled` invalidates the affected `E<Entity>Key` lists so the server truth re-syncs.
+- **`<api>.service.ts`** — when the data is read server-side (the route handler, a prefetching page), the Drizzle query lives here behind `import 'server-only'`, published through a second barrel `index.server.ts`. Client code enters `index.ts`; server code enters `index.server.ts`.
 
 Because `<api>.api.ts` and `<api>.query.ts` stay server-composable, the page in step 8 can prefetch them.
 
@@ -83,4 +86,4 @@ If the new page is private (auth-only) or guest-only, add its path to the matche
 
 ## Order recap
 
-`schema.ts` → `db:generate` + `db:migrate` → `seed.ts` → `<entity>.model.ts` → `EEntityKey` → `entities/api/<api>/` → `(api)/api/<route>/route.ts` → `modules/<module>/` + `(web)/<route>/page.tsx` → `proxy.ts`. Then `yarn format`.
+`schema.ts` → `db:generate` + `db:migrate` → `seed.ts` → `<entity>.model.ts` (incl. `E<Entity>Api` + `E<Entity>Key`) → `entities/api/<api>/` → `(api)/api/<route>/route.ts` → `modules/<module>/` + `(web)/<route>/page.tsx` → `proxy.ts`. Then `yarn format`.

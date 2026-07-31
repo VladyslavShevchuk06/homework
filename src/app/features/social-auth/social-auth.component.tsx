@@ -3,7 +3,7 @@
 import { type FC, type ReactNode, useState } from 'react'
 import { useLocale, useTranslations } from 'next-intl'
 import { Button } from '@/app/shared/components/ui'
-import { type TSocialProvider } from '@/app/shared/interfaces'
+import { type TSocialProvider } from '@/app/shared/interfaces/auth.interface'
 import { authClient } from '@/pkg/auth'
 import { getPathname } from '@/pkg/locale'
 import { cn } from '@/pkg/theme'

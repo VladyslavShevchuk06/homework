@@ -136,7 +136,7 @@ Add `src/app/(api)/api/<route>/route.ts` only when the client needs a route hand
 
 ## 9. First entity api slice
 
-Scaffold `src/app/entities/api/<api>/{<api>.api.ts, <api>.query.ts, <api>.mutation.ts, index.ts}` and the matching model `src/app/entities/models/<api>.model.ts`. Add the queryKey value to `EEntityKey` in `src/app/shared/interfaces/entities.interface.ts`. Confirm `<api>.api.ts` and `<api>.query.ts` do **not** carry `'use client'`; only `<api>.mutation.ts` does.
+Scaffold `src/app/entities/api/<api>/{<api>.api.ts, <api>.query.ts, <api>.mutation.ts, index.ts}` and the matching model `src/app/entities/models/<api>.model.ts`. Add the queryKey member to that entity's `E<Entity>Key` enum in its model file, beside the `E<Entity>Api` endpoint enum. Confirm `<api>.api.ts` and `<api>.query.ts` do **not** carry `'use client'`; only `<api>.mutation.ts` does.
 
 ## 10. First module
 
@@ -146,7 +146,7 @@ Mount the module from `src/app/(web)/[locale]/page.tsx` (or the relevant nested 
 
 ## 11. `src/proxy.ts`
 
-Single file at `src/` root (Next.js 16 — the rename of `middleware.ts`). Exports a `proxy` function and a `config` matcher. Composes: locale routing (e.g. `next-intl` middleware), session-cookie issuance, header rewrites, private route gates. Reads from `config/env/`, `src/lib/`, and the relevant `pkg/<auth>/` slot. Do not import from modules/widgets/features. Set `config.matcher` to skip Next.js internals and static assets.
+Single file at `src/` root. Composes: locale routing (e.g. `next-intl/middleware`), session-cookie issuance, header rewrites, private route gates. Reads from `config/env/` and the relevant `pkg/<auth>/` slot. Do not import from modules/widgets/features. Set `config.matcher` to skip Next.js internals and static assets.
 
 ## 12. Verify
 
@@ -158,7 +158,7 @@ yarn dev
 
 - `yarn format` chains `type-check → lint → prettier`. All three must pass.
 - `yarn build` must complete without environment-variable errors (the Zod schema in `env.client.ts` runs at build time and will throw if a required var is missing).
-- `yarn dev` (or `bun dev` if Bun is the dev runtime) must boot. Open the root URL, confirm the first module renders, navigate one private route and confirm the `proxy.ts` redirect fires when unauthenticated.
+- `yarn dev` (or `bun dev` if Bun is the dev runtime) must boot. Open the root URL, confirm the first module renders, navigate one private route and confirm the middleware redirect fires when unauthenticated.
 
 ## 13. `.claude/` directory
 

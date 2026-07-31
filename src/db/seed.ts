@@ -1,6 +1,6 @@
 import { db } from './index'
 import { items } from './schema'
-import { slugify } from '@/app/shared/utils'
+import { slugify } from '@/app/shared/utils/slug.util'
 
 const drivers = [
   {

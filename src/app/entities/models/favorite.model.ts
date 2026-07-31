@@ -1,3 +1,13 @@
+// favorite endpoints
+export enum EFavoriteApi {
+  LIST = '/api/favorites',
+}
+
+// favorite query keys — this entity owns its own
+export enum EFavoriteKey {
+  LIST = 'query-favorites-list',
+}
+
 // favorite models
 export interface IFavoriteWithItem {
   id: string

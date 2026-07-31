@@ -4,9 +4,9 @@ import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useLocale, useTranslations } from 'next-intl'
 import { favoritesListQueryKey } from './favorites.query'
 import { toggleFavorite } from './favorites.action'
-import { EEntityKey } from '@/app/shared/interfaces'
 import { toast } from '@/app/shared/components/ui'
-import { IFavoriteWithItem } from '@/app/entities/models'
+import { EFavoriteKey, IFavoriteWithItem } from '@/app/entities/models/favorite.model'
+import { EItemKey } from '@/app/entities/models/item.model'
 
 // interface
 interface IToggleFavoriteVariables {
@@ -64,8 +64,8 @@ export function useToggleFavoriteMutation() {
     },
     onSettled: () => {
       // invalidate every locale's favorites + items lists so both language caches re-sync
-      queryClient.invalidateQueries({ queryKey: [EEntityKey.QUERY_FAVORITES_LIST] })
-      queryClient.invalidateQueries({ queryKey: [EEntityKey.QUERY_ITEMS_LIST] })
+      queryClient.invalidateQueries({ queryKey: [EFavoriteKey.LIST] })
+      queryClient.invalidateQueries({ queryKey: [EItemKey.LIST] })
     },
   })
 }

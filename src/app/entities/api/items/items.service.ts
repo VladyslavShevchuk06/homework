@@ -4,7 +4,7 @@ import { type Locale } from 'next-intl'
 import { db } from '@/db'
 import { items } from '@/db/schema'
 import { favoritesCount } from '@/db/favorites-count'
-import { IItem, IItemsListParams, IItemsListResponse } from '@/app/entities/models'
+import { IItem, IItemsListParams, IItemsListResponse } from '@/app/entities/models/item.model'
 
 const PAGE_SIZE = 11
 
