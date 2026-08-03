@@ -49,7 +49,7 @@ Declare the TypeScript shapes the api slice and UI will consume: `I<Entity>` (th
 
 The entity owns its own keys: add `E<Entity>Api` (endpoints) and `E<Entity>Key` (TanStack cache keys) to `src/app/entities/models/<entity>.model.ts`, beside the interfaces from step 4. A list and a detail view typically each get their own key (`LIST`, `DETAIL`). Never inline a raw string key elsewhere; the api slice (step 6) and any cross-cache invalidation reference these members.
 
-There is deliberately **no project-wide key enum**: one enum for every entity forces every slice that needs a single key to depend on the declarations of all the others, and it grows into a file nobody can safely delete from. The legacy `EEntityKey` in `src/app/shared/interfaces/` is what this replaces — do **not** add members to it.
+There is deliberately **no project-wide key enum**: one enum for every entity forces every slice that needs a single key to depend on the declarations of all the others, and it grows into a file nobody can safely delete from. Do **not** reintroduce one under any name.
 
 ## Step 6 — Entity api slice (`src/app/entities/api/<api>/`)
 

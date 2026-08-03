@@ -42,7 +42,7 @@ The canonical structural invariants live in `.claude/skills/client-structure/spe
 
 | Touched in the diff | Run these check-groups |
 |---|---|
-| `src/app/entities/api/**` (`*.api.ts` / `*.query.ts` / `*.mutation.ts` / `*.service.ts`) | query key from the entity's own `E<Entity>Key` (never a new member on the legacy `EEntityKey`); `'use client'` on `*.mutation.ts` only; `import 'server-only'` on `*.service.ts`; the `index.ts` / `index.server.ts` runtime split respected; optimistic `onMutate` ⇒ `onSettled` invalidate; no `useQuery`/`useMutation`/`queryOptions` outside this folder |
+| `src/app/entities/api/**` (`*.api.ts` / `*.query.ts` / `*.mutation.ts` / `*.service.ts`) | query key from the entity's own `E<Entity>Key` (no project-wide key enum); `'use client'` on `*.mutation.ts` only; `import 'server-only'` on `*.service.ts`; the `index.ts` / `index.server.ts` runtime split respected; optimistic `onMutate` ⇒ `onSettled` invalidate; no `useQuery`/`useMutation`/`queryOptions` outside this folder |
 | `src/db/schema.ts` | a migration was generated (`yarn db:generate` → new file in `drizzle/`); `src/db/seed.ts` still matches the schema; counts use `db.$count` |
 | any `(api)` route handler (`route.ts`) | data via Drizzle (`db` from `@/db`), never `@supabase/supabase-js`; user-scoped handlers call `auth.api.getSession({ headers })`; env via `config/env/` |
 | `src/proxy.ts` | a new private/guest path is in BOTH the gating logic AND `config.matcher`; all page gating stays in this one file; `process.env.NODE_ENV` is the only `process.env` allowed here |

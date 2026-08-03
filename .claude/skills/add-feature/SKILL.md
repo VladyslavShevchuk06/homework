@@ -31,7 +31,7 @@ Build bottom-up (data first) so each layer can import the one below it as it is 
 2. **Migration** — `yarn db:generate` to emit SQL into `drizzle/`, then `yarn db:migrate` (or `yarn db:push` for throwaway local iteration). See recipe for generate vs push vs migrate.
 3. **Seed** — extend `src/db/seed.ts` so the new table has demo rows (respect unique constraints / slug de-duping).
 4. **Types** — add `src/app/entities/models/<entity>.model.ts` (`I<Entity>`, params/response interfaces). No barrel: `models/` is a grouping folder, so consumers import the model by path.
-5. **Endpoints + query keys** — in that same model file, add `E<Entity>Api` and `E<Entity>Key`. The entity owns its keys; do **not** add members to the legacy `EEntityKey` in `shared/interfaces/`.
+5. **Endpoints + query keys** — in that same model file, add `E<Entity>Api` and `E<Entity>Key`. The entity owns its keys; there is **no** project-wide key enum to extend.
 6. **Api slice** — add `src/app/entities/api/<api>/` (`<api>.api.ts` raw fetchers, `<api>.query.ts` `queryOptions` keyed off `E<Entity>Key` with `keepPreviousData` for lists, `<api>.mutation.ts` `'use client'` optimistic + `onSettled` invalidate, and — if the server reads it too — `<api>.service.ts` behind `import 'server-only'` published via `index.server.ts`). Shapes live in `client-structure/examples`.
 7. **Route handler** — add `src/app/(api)/api/<route>/route.ts` querying via Drizzle, `db.$count(...)` for aggregates, and `auth.api.getSession({ headers })` guarding user-scoped verbs.
 8. **UI** — add `src/app/modules/<module>/` and a thin `src/app/(web)/<route>/page.tsx` that `prefetchQuery`s the query options and wraps the module in `<HydrationBoundary>`.
@@ -42,7 +42,7 @@ Build bottom-up (data first) so each layer can import the one below it as it is 
 These are the cross-boundary invariants this skill owns. (Layer/import/barrel/env rules belong to `client-structure`.)
 
 1. **Build data-first.** Schema → migration → seed must land before the api slice; the api slice before the route handler; the route handler before the page that prefetches it.
-2. **Each entity owns its query keys.** Keys live in `E<Entity>Key` in that entity's `entities/models/<entity>.model.ts`, referenced from both `<api>.query.ts` and any mutation that invalidates them. Never inline a string cache key, and never extend the legacy project-wide `EEntityKey`.
+2. **Each entity owns its query keys.** Keys live in `E<Entity>Key` in that entity's `entities/models/<entity>.model.ts`, referenced from both `<api>.query.ts` and any mutation that invalidates them. Never inline a string cache key, and never introduce a project-wide key enum.
 3. **Migration is generated, never hand-edited.** `drizzle/*` is a derived artifact from `yarn db:generate`; change `schema.ts` and regenerate.
 4. **User-scoped reads/writes call `auth.api.getSession({ headers })` in the handler.** Page-level gating additionally goes in `proxy.ts`; never rely on the proxy alone for API auth.
 5. **Aggregate counts use `db.$count(...)`** (correlated sub-select), never a `.length` over a fetched list.

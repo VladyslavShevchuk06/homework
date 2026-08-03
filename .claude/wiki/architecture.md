@@ -81,6 +81,7 @@ puzzling details:
 
 `src/proxy.ts` (Next 16's name for `middleware.ts`) is the only gating file and does three jobs in
 order: session-based redirects for `/favorites` (auth-only) and `/login`/`/register` (guest-only);
-A/B bucketing that assigns a cookie and injects a variant param; then `next-intl` routing. Its
+A/B bucketing that keeps a sticky `ab_id` cookie, resolves the variant through GrowthBook and hands
+it to the page as an `ab_variant` cookie; then `next-intl` routing. Its
 matcher excludes `api`, `_next`, `_vercel` and any path with a dot, so `/api/*` never reaches it —
 which is why each handler enforces its own session check. Detail: [[auth]].

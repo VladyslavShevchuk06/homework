@@ -20,9 +20,9 @@ Self-contained checks for the one action this skill performs. Each item is a `MU
 ### Types + query key
 
 - MUST add `src/app/entities/models/<entity>.model.ts` (types + this entity's enums). MUST NOT add a barrel to `models/` — it groups independent entities, so consumers import the model by path.
-  - Check: file exists; `ls src/app/entities/models/index.ts` does not exist (or, until the pending cleanup, was not extended for this entity).
-- MUST declare `E<Entity>Api` (endpoints) and `E<Entity>Key` (one member per view) in that model file. MUST NOT add a member to the legacy project-wide `EEntityKey`, and MUST NOT inline a raw string cache key anywhere.
-  - Check: `grep -n "E<Entity>Key\|E<Entity>Api" src/app/entities/models/<entity>.model.ts`; `grep -rn "queryKey: \['" src/app/entities/api/<api>` returns nothing; `git diff src/app/shared/interfaces/` shows no new enum member.
+  - Check: file exists; `ls src/app/entities/models/index.ts` does not exist.
+- MUST declare `E<Entity>Api` (endpoints) and `E<Entity>Key` (one member per view) in that model file. MUST NOT declare either enum outside it, and MUST NOT inline a raw string cache key anywhere.
+  - Check: `grep -n "E<Entity>Key\|E<Entity>Api" src/app/entities/models/<entity>.model.ts`; `grep -rn "queryKey: \['" src/app/entities/api/<api>` returns nothing.
 
 ### Api slice
 
