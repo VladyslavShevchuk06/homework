@@ -139,7 +139,7 @@ here rather than in the wiki because they must be in front of you before you wri
 - Use `db.$count(...)` for aggregate counts (avoids N+1); never count in application code over a fetched list.
 - OAuth provider secrets are **optional** Zod env vars — an unset provider is simply disabled, not a build error.
 - Route gating lives in one file, `src/proxy.ts` (Next 16's name for `middleware.ts`) — page protection there, API auth enforced in each handler.
-- Query keys belong to the entity that owns them (`E<Entity>Key` in `entities/models/<entity>.model.ts`). Do not extend the legacy project-wide `EEntityKey`.
+- Query keys belong to the entity that owns them (`E<Entity>Key` in `entities/models/<entity>.model.ts`) — there is no project-wide key enum.
 - Package manager is **yarn**, never npm.
 
 ---

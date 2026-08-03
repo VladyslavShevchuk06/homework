@@ -98,6 +98,9 @@ const t = await getTranslations({ locale, namespace: 'Metadata' })
 3. Nothing else — the `[locale]` layout's provider already carries every namespace (hard rule 6).
    Do **not** add another `NextIntlClientProvider`; a nested one would need its own messages and
    is how "the context was not found" / raw-key bugs get introduced.
+4. That holds only for components mounted **under** `[locale]`. The root-level boundaries
+   (`src/app/global-error.tsx`, `src/app/not-found.tsx`) replace the root layout, so no provider is
+   above them — see the *Common mistakes* row on root-level boundaries.
 
 ### Add a localized route
 
@@ -141,7 +144,9 @@ MUST hold before calling the work done:
       `MISSING_MESSAGE` in the console.
 - [ ] Switching locale keeps exactly one locale segment in the URL and the switcher shows the
       current locale.
-- [ ] No new `NextIntlClientProvider` was introduced below the `[locale]` layout.
+- [ ] No new `NextIntlClientProvider` was introduced below the `[locale]` layout. The root-level
+      boundaries (`src/app/global-error.tsx`, `src/app/not-found.tsx`) sit ABOVE it and are the one
+      documented exception — if one was touched, it still renders with no `[locale]` provider around it.
 - [ ] `next-intl/routing|navigation|middleware` is still imported only inside `src/pkg/locale/`
       and `src/proxy.ts`:
       `grep -rn "next-intl/\(routing\|navigation\|middleware\)" src | grep -v "src/pkg/locale\|src/proxy.ts"` → empty.
@@ -153,6 +158,7 @@ MUST hold before calling the work done:
 |---|---|
 | Setting the root provider to `messages={null}` and picking per subtree | That is a bundle-size pattern for constrained runtimes. Here it breaks static prerendering of client translations under `cacheComponents: true`. |
 | Adding a nested `NextIntlClientProvider` "to be safe" | The layout already provides every namespace. A nested provider with partial messages is how raw keys and "context not found" appear. |
+| Mounting a translated component in `src/app/global-error.tsx` or `src/app/not-found.tsx` | Those boundaries **replace** the root layout, so the `[locale]` provider is not above them and `useTranslations` throws — the boundary meant to catch a crash crashes itself (in a production build the message is empty, which makes it worse to diagnose). Either keep the component provider-free (the `NotFoundModule` pattern: default strings as props) or wrap it in `NextIntlClientProvider locale="en"` with the full `en` catalog, as `global-error.tsx` does. |
 | Adding a key only to `en.json` | Renders `MISSING_MESSAGE` on `/uk` — there is no English fallback merge in this setup. |
 | Adding a key only to `uk.json` | Invisible to the type system: `Messages` is typed off `en.json`, so `t('key')` fails type-check. |
 | `import Link from 'next/link'` for an internal route | Drops the locale prefix. Use `Link` from `@/pkg/locale`. |

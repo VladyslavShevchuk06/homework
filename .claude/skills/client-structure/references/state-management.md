@@ -31,10 +31,6 @@ the result (`[EItemsKey.LIST, page, search, team, locale]`). Wrap that in a smal
 next to the query (`itemsListQueryKey(params)`) so a mutation invalidating the same cache cannot
 drift from the query that fills it.
 
-> **Current state.** The codebase still routes every key through one `EEntityKey` in
-> `shared/interfaces/` — decentralising it is a pending refactor. New code adds `E<Entity>Key` to
-> the entity model; do not extend `EEntityKey` with new members.
-
 ## Pagination
 
 List queries keep the previous page on screen while the next one loads, using the v5 standard:

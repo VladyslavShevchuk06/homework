@@ -7,10 +7,10 @@ Run only the groups whose trigger paths appear in the diff. Read the whole chang
 ## A. Touched `src/app/entities/api/**`
 
 - Each `queryKey` starts with a member of that entity's OWN `E<Entity>Key` enum, declared in
-  `entities/models/<entity>.model.ts`. There is no project-wide key enum; a new member must NOT be
-  added to the legacy `EEntityKey` in `shared/interfaces/`.
+  `entities/models/<entity>.model.ts`. There is no project-wide key enum, and a change must not
+  introduce one.
   Check: `grep -RnE "queryKey" src/app/entities/api` — every key array begins with an `E…Key.`
-  member; `grep -rn "EEntityKey" <changed files>` returns nothing new.
+  member imported from `entities/models/`.
 - `'use client'` is on `*.mutation.ts` only; `*.api.ts` / `*.query.ts` stay server-composable.
   Check: `grep -Rl "use client" src/app/entities/api` lists only `*.mutation.ts` files.
 - Optimistic mutation lifecycle: `onMutate` snapshots + cancels, `onError` restores, `onSettled` **always** `invalidateQueries`.

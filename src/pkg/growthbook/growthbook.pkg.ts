@@ -8,17 +8,24 @@ let cachedPayload: FeatureApiResponse = {}
 let fetchedAt = 0
 let inFlight: Promise<void> | null = null
 
-// fetch the feature payload from the growthbook cdn
+// fetch the feature payload from the growthbook cdn — never throws, so an outage
+// serves the previous payload (empty on a cold start, which resolves to control)
 async function refreshPayload() {
   const host = envClient.NEXT_PUBLIC_GROWTHBOOK_API_HOST
   const key = envClient.NEXT_PUBLIC_GROWTHBOOK_CLIENT_KEY
   if (!host || !key) return
 
-  const res = await fetch(`${host}/api/features/${key}`, { cache: 'no-store' })
-  if (!res.ok) return
+  try {
+    const res = await fetch(`${host}/api/features/${key}`, { cache: 'no-store' })
+    if (!res.ok) return
 
-  cachedPayload = (await res.json()) as FeatureApiResponse
-  fetchedAt = Date.now()
+    cachedPayload = (await res.json()) as FeatureApiResponse
+  } catch {
+    // cdn unreachable — keep the cached payload
+  } finally {
+    // mark the attempt either way, so a failing cdn is retried once per ttl instead of every request
+    fetchedAt = Date.now()
+  }
 }
 
 // module-cached payload; only the cold request awaits the network, stale ones refresh in the background

@@ -64,10 +64,17 @@ Redirect targets are rebuilt with `localizedUrl(...)`, which re-adds the prefix 
 locales (`localePrefix: 'as-needed'`). The `getSession` call is wrapped in try/catch and falls back
 to `null`, so an auth outage degrades to "treated as guest" instead of a 500 on every page.
 
-After gating, the same file does A/B bucketing (`AB_ID_COOKIE`, GrowthBook `isFeatureOn`) and
-injects a variant search param, then delegates to `next-intl`'s middleware. The rewrite-upgrade
-trick near the end exists because a prefixed-locale path resolves as a passthrough that would drop
-the injected param.
+After gating, the same file does A/B bucketing (`AB_ID_COOKIE`, GrowthBook `isFeatureOn`) and writes
+the resolved variant to a second cookie (`AB_VARIANT_COOKIE` = `ab_variant`) — on the *request* so
+`next-intl`'s middleware carries it onto its internal rewrite, and on the *response* so the browser
+keeps it. Both cookies share one `cookieOptions` (not `httpOnly`, `sameSite: 'lax'`, one year,
+`secure` in production).
+
+The variant travels as a cookie rather than a search param because a param makes the rewritten URL
+diverge from the requested one, which stops client-side navigations from applying the new payload.
+The reader side is `src/app/(web)/[locale]/items/page.tsx`, which resolves
+`Promise.all([searchParams, cookies()])` and falls back to `EVariant.CONTROL` when the cookie is
+absent.
 
 `/api/auth/[...all]/route.ts` is one line — `export const { GET, POST } = toNextJsHandler(auth)` —
 so every Better Auth endpoint (`sign-up/email`, `sign-in/email`, OAuth callbacks, …) is served

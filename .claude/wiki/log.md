@@ -29,3 +29,26 @@ First ingest of `f1-catalog`, at commit `0409586` on branch `new-structure`. Exp
 - Recorded the e2e baseline in [[testing]]: **18 passed, 1 flaky**
   (`favorites.spec.ts:32 removes a driver from favorites`), so future runs are compared against a
   known state rather than an assumed all-green.
+
+## [2026-08-03] lint | drift against `e9d6b69`
+
+The first ingest ran at `0409586`; two commits landed after it and both invalidated claims written
+here. Reconciled the wiki and the skills in one pass, since the same two facts were stated in both.
+
+- [[auth]] and [[architecture]]: the A/B variant no longer travels as an injected search param, and
+  the `x-middleware-rewrite` upgrade trick is gone (commit `e9d6b69`). The proxy now writes the
+  resolved variant to an `ab_variant` cookie on both the request and the response, and
+  `(web)/[locale]/items/page.tsx` reads it via `Promise.all([searchParams, cookies()])`. Recorded the
+  reason too: a search param makes the rewritten URL diverge from the requested one, which stops
+  client-side navigations from applying the new payload.
+- `.state.json` moved to `e9d6b69`.
+- Outside the wiki, same pass: commit `2c8f17c` deleted the project-wide `EEntityKey`
+  (`shared/interfaces/entities.interface.ts`) in favour of per-entity `E<Entity>Api` / `E<Entity>Key`,
+  but six skill files still described that enum as existing "legacy" code — including a
+  `> **Current state.**` note in `client-structure/references/state-management.md` asserting the
+  refactor was still pending. Removed the existence claims in `CLAUDE.md`, `client-structure`,
+  `add-feature` (SKILL + recipe + spec + example) and `review-changes` (SKILL + checklist); the rule
+  itself is unchanged. `grep -rn "EEntityKey" src` returns nothing, and the only remaining mentions
+  anywhere are this log entry.
+- Lesson for the next run: the wiki and the skills state some of the same facts, so a code change
+  that contradicts one usually contradicts the other. Check both, and check them in the same pass.

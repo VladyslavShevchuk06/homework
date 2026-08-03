@@ -21,9 +21,5 @@ export enum E<Entity>Key {
 //   - <api>.api.ts      → fetch(E<Entity>Api.LIST)
 // Query/mutation file shapes live in client-structure/examples + references/state-management.md.
 //
-// Legacy note: the codebase still has one `EEntityKey` in shared/interfaces/ from the
-// previous convention. Do NOT add members to it — a new entity declares its own enum
-// here, and the old one is being retired slice by slice.
-//
 // models/ is a GROUPING folder (independent entities), so it ships NO barrel:
 // consumers import '@/app/entities/models/<entity>.model' by path.
