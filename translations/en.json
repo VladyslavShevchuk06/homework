@@ -37,6 +37,7 @@
   },
   "ItemDetail": {
     "back": "← Back to drivers",
+    "backToFavorites": "← Back to favorites",
     "team": "Team",
     "number": "Number",
     "nationality": "Nationality",

@@ -7,8 +7,8 @@ import { EVariant } from '@/app/shared/interfaces/experiment.interface'
 import {
   AB_ID_COOKIE,
   AB_ID_MAX_AGE,
-  AB_VARIANT_COOKIE,
-  EXPERIMENT_PATHS,
+  abVariantCookie,
+  resolveExperimentKey,
 } from '@/app/shared/constants/experiment.constant'
 
 const handleI18nRouting = createMiddleware(routing)
@@ -55,7 +55,7 @@ export async function proxy(request: NextRequest) {
   }
 
   // a/b bucketing
-  const experimentKey = EXPERIMENT_PATHS[path]
+  const experimentKey = resolveExperimentKey(path)
 
   if (!experimentKey) {
     return handleI18nRouting(request)
@@ -65,10 +65,11 @@ export async function proxy(request: NextRequest) {
   const abId = existingId ?? crypto.randomUUID()
   const isOn = await isFeatureOn(experimentKey, { id: abId })
   const variant = isOn ? EVariant.VARIANT_B : EVariant.CONTROL
+  const variantCookie = abVariantCookie(experimentKey)
 
   // hand the variant to the page as a cookie — a search param would make the rewritten url diverge
   // from the requested one, which stops client-side navigations from applying the new payload
-  request.cookies.set(AB_VARIANT_COOKIE, variant)
+  request.cookies.set(variantCookie, variant)
   const response = handleI18nRouting(request)
 
   const cookieOptions = {
@@ -79,7 +80,7 @@ export async function proxy(request: NextRequest) {
     secure: process.env.NODE_ENV === 'production',
   } as const
 
-  response.cookies.set(AB_VARIANT_COOKIE, variant, cookieOptions)
+  response.cookies.set(variantCookie, variant, cookieOptions)
 
   if (!existingId) {
     response.cookies.set(AB_ID_COOKIE, abId, cookieOptions)

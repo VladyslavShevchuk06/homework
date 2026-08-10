@@ -2,11 +2,10 @@
 
 import { type FC } from 'react'
 import Image from 'next/image'
-import Link from 'next/link'
 import { useTranslations } from 'next-intl'
-import { routing } from '@/pkg/locale'
 import { Card, CardContent, CardHeader, CardTitle } from '@/app/shared/components/ui'
 import { FavoriteToggle, FavoriteToggleProvider, FavoriteCountLive } from '@/app/features/favorite-toggle'
+import { BackNav } from './elements/back-nav'
 import { IItemDetailModuleProps } from './item-detail.interface'
 
 // module
@@ -15,34 +14,31 @@ const ItemDetailModule: FC<Readonly<IItemDetailModuleProps>> = (props) => {
   const t = useTranslations('ItemDetail')
   const { team, number, country } = item
 
-  const backHref = locale === routing.defaultLocale ? '/items' : `/${locale}/items`
-
   return (
-    <div className="space-y-6">
-      <Link href={backHref} className="text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300">
-        {t('back')}
-      </Link>
+    // wraps the whole tree so the back nav can read the favorited state
+    <FavoriteToggleProvider itemId={item.id} slug={item.slug} initialCount={item.favoritesCount}>
+      <div className="space-y-6">
+        <BackNav locale={locale} />
 
-      <div className="grid gap-6 lg:grid-cols-3">
-        <div className="lg:col-span-2">
-          <Card>
-            <CardContent className="p-0">
-              {item.imageUrl && (
-                <div className="relative h-96 w-full bg-slate-100 dark:bg-slate-800">
-                  <Image
-                    src={item.imageUrl}
-                    alt={item.title}
-                    fill
-                    sizes="(max-width: 1024px) 100vw, 66vw"
-                    className="object-cover"
-                  />
-                </div>
-              )}
-            </CardContent>
-          </Card>
-        </div>
+        <div className="grid gap-6 lg:grid-cols-3">
+          <div className="lg:col-span-2">
+            <Card>
+              <CardContent className="p-0">
+                {item.imageUrl && (
+                  <div className="relative h-96 w-full bg-slate-100 dark:bg-slate-800">
+                    <Image
+                      src={item.imageUrl}
+                      alt={item.title}
+                      fill
+                      sizes="(max-width: 1024px) 100vw, 66vw"
+                      className="object-cover"
+                    />
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          </div>
 
-        <FavoriteToggleProvider itemId={item.id} slug={item.slug} initialCount={item.favoritesCount}>
           <div className="space-y-6">
             <Card>
               <CardHeader>
@@ -75,9 +71,9 @@ const ItemDetailModule: FC<Readonly<IItemDetailModuleProps>> = (props) => {
 
             <FavoriteToggle />
           </div>
-        </FavoriteToggleProvider>
+        </div>
       </div>
-    </div>
+    </FavoriteToggleProvider>
   )
 }
 

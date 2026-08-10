@@ -37,6 +37,7 @@
   },
   "ItemDetail": {
     "back": "← Назад до пілотів",
+    "backToFavorites": "← Назад до обраних",
     "team": "Команда",
     "number": "Номер",
     "nationality": "Національність",
