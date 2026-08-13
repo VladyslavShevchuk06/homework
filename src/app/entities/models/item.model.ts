@@ -17,7 +17,8 @@ export interface IItem {
   slug: string
   title: string
   team: string
-  number: string
+  teamSlug: string
+  number: number
   country: string
   description: string | null
   imageUrl: string | null

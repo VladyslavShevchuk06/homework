@@ -52,3 +52,41 @@ here. Reconciled the wiki and the skills in one pass, since the same two facts w
   anywhere are this log entry.
 - Lesson for the next run: the wiki and the skills state some of the same facts, so a code change
   that contradicts one usually contradicts the other. Check both, and check them in the same pass.
+
+## [2026-08-13] update | teams normalization + unit test layer
+
+Two shipped changes, one reverted before it landed. Reconciled the wiki against all three.
+
+- **`teams` extracted from `items`.** The catalog's team filter was a hard-coded 11-name array in
+  `search-form.component.tsx` matched with `ilike '%<name>%'` against localized text — and the
+  hard-coded list already disagreed with the data (`'Red Bull'` vs the seeded
+  `'Red Bull Racing'`; only the `ilike` hid it). Now a real `teams` table, a not-null
+  `items.team_id` FK, filtering by `eq(teams.slug, …)`, and dropdown options served from
+  `/api/teams`. `number` went `text` → `integer` in the same pass. Updated
+  [[database-and-migrations]] (schema, migrations, seeding), [[data-flow]] (locale columns,
+  slug filter, aggregates) and the `index.md` diagram.
+- **Two facts worth recording, both found by a failing test rather than by reading:**
+  - `db.$count(table, filter)` breaks the moment `filter` reaches into a joined table. `$count`
+    also takes a subquery — that is the form the list uses now.
+  - Drizzle's relational query (`db.query.*.findFirst`) rewrites table aliases inside `extras`,
+    so the shared `favoritesCount` fragment emitted `where "items"."item_id" = "items"."id"` and
+    threw. The detail page counts with a second `db.$count` instead.
+- **Migrations `0003`/`0004` are hand-extended, and that is not a violation.** [[database-and-migrations]]
+  said "generated, never hand-edited"; the rule is about *correcting* a migration, and drizzle-kit
+  cannot express a data backfill at all. Added a section spelling out the backfill statements, why
+  the change is split across two migrations (`generate` prompts for drop+add and fails outside a
+  TTY), and the pre-flight check `select number from items where number !~ '^[0-9]+$'`.
+- **Vitest added** over the three `(api)` route handlers — 17 tests, mocking `connection` and the
+  service module so no DB or browser is involved. New `ci.yml` runs `lint` → `type-check` → `test`;
+  before it, `yarn build` was the only implicit type gate in CI. Documented in [[testing]].
+- **Password reset was built, then reverted.** Better Auth `sendResetPassword` + a Resend sender +
+  two pages + 4 e2e tests, all green — reverted because without `RESEND_API_KEY` and a verified
+  domain the feature *looks* fine in prod (UI says "check your inbox") while the mail only reaches
+  a server log. Shipping a silently broken flow is worse than not shipping it. Nothing of it
+  remains in the tree; `waitForHydration` went with it, and [[testing]] now records the technique
+  so it is not rediscovered from scratch.
+- e2e baseline re-confirmed at **18 passed, 0 flaky** (warm server) and annotated in [[testing]]:
+  on a cold dev server *both* `favorites.spec.ts` tests flake, not only `:32`.
+- Lesson for the next run: a "documented rule" and "a rule that applies to this case" are not the
+  same thing. Two conventions here (no hand-edited SQL, `db.$count` for aggregates) each needed a
+  stated exception rather than either silent deviation or mechanical compliance.

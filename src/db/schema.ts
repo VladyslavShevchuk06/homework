@@ -1,4 +1,5 @@
-import { pgTable, text, timestamp, uuid, boolean, uniqueIndex, index } from 'drizzle-orm/pg-core'
+import { relations } from 'drizzle-orm'
+import { pgTable, text, timestamp, uuid, boolean, integer, uniqueIndex, index } from 'drizzle-orm/pg-core'
 
 // Better Auth: user table
 // keys must match Better Auth field names
@@ -55,6 +56,15 @@ export const verification = pgTable('verification', {
   updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
 })
 
+// teams table - F1 constructors
+export const teams = pgTable('teams', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  slug: text('slug').notNull().unique(),
+  nameEn: text('name_en').notNull(),
+  nameUk: text('name_uk').notNull(),
+  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+})
+
 // items table - F1 drivers catalog
 export const items = pgTable(
   'items',
@@ -63,9 +73,10 @@ export const items = pgTable(
     slug: text('slug').notNull().unique(),
     titleEn: text('title_en').notNull(),
     titleUk: text('title_uk').notNull(),
-    teamEn: text('team_en').notNull(),
-    teamUk: text('team_uk').notNull(),
-    number: text('number').notNull(),
+    teamId: uuid('team_id')
+      .notNull()
+      .references(() => teams.id, { onDelete: 'restrict' }),
+    number: integer('number').notNull(),
     countryEn: text('country_en').notNull(),
     countryUk: text('country_uk').notNull(),
     descriptionEn: text('description_en'),
@@ -73,8 +84,13 @@ export const items = pgTable(
     imageUrl: text('image_url'),
     createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
   },
-  (table) => [index('items_created_at_idx').on(table.createdAt)],
+  (table) => [index('items_created_at_idx').on(table.createdAt), index('items_team_id_idx').on(table.teamId)],
 )
+
+// lets db.query.items resolve its team in one call
+export const itemsRelations = relations(items, ({ one }) => ({
+  team: one(teams, { fields: [items.teamId], references: [teams.id] }),
+}))
 
 // favorites table - user <-> item relationship
 export const favorites = pgTable(

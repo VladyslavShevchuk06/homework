@@ -53,7 +53,7 @@ export const ItemCard: FC<Readonly<IItemCardProps>> = (props) => {
                 <span className="font-medium">{t('team')}</span> {team}
               </p>
             )}
-            {number && (
+            {number != null && (
               <p className="text-sm text-slate-600 dark:text-slate-400">
                 <span className="font-medium">{t('number')}</span> {number}
               </p>

@@ -126,6 +126,7 @@ here rather than in the wiki because they must be in front of you before you wri
 - `yarn format` — type-check → lint --fix → prettier. Prefer this before declaring work done.
 - `yarn db:generate` / `yarn db:push` / `yarn db:migrate` / `yarn db:studio` — Drizzle Kit schema workflow.
 - `yarn seed` — populate the database from `src/db/seed.ts`.
+- `yarn test` / `yarn test:watch` — Vitest over the `(api)` route handlers. No DB, no browser.
 - `yarn test:e2e` — Playwright. Prepare with `yarn db:migrate:test` and `yarn seed:test` first.
 - Structural checkers (the two rules no toolchain sees):
   `node .claude/skills/client-structure/scripts/check-layer-imports.mjs --root src/app --alias @/=src/`

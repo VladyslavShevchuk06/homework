@@ -39,10 +39,20 @@ list cannot disagree.
 ## Locale-aware reads
 
 `items.service.ts` picks columns per locale rather than storing translations in a side table:
-`localeColumns(locale)` chooses between `titleEn`/`titleUk`, `teamEn`/`teamUk`, and so on, and
+`localeColumns(locale)` chooses between `titleEn`/`titleUk`, `countryEn`/`countryUk`, and so on, and
 `itemSelection(locale)` builds the projection. `locale` therefore belongs to the query key — it
 changes the result — which is why keys look like
 `[<key>, page, search, team, locale]`.
+
+The team name is the one field that is not on `items`: it comes from the joined `teams` row, so
+`localeColumns` reaches for `teams.nameEn`/`nameUk` and every items query carries
+`innerJoin(teams, eq(items.teamId, teams.id))`. The projection also exposes `teamSlug`.
+
+**Filtering by team goes through the slug, not the name.** `?team=ferrari` becomes
+`eq(teams.slug, 'ferrari')` — an exact match on a locale-independent handle, instead of the
+`ilike '%<name>%'` over localized text this used to be. The dropdown's options come from the same
+table via `entities/api/teams` (`/api/teams`), so there is no hard-coded team list to drift from
+the data.
 
 ## Aggregates without N+1
 
@@ -55,6 +65,19 @@ export const favoritesCount = db.$count(favorites, eq(favorites.itemId, items.id
 It is spread into the projection alongside the table columns, so a list of items carries each row's
 favorite count in a single round trip. Never count by fetching rows and reading `.length`. Detail:
 [[database-and-migrations]].
+
+Two places where the plain form does not apply, both caused by the `teams` join:
+
+- **The filtered total.** `db.$count(items, filter)` breaks once `filter` references `teams`
+  columns that `from items` alone does not have. `$count` also accepts a subquery, so the list
+  counts over the joined selection instead:
+  `db.$count(db.select({ id: items.id }).from(items).innerJoin(teams, …).where(filter).as('filtered'))`.
+- **The detail page.** `getItemDetail` uses the relational query
+  (`db.query.items.findFirst({ with: { team: true } })`), and Drizzle rewrites table aliases inside
+  it — passing the shared `favoritesCount` fragment through `extras` emits
+  `where "items"."item_id" = "items"."id"` and fails. The count is therefore a second, separate
+  `db.$count(favorites, eq(favorites.itemId, row.id))`. Two round trips, on a route cached for an
+  hour with `'use cache'`.
 
 ## Writes — two mechanisms, on purpose
 
