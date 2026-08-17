@@ -44,7 +44,7 @@ test.describe('Drivers catalog', () => {
 
   test('filters by team', async ({ page }) => {
     const items = new ItemsListPage(page)
-    await page.goto('/items?team=Ferrari')
+    await page.goto('/items?team=ferrari')
 
     await expect(items.card('Lewis Hamilton')).toBeVisible()
     await expect(items.card('Charles Leclerc')).toBeVisible()

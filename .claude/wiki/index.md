@@ -13,7 +13,7 @@ route group plus `'server-only'` services. Code under `src/` follows Feature-Sli
 | i18n | next-intl 4.13 — `en` (default, unprefixed) + `uk` |
 | Experiments | GrowthBook · analytics: Mixpanel |
 | UI | Tailwind + shadcn components under `shared/components/ui` · next-themes |
-| Tests | Playwright e2e (18 tests, separate test DB) |
+| Tests | Vitest unit (route handlers) · Playwright e2e (18 tests, separate test DB) |
 
 ## Architecture at a glance
 
@@ -22,7 +22,7 @@ graph TD
   BROWSER["browser"]
   PROXY["src/proxy.ts<br/>session gate · A/B bucketing · next-intl routing"]
   WEB["(web)/[locale]/<br/>pages → modules → features → entities"]
-  API["(api)/api/<br/>items · favorites · auth/[...all]"]
+  API["(api)/api/<br/>items · teams · favorites · auth/[...all]"]
   SVC["entities/api/*/*.service.ts<br/>'server-only' — the only SQL"]
   AUTH["src/lib/auth.ts<br/>Better Auth + drizzleAdapter"]
   DB[("Postgres / Supabase")]
@@ -52,8 +52,9 @@ function, so they cannot disagree. Detail in [[data-flow]].
 - [[database-and-migrations]] — the Drizzle client (`prepare: false` for the pooler), the schema's two
   table groups, the generate/migrate/push workflow, why `drizzle.config.ts` may read `process.env`,
   and seeding.
-- [[testing]] — Playwright layout, the three isolation mechanisms (test DB guard, `.next-e2e` build
-  dir, port 3100), how a run proceeds, and the recorded flaky-test baseline.
+- [[testing]] — the two layers (Vitest over route handlers, Playwright e2e), the three isolation
+  mechanisms (test DB guard, `.next-e2e` build dir, port 3100), how a run proceeds, and the
+  recorded flaky-test baseline.
 
 ## What this wiki deliberately does not cover
 

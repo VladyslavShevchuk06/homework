@@ -1,9 +1,43 @@
 # Testing
 
-The suite is **Playwright e2e only** — there are no unit tests. 18 tests across 4 specs, run against
-a real dev server and a **separate test database**.
+Two layers, split by what they can prove:
 
-## Layout
+- **Vitest** (`yarn test`) — 17 tests over the three `(api)` route handlers. Pure request/response
+  contract: no browser, no database.
+- **Playwright** (`yarn test:e2e`) — 18 tests across 4 specs, run against a real dev server and a
+  **separate test database**. Everything that needs real SQL or a real browser lives here.
+
+## Vitest — the route-handler contract
+
+```
+src/app/(api)/api/items/tests/route.test.ts
+src/app/(api)/api/teams/tests/route.test.ts
+src/app/(api)/api/favorites/tests/route.test.ts
+```
+
+Config is `vitest.config.mts` (`.mts`, not `.ts` — the package is CommonJS, and a `.ts` config using
+ESM syntax makes Vite warn). `environment: 'node'`, `include: ['src/**/*.test.ts']`, and the `@`
+alias resolved manually via `fileURLToPath` rather than a tsconfig-paths plugin.
+
+Two mocks make a handler callable outside Next:
+
+- **`connection` from `next/server`** — it has no store outside a render. The mock spreads the real
+  module through `importOriginal`, so `NextRequest`/`NextResponse` stay genuine and the tests assert
+  real status codes and real serialization.
+- **The service module** (`entities/api/<x>/index.server`) — replacing it wholesale means
+  `server-only` and Drizzle never load. `/api/favorites` additionally mocks `@/lib/auth` to drive
+  `getSession`.
+
+What that buys: the Zod `.catch()` fallbacks (`?page=abc` → `1`, `?locale=fr` → `'en'`, a
+101-character `search` → `''`), the `401` with no session, the `500` on a throwing service, and the
+exact arguments the handler passes down. What it deliberately does **not** cover: the SQL itself and
+the schema — those are Playwright's job.
+
+Tests live in the slice's own `tests/` folder, per the `client-structure` invariant
+(`find src -name '*.test.*'` must return only `**/tests/*.test.*`, and no `index.ts` inside them).
+They sit under `src/`, so `yarn type-check` covers them — unlike the e2e suite.
+
+## Playwright — layout
 
 ```
 test/e2e/
@@ -38,7 +72,7 @@ Three separate mechanisms, each solving a different collision:
 
 ```bash
 yarn db:migrate:test   # check-test-db → reset-test-items → src/db/migrate.ts
-yarn seed:test         # check-test-db → src/db/seed.ts  (22 drivers)
+yarn seed:test         # check-test-db → src/db/seed.ts  (11 teams, then 22 drivers)
 yarn test:e2e          # playwright test
 ```
 
@@ -51,6 +85,14 @@ already-running server outside CI.
 
 Local runs use `retries: 1`; CI uses 2 retries, 1 worker, and adds the `github` reporter.
 
+## CI — two workflows, split by cost
+
+- **`.github/workflows/ci.yml`** — `yarn lint` → `yarn type-check` → `yarn test`. No database, no
+  secrets, no browser, so it runs on every push and PR in under a minute. This is the gate that
+  used to be missing: before it, `yarn build` was the only implicit type check in CI.
+- **`.github/workflows/e2e.yml`** — the expensive one: writes `.env.test.local` from secrets,
+  migrates and seeds the test DB, builds, runs Playwright, uploads the report.
+
 ## Known baseline (2026-07-31, commit `0409586`)
 
 **18 passed, 1 flaky.** The flaky one is
@@ -61,6 +103,18 @@ That is consistent with the dual-invalidation coupling described in [[data-flow]
 favorite has to settle both TanStack's client cache and the Next.js cache tag before the empty state
 renders. Treat this specific test failing as *probably pre-existing*, not as proof that a change
 broke something; compare against this baseline rather than against "all green".
+
+**Re-confirmed 2026-08-13** (after the `teams` normalization): still **18 passed**, 0 flaky on a
+warm server. One thing learned that the baseline did not say — on a *cold* dev server both
+`favorites.spec.ts` tests flake, not just `:32`. Six workers hit routes Turbopack has not compiled
+yet, and the favorite toggle is mount-gated (`useSyncExternalStore`), so the extra compile latency
+widens the window before its button exists. Warm the server, or read a first-run favorites failure
+as environmental until it reproduces on a second run.
+
+Related trap when writing new form specs: `fillAllStable` fills and asserts, but hydration can
+still reset the input *after* the assert passes and before the click, submitting an empty field.
+The reliable gate is the nav theme toggle — it renders an `aria-hidden` placeholder until it
+mounts, so waiting for its button means React has hydrated.
 
 ## Reports
 

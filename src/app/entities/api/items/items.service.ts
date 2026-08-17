@@ -2,7 +2,7 @@ import 'server-only'
 import { and, desc, eq, ilike, or, sql } from 'drizzle-orm'
 import { type Locale } from 'next-intl'
 import { db } from '@/db'
-import { items } from '@/db/schema'
+import { favorites, items, teams } from '@/db/schema'
 import { favoritesCount } from '@/db/favorites-count'
 import { IItem, IItemsListParams, IItemsListResponse } from '@/app/entities/models/item.model'
 
@@ -14,7 +14,7 @@ function localeColumns(locale: Locale) {
 
   return {
     title: isUk ? items.titleUk : items.titleEn,
-    team: isUk ? items.teamUk : items.teamEn,
+    team: isUk ? teams.nameUk : teams.nameEn,
     country: isUk ? items.countryUk : items.countryEn,
     description: isUk ? items.descriptionUk : items.descriptionEn,
   }
@@ -29,6 +29,7 @@ function itemSelection(locale: Locale) {
     slug: items.slug,
     title: columns.title,
     team: columns.team,
+    teamSlug: teams.slug,
     number: items.number,
     country: columns.country,
     description: columns.description,
@@ -57,18 +58,27 @@ export async function getItemsList({
         ilike(columns.team, `%${searchTerm}%`),
       )
     : undefined
-  const teamFilter = teamTerm && teamTerm !== 'all' ? ilike(columns.team, `%${teamTerm}%`) : undefined
+  const teamFilter = teamTerm && teamTerm !== 'all' ? eq(teams.slug, teamTerm) : undefined
   const filter = and(searchFilter, teamFilter)
+
+  // the filter reaches into teams, so the count needs the join too — $count over a subquery
+  const filtered = db
+    .select({ id: items.id })
+    .from(items)
+    .innerJoin(teams, eq(items.teamId, teams.id))
+    .where(filter)
+    .as('filtered')
 
   const [data, totalCount] = await Promise.all([
     db
       .select(itemSelection(locale))
       .from(items)
+      .innerJoin(teams, eq(items.teamId, teams.id))
       .where(filter)
       .orderBy(desc(items.createdAt))
       .limit(PAGE_SIZE)
       .offset((currentPage - 1) * PAGE_SIZE),
-    db.$count(items, filter),
+    db.$count(filtered),
   ])
 
   const totalPages = Math.max(1, Math.ceil(totalCount / PAGE_SIZE))
@@ -87,7 +97,32 @@ export async function getAllItemSlugs(): Promise<string[]> {
 
 // get item detail
 export async function getItemDetail(slug: string, locale: Locale = 'en'): Promise<IItem | null> {
-  const result = await db.select(itemSelection(locale)).from(items).where(eq(items.slug, slug)).limit(1)
+  const row = await db.query.items.findFirst({
+    where: eq(items.slug, slug),
+    with: { team: true },
+  })
 
-  return (result[0] as IItem) ?? null
+  if (!row) {
+    return null
+  }
+
+  // counted separately — a relational query rewrites table aliases, which breaks
+  // the correlated favoritesCount sub-select
+  const count = await db.$count(favorites, eq(favorites.itemId, row.id))
+
+  const isUk = locale === 'uk'
+
+  return {
+    id: row.id,
+    slug: row.slug,
+    title: isUk ? row.titleUk : row.titleEn,
+    team: isUk ? row.team.nameUk : row.team.nameEn,
+    teamSlug: row.team.slug,
+    number: row.number,
+    country: isUk ? row.countryUk : row.countryEn,
+    description: isUk ? row.descriptionUk : row.descriptionEn,
+    imageUrl: row.imageUrl,
+    createdAt: row.createdAt,
+    favoritesCount: count,
+  }
 }

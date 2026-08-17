@@ -1,14 +1,27 @@
 import { db } from './index'
-import { items } from './schema'
+import { items, teams } from './schema'
 import { slugify } from '@/app/shared/utils/slug.util'
+
+const constructors = [
+  { nameEn: 'Red Bull Racing', nameUk: 'Red Bull Racing' },
+  { nameEn: 'Ferrari', nameUk: 'Ferrari' },
+  { nameEn: 'McLaren', nameUk: 'McLaren' },
+  { nameEn: 'Mercedes', nameUk: 'Mercedes' },
+  { nameEn: 'Aston Martin', nameUk: 'Aston Martin' },
+  { nameEn: 'Alpine', nameUk: 'Alpine' },
+  { nameEn: 'Haas', nameUk: 'Haas' },
+  { nameEn: 'Audi', nameUk: 'Audi' },
+  { nameEn: 'Racing Bulls', nameUk: 'Racing Bulls' },
+  { nameEn: 'Cadillac', nameUk: 'Cadillac' },
+  { nameEn: 'Williams', nameUk: 'Williams' },
+]
 
 const drivers = [
   {
     titleEn: 'Max Verstappen',
     titleUk: 'Макс Ферстаппен',
-    teamEn: 'Red Bull Racing',
-    teamUk: 'Red Bull Racing',
-    number: '3',
+    team: 'Red Bull Racing',
+    number: 3,
     countryEn: 'Netherlands',
     countryUk: 'Нідерланди',
     descriptionEn: 'Multiple-time world champion known for his aggressive pace and racecraft.',
@@ -19,9 +32,8 @@ const drivers = [
   {
     titleEn: 'Isak Hadjar',
     titleUk: 'Ісак Хаджар',
-    teamEn: 'Red Bull Racing',
-    teamUk: 'Red Bull Racing',
-    number: '6',
+    team: 'Red Bull Racing',
+    number: 6,
     countryEn: 'France',
     countryUk: 'Франція',
     descriptionEn: 'A rising talent stepping up to the senior team after strong junior results.',
@@ -32,9 +44,8 @@ const drivers = [
   {
     titleEn: 'Lewis Hamilton',
     titleUk: 'Льюїс Гемілтон',
-    teamEn: 'Ferrari',
-    teamUk: 'Ferrari',
-    number: '44',
+    team: 'Ferrari',
+    number: 44,
     countryEn: 'United Kingdom',
     countryUk: 'Велика Британія',
     descriptionEn: 'One of the most successful drivers in the sport, now racing in red.',
@@ -45,9 +56,8 @@ const drivers = [
   {
     titleEn: 'Charles Leclerc',
     titleUk: 'Шарль Леклер',
-    teamEn: 'Ferrari',
-    teamUk: 'Ferrari',
-    number: '16',
+    team: 'Ferrari',
+    number: 16,
     countryEn: 'Monaco',
     countryUk: 'Монако',
     descriptionEn: 'A quick and precise qualifier leading the Ferrari charge.',
@@ -58,9 +68,8 @@ const drivers = [
   {
     titleEn: 'Lando Norris',
     titleUk: 'Ландо Норріс',
-    teamEn: 'McLaren',
-    teamUk: 'McLaren',
-    number: '1',
+    team: 'McLaren',
+    number: 1,
     countryEn: 'United Kingdom',
     countryUk: 'Велика Британія',
     descriptionEn: 'Consistent front-runner and a fan favourite for his relaxed style.',
@@ -71,9 +80,8 @@ const drivers = [
   {
     titleEn: 'Oscar Piastri',
     titleUk: 'Оскар Піастрі',
-    teamEn: 'McLaren',
-    teamUk: 'McLaren',
-    number: '81',
+    team: 'McLaren',
+    number: 81,
     countryEn: 'Australia',
     countryUk: 'Австралія',
     descriptionEn: 'A composed and increasingly quick driver in the McLaren line-up.',
@@ -84,9 +92,8 @@ const drivers = [
   {
     titleEn: 'George Russell',
     titleUk: 'Джордж Расселл',
-    teamEn: 'Mercedes',
-    teamUk: 'Mercedes',
-    number: '63',
+    team: 'Mercedes',
+    number: 63,
     countryEn: 'United Kingdom',
     countryUk: 'Велика Британія',
     descriptionEn: 'A methodical racer leading the Mercedes team on track.',
@@ -97,9 +104,8 @@ const drivers = [
   {
     titleEn: 'Andrea Kimi Antonelli',
     titleUk: 'Андреа Кімі Антонеллі',
-    teamEn: 'Mercedes',
-    teamUk: 'Mercedes',
-    number: '12',
+    team: 'Mercedes',
+    number: 12,
     countryEn: 'Italy',
     countryUk: 'Італія',
     descriptionEn: 'A highly rated young driver making his mark with Mercedes.',
@@ -110,9 +116,8 @@ const drivers = [
   {
     titleEn: 'Fernando Alonso',
     titleUk: 'Фернандо Алонсо',
-    teamEn: 'Aston Martin',
-    teamUk: 'Aston Martin',
-    number: '14',
+    team: 'Aston Martin',
+    number: 14,
     countryEn: 'Spain',
     countryUk: 'Іспанія',
     descriptionEn: 'A veteran two-time champion still fighting at the front.',
@@ -123,9 +128,8 @@ const drivers = [
   {
     titleEn: 'Lance Stroll',
     titleUk: 'Ленс Стролл',
-    teamEn: 'Aston Martin',
-    teamUk: 'Aston Martin',
-    number: '18',
+    team: 'Aston Martin',
+    number: 18,
     countryEn: 'Canada',
     countryUk: 'Канада',
     descriptionEn: 'A powerful driver who excels in changeable conditions.',
@@ -136,9 +140,8 @@ const drivers = [
   {
     titleEn: 'Pierre Gasly',
     titleUk: 'П’єр Гаслі',
-    teamEn: 'Alpine',
-    teamUk: 'Alpine',
-    number: '10',
+    team: 'Alpine',
+    number: 10,
     countryEn: 'France',
     countryUk: 'Франція',
     descriptionEn: 'A race winner leading the Alpine team with experience.',
@@ -149,9 +152,8 @@ const drivers = [
   {
     titleEn: 'Franco Colapinto',
     titleUk: 'Франко Колапінто',
-    teamEn: 'Alpine',
-    teamUk: 'Alpine',
-    number: '43',
+    team: 'Alpine',
+    number: 43,
     countryEn: 'Argentina',
     countryUk: 'Аргентина',
     descriptionEn: 'An exciting newcomer bringing fresh energy to the grid.',
@@ -162,9 +164,8 @@ const drivers = [
   {
     titleEn: 'Oliver Bearman',
     titleUk: 'Олівер Бермен',
-    teamEn: 'Haas',
-    teamUk: 'Haas',
-    number: '87',
+    team: 'Haas',
+    number: 87,
     countryEn: 'United Kingdom',
     countryUk: 'Велика Британія',
     descriptionEn: 'A promising young driver earning a full-time seat at Haas.',
@@ -175,9 +176,8 @@ const drivers = [
   {
     titleEn: 'Esteban Ocon',
     titleUk: 'Естебан Окон',
-    teamEn: 'Haas',
-    teamUk: 'Haas',
-    number: '31',
+    team: 'Haas',
+    number: 31,
     countryEn: 'France',
     countryUk: 'Франція',
     descriptionEn: 'A determined racer and a previous grand prix winner.',
@@ -188,9 +188,8 @@ const drivers = [
   {
     titleEn: 'Nico Hulkenberg',
     titleUk: 'Ніко Хюлькенберг',
-    teamEn: 'Audi',
-    teamUk: 'Audi',
-    number: '27',
+    team: 'Audi',
+    number: 27,
     countryEn: 'Germany',
     countryUk: 'Німеччина',
     descriptionEn: 'An experienced qualifier anchoring the new Audi project.',
@@ -201,9 +200,8 @@ const drivers = [
   {
     titleEn: 'Gabriel Bortoleto',
     titleUk: 'Габріель Бортолето',
-    teamEn: 'Audi',
-    teamUk: 'Audi',
-    number: '5',
+    team: 'Audi',
+    number: 5,
     countryEn: 'Brazil',
     countryUk: 'Бразилія',
     descriptionEn: 'A junior champion beginning his top-flight career with Audi.',
@@ -214,9 +212,8 @@ const drivers = [
   {
     titleEn: 'Liam Lawson',
     titleUk: 'Ліам Лоусон',
-    teamEn: 'Racing Bulls',
-    teamUk: 'Racing Bulls',
-    number: '30',
+    team: 'Racing Bulls',
+    number: 30,
     countryEn: 'New Zealand',
     countryUk: 'Нова Зеландія',
     descriptionEn: 'A gritty competitor who makes the most of every opportunity.',
@@ -227,9 +224,8 @@ const drivers = [
   {
     titleEn: 'Arvid Lindblad',
     titleUk: 'Арвід Ліндблад',
-    teamEn: 'Racing Bulls',
-    teamUk: 'Racing Bulls',
-    number: '41',
+    team: 'Racing Bulls',
+    number: 41,
     countryEn: 'United Kingdom',
     countryUk: 'Велика Британія',
     descriptionEn: 'A highly rated rookie graduating from the junior ranks.',
@@ -240,9 +236,8 @@ const drivers = [
   {
     titleEn: 'Sergio Pérez',
     titleUk: 'Серхіо Перес',
-    teamEn: 'Cadillac',
-    teamUk: 'Cadillac',
-    number: '11',
+    team: 'Cadillac',
+    number: 11,
     countryEn: 'Mexico',
     countryUk: 'Мексика',
     descriptionEn: 'A tyre-management specialist returning with the Cadillac team.',
@@ -253,9 +248,8 @@ const drivers = [
   {
     titleEn: 'Valtteri Bottas',
     titleUk: 'Валттері Боттас',
-    teamEn: 'Cadillac',
-    teamUk: 'Cadillac',
-    number: '77',
+    team: 'Cadillac',
+    number: 77,
     countryEn: 'Finland',
     countryUk: 'Фінляндія',
     descriptionEn: 'A multiple race winner bringing depth to the Cadillac line-up.',
@@ -266,9 +260,8 @@ const drivers = [
   {
     titleEn: 'Carlos Sainz',
     titleUk: 'Карлос Сайнс',
-    teamEn: 'Williams',
-    teamUk: 'Williams',
-    number: '55',
+    team: 'Williams',
+    number: 55,
     countryEn: 'Spain',
     countryUk: 'Іспанія',
     descriptionEn: 'A race winner leading the Williams resurgence.',
@@ -279,9 +272,8 @@ const drivers = [
   {
     titleEn: 'Alexander Albon',
     titleUk: 'Александер Албон',
-    teamEn: 'Williams',
-    teamUk: 'Williams',
-    number: '23',
+    team: 'Williams',
+    number: 23,
     countryEn: 'Thailand',
     countryUk: 'Таїланд',
     descriptionEn: 'A smooth and reliable driver key to the Williams project.',
@@ -297,14 +289,34 @@ async function seed() {
   try {
     // clear existing rows so re-seeding updates data instead of duplicating it
     // (favorites cascade-delete with items, so a re-seed starts from a clean slate)
+    // items must go first — teams are referenced with on delete restrict
     await db.delete(items)
-    console.log('🧹 Cleared existing items')
+    await db.delete(teams)
+    console.log('🧹 Cleared existing items and teams')
+
+    const teamIdByName = new Map<string, string>()
+
+    for (const constructor of constructors) {
+      const [row] = await db
+        .insert(teams)
+        .values({ slug: slugify(constructor.nameEn), nameEn: constructor.nameEn, nameUk: constructor.nameUk })
+        .returning({ id: teams.id })
+
+      teamIdByName.set(constructor.nameEn, row.id)
+    }
+    console.log(`🏎️  Added ${constructors.length} teams`)
 
     // guard against slug collisions (e.g. two identical titles) so the unique
     // constraint can never fail — append -2, -3, … to later duplicates
     const usedSlugs = new Set<string>()
 
     for (const driver of drivers) {
+      const teamId = teamIdByName.get(driver.team)
+
+      if (!teamId) {
+        throw new Error(`Unknown team "${driver.team}" for driver "${driver.titleEn}"`)
+      }
+
       const base = slugify(driver.titleEn)
       let slug = base
       let n = 2
@@ -318,8 +330,7 @@ async function seed() {
         slug,
         titleEn: driver.titleEn,
         titleUk: driver.titleUk,
-        teamEn: driver.teamEn,
-        teamUk: driver.teamUk,
+        teamId,
         number: driver.number,
         countryEn: driver.countryEn,
         countryUk: driver.countryUk,

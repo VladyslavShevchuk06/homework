@@ -3,24 +3,12 @@
 import { type FC, useRef, useState } from 'react'
 import Form from 'next/form'
 import { useLocale, useTranslations } from 'next-intl'
+import { useQuery } from '@tanstack/react-query'
 import { getPathname, useRouter } from '@/pkg/locale'
+import { teamsListQueryOptions } from '@/app/entities/api/teams'
 import { Button, Input, Select, type ISelectOption } from '@/app/shared/components/ui'
 import { cn } from '@/pkg/theme'
 import { ISearchFormProps } from './search-form.interface'
-
-const TEAM_VALUES = [
-  'Red Bull',
-  'Ferrari',
-  'McLaren',
-  'Mercedes',
-  'Aston Martin',
-  'Alpine',
-  'Haas',
-  'Audi',
-  'Racing Bulls',
-  'Cadillac',
-  'Williams',
-]
 
 // component
 export const SearchForm: FC<Readonly<ISearchFormProps>> = (props) => {
@@ -28,6 +16,7 @@ export const SearchForm: FC<Readonly<ISearchFormProps>> = (props) => {
   const locale = useLocale()
   const t = useTranslations('SearchForm')
   const router = useRouter()
+  const { data: teams } = useQuery(teamsListQueryOptions({ locale }))
 
   const currentTeam = team || 'all'
   const hasActiveFilter = search !== '' || currentTeam !== 'all'
@@ -35,7 +24,7 @@ export const SearchForm: FC<Readonly<ISearchFormProps>> = (props) => {
 
   const teamOptions: ISelectOption[] = [
     { label: t('allTeams'), value: 'all' },
-    ...TEAM_VALUES.map((value) => ({ label: value, value })),
+    ...(teams ?? []).map((option) => ({ label: option.name, value: option.slug })),
   ]
 
   return (

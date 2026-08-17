@@ -7,6 +7,7 @@ import { setRequestLocale } from 'next-intl/server'
 import { HydrationBoundary, dehydrate } from '@tanstack/react-query'
 import { getQueryClient } from '@/pkg/query'
 import { itemsListServerQueryOptions } from '@/app/entities/api/items/index.server'
+import { teamsListServerQueryOptions } from '@/app/entities/api/teams/index.server'
 import { itemsListCacheTag } from '@/app/shared/utils/cache-tag.util'
 import { ItemsListModule } from '@/app/modules/items-list'
 import { type IItemsListParams } from '@/app/entities/models/item.model'
@@ -25,7 +26,10 @@ async function ItemsListShell({
   cacheTag(itemsListCacheTag())
 
   const queryClient = getQueryClient()
-  await queryClient.prefetchQuery(itemsListServerQueryOptions({ page, search, team, locale }))
+  await Promise.all([
+    queryClient.prefetchQuery(itemsListServerQueryOptions({ page, search, team, locale })),
+    queryClient.prefetchQuery(teamsListServerQueryOptions({ locale })),
+  ])
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>

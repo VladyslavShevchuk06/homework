@@ -54,7 +54,7 @@ const ItemDetailModule: FC<Readonly<IItemDetailModuleProps>> = (props) => {
                     <p className="mt-1 text-lg font-semibold text-slate-900 dark:text-slate-100">{team}</p>
                   </div>
                 )}
-                {number && (
+                {number != null && (
                   <div>
                     <h3 className="text-sm font-medium text-slate-600 dark:text-slate-400">{t('number')}</h3>
                     <p className="mt-1 text-lg font-semibold text-slate-900 dark:text-slate-100">#{number}</p>

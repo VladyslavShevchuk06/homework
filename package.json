@@ -18,6 +18,8 @@
     "start:e2e": "dotenv -e .env.test.local -- next start -p 3100",
     "db:migrate:test": "tsx --env-file=.env.test.local test/e2e/scripts/check-test-db.ts && tsx --env-file=.env.test.local test/e2e/scripts/reset-test-items.ts && tsx --env-file=.env.test.local src/db/migrate.ts",
     "seed:test": "tsx --env-file=.env.test.local test/e2e/scripts/check-test-db.ts && tsx --env-file=.env.test.local src/db/seed.ts",
+    "test": "vitest run",
+    "test:watch": "vitest",
     "test:e2e": "playwright test",
     "test:e2e:ui": "playwright test --ui",
     "test:e2e:report": "playwright show-report"
@@ -60,6 +62,7 @@
     "prettier": "3.3.3",
     "tailwindcss": "3.4.1",
     "tsx": "4.17.0",
-    "typescript": "5.6.2"
+    "typescript": "5.6.2",
+    "vitest": "^4.1.10"
   }
 }
