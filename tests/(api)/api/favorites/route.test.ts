@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { auth } from '@/lib/auth'
 import { getFavoritesList } from '@/app/entities/api/favorites/index.server'
-import { GET } from '../route'
+import { GET } from '@/app/(api)/api/favorites/route'
 
 // connection() has no store outside a next render
 vi.mock('next/server', async (importOriginal) => {

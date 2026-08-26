@@ -12,7 +12,7 @@ const config = [
       'playwright-report/**',
       'test-results/**',
       '.playwright-mcp/**',
-      'test/e2e/.auth/**',
+      'tests/e2e/.auth/**',
     ],
   },
   ...next,

@@ -117,7 +117,7 @@ All scripts are run with `yarn <script>`.
 
 ## Testing (End-to-End)
 
-E2E tests run with **Playwright** against a **dedicated test database** — never your dev DB — so seeding and cleanup can wipe data freely. The test app runs on **port 3100**; a guard script (`test/e2e/scripts/check-test-db.ts`) refuses to touch a database that isn't explicitly marked as a test DB.
+E2E tests run with **Playwright** against a **dedicated test database** — never your dev DB — so seeding and cleanup can wipe data freely. The test app runs on **port 3100**; a guard script (`tests/e2e/scripts/check-test-db.ts`) refuses to touch a database that isn't explicitly marked as a test DB.
 
 ### One-time setup
 
@@ -146,7 +146,7 @@ yarn test:e2e:ui       # interactive UI mode
 yarn test:e2e:report   # open the HTML report from the last run
 ```
 
-Playwright **starts the app server automatically** (`yarn dev:e2e` locally, `yarn start:e2e` on CI) — you do not need a separate `yarn dev` running. Specs live in `test/e2e/tests/` (`auth`, `catalog`, `favorites`, `gating`) and use Page Object Models under `test/e2e/pages/`.
+Playwright **starts the app server automatically** (`yarn dev:e2e` locally, `yarn start:e2e` on CI) — you do not need a separate `yarn dev` running. Specs live in `tests/e2e/tests/` (`auth`, `catalog`, `favorites`, `gating`) and use Page Object Models under `tests/e2e/pages/`.
 
 CI runs the same flow on every push to `main` and every PR via `.github/workflows/e2e.yml` (Node 22): `db:migrate:test` → `seed:test` → `build` → `test:e2e`.
 

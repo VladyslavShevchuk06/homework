@@ -2,7 +2,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { NextRequest } from 'next/server'
 import { getItemsList } from '@/app/entities/api/items/index.server'
 import { type IItemsListResponse } from '@/app/entities/models/item.model'
-import { GET } from '../route'
+import { GET } from '@/app/(api)/api/items/route'
 
 // connection() has no store outside a next render
 vi.mock('next/server', async (importOriginal) => {

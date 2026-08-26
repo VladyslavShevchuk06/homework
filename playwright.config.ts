@@ -7,8 +7,8 @@ loadEnv({ path: '.env.test' })
 const baseURL = process.env.NEXT_PUBLIC_APP_URL ?? 'http://localhost:3100'
 
 export default defineConfig({
-  testDir: './test/e2e/tests',
-  globalSetup: './test/e2e/setup/global-setup.ts',
+  testDir: './tests/e2e/tests',
+  globalSetup: './tests/e2e/setup/global-setup.ts',
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 1,
@@ -28,12 +28,12 @@ export default defineConfig({
   projects: [
     {
       name: 'setup',
-      testDir: './test/e2e/setup',
+      testDir: './tests/e2e/setup',
       testMatch: /.*\.setup\.ts/,
     },
     {
       name: 'chromium',
-      use: { ...devices['Desktop Chrome'], storageState: 'test/e2e/.auth/user.json' },
+      use: { ...devices['Desktop Chrome'], storageState: 'tests/e2e/.auth/user.json' },
       dependencies: ['setup'],
     },
   ],

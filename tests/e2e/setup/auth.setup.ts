@@ -1,7 +1,7 @@
 import { test as setup, expect } from '@playwright/test'
 import { TEST_USER } from '../utils/users'
 
-const authFile = 'test/e2e/.auth/user.json'
+const authFile = 'tests/e2e/.auth/user.json'
 
 setup('authenticate', async ({ request }) => {
   await expect(async () => {

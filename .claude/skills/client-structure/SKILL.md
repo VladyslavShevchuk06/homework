@@ -597,13 +597,13 @@ modules/<module>/
   elements/<element>/        # module-private sub-components
   hooks/                     # module-private hooks
   utils/                     # module-private pure helpers
-  tests/                     # suites for the files at the slice ROOT
 ```
 
 Each of `elements/<element>/`, `hooks/` and `utils/` ships an `index.ts` — they are
-segment folders that directly contain implementation files. `tests/` does not (nothing
-imports a test). Files stay at the slice root until a group is large enough to read as a
-group; a lone hook does not earn a `hooks/` folder, five do.
+segment folders that directly contain implementation files. Files stay at the slice root
+until a group is large enough to read as a group; a lone hook does not earn a `hooks/`
+folder, five do. Test suites never sit in the slice — they live in the top-level `tests/`
+folder beside `src/` (see "Tests live in ONE top-level `tests/` folder").
 
 #### The second file of a role earns that role a folder
 
@@ -695,22 +695,23 @@ user data.
 Reserve `*.storage.ts` for a thin wrapper over a browser storage API that holds NO state of
 its own (a one-shot handoff slot read once and cleared, say).
 
-### Tests live in ONE `tests/` folder per slice
+### Tests live in ONE top-level `tests/` folder
 
-A slice has exactly one `tests/` folder, at its root — never a second one nested inside a
-segment. Every suite for that slice lives there, named `<subject-file>.test.ts`, and
-reaches its subject by path:
+Every suite lives in a single `tests/` folder at the project root, BESIDE `src/` — never
+inside `src/`, never per slice, never nested inside a segment. Inside `tests/`, suites
+mirror the layer/slice path of their subject (relative to `src/app`), are named
+`<subject-file>.test.ts`, and reach the subject through the `@/` alias:
 
 ```
-modules/<module>/
-  <module>.store.ts
-  hooks/use-<hook>.hook.ts
-  transport/<x>-reducer.service.ts
-  elements/<element>/<element>.service.ts
-  tests/
-    <module>.store.<case>.test.ts       # imports '../<module>.store'
-    <x>-reducer.test.ts                 # imports '../transport/<x>-reducer.service'
-    <element>.service.test.ts           # imports '../elements/<element>/…'
+src/app/modules/<module>/<module>.store.ts
+src/app/modules/<module>/transport/<x>-reducer.service.ts
+src/app/shared/utils/<util>.util.ts
+tests/
+  modules/<module>/
+    <module>.store.<case>.test.ts   # imports '@/app/modules/<module>/<module>.store'
+    <x>-reducer.test.ts             # imports '@/app/modules/<module>/transport/<x>-reducer.service'
+  shared/
+    <util>.util.test.ts             # imports '@/app/shared/utils/<util>.util'
 ```
 
 Add a middle segment when one subject needs several focused suites
@@ -718,23 +719,24 @@ Add a middle segment when one subject needs several focused suites
 
 **Two rules, two different reasons:**
 
-1. **Inside the slice** — a slice is barrel-only to CONSUMERS, but most files worth unit
-   testing are slice-internal and deliberately absent from `index.ts`. A test outside the
-   slice could reach them only by breaking that barrel rule, or by forcing internals to be
-   re-exported publicly for no product reason. A test in the slice's own `tests/` folder
-   importing `../transport/x` is not a violation — it is the slice testing itself. A
-   root-level `tests/` mirror would also duplicate the whole layer hierarchy and drift the
-   moment a slice is renamed.
-2. **ONE folder, not one per segment** — every suite for a slice is findable in a single
-   place. Scattering `tests/` through `transport/`, `elements/<x>/` and the root means
-   answering "what covers this module?" requires walking the tree.
+1. **Outside `src/`** — `src/` is a pure implementation tree: no `*.test.*` file ever sits
+   in it, so slices ship without suites interleaved and structural checks scan production
+   code only. The barrel rule is untouched — it governs which IMPLEMENTATION file may
+   import which. A test is not a consumer of the slice's public surface; it is the slice's
+   own coverage, so a suite under `tests/` deep-imports its subject by path, and internals
+   are never re-exported just to make a file testable.
+2. **ONE mirror folder per slice** — every suite for a slice sits in the single folder
+   `tests/<layer>/<slice>/`, so "what covers this module?" is one directory listing.
+   Renaming or moving a slice moves its `tests/<layer>/<slice>/` folder in the same
+   change — the mirror never drifts.
 
-`tests/` takes **no `index.ts`** — the barrel rule covers folders of implementation files,
-and nothing ever imports a test.
+`tests/` takes **no `index.ts`** at any depth — the barrel rule covers folders of
+implementation files, and nothing ever imports a test.
 
-Keep the runner's glob matching this; `src/**/*.{test,spec}.{ts,tsx}` already does.
-Cross-layer, end-to-end or fixture-heavy suites belonging to NO single slice are the one
-case for a root-level folder; nothing that belongs to a slice goes there.
+Point the runner's glob at the root folder: `tests/**/*.{test,spec}.{ts,tsx}` — nothing
+under `src/` matches `*.test.*`. Cross-layer, end-to-end or fixture-heavy suites belonging
+to NO single slice get their own subfolder in the same root (`tests/e2e/`,
+`tests/fixtures/`), beside the mirror.
 
 ## Symbol naming
 

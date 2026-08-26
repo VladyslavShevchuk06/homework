@@ -33,7 +33,7 @@ yarn-error.log*
 .env.test
 
 # playwright
-test/e2e/.auth/
+tests/e2e/.auth/
 .playwright-mcp/
 test-results/
 playwright-report/

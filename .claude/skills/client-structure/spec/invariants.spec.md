@@ -94,14 +94,15 @@ Declarative structural rules that hold for **every** Next.js client built with t
   Sole exception: `shared/validation/validation.ts` (plain `*.ts`).
 - **MUST** use kebab-case folder names; the slice folder name equals the file prefix.
   Check: `modules/<name>/<name>.module.tsx` — folder and prefix match, no camelCase, no `_`.
-- **MUST** put every test for a slice in that slice's SINGLE `tests/` folder, at the slice
-  root, named `<subject-file>.test.ts`. A slice-internal file is absent from the barrel, so
-  a test outside the slice could only reach it by breaking barrel-only imports; and one
-  folder per slice keeps "what covers this module?" answerable in one place.
-  Check: `find src -name '*.test.*'` returns only `**/tests/*.test.*` paths, with at most
-  one `tests/` folder per slice; no top-level `tests/` mirror of `src/`.
-- **MUST NOT** put an `index.ts` in a `tests/` folder — nothing imports a test.
-  Check: `find src -path '*/tests/index.ts'` is empty.
+- **MUST** put every test in the SINGLE top-level `tests/` folder beside `src/`, mirroring
+  the subject's layer/slice path: `tests/<layer>/<slice>/<subject-file>.test.ts`. `src/` is
+  a pure implementation tree; a test is not a consumer, so a suite deep-imports its subject
+  by path (`@/…`) without widening any barrel.
+  Check: `find src -name '*.test.*'` is empty; `find tests -name '*.test.*'` returns only
+  `tests/<layer>/<slice>/…` paths (plus `tests/e2e/` / `tests/fixtures/` for suites that
+  belong to no slice).
+- **MUST NOT** put an `index.ts` anywhere under `tests/` — nothing imports a test.
+  Check: `find tests -name 'index.ts'` is empty.
 - **MUST** keep a MODULE barrel to its entry component only — literally one export line,
   `export { default as <X>Module } from './<x>.module'`. A module is closed business logic:
   its store, service, provider, hooks, utils, types, constants and `elements/` are internal,

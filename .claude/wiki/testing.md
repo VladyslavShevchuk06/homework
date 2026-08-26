@@ -10,14 +10,16 @@ Two layers, split by what they can prove:
 ## Vitest — the route-handler contract
 
 ```
-src/app/(api)/api/items/tests/route.test.ts
-src/app/(api)/api/teams/tests/route.test.ts
-src/app/(api)/api/favorites/tests/route.test.ts
+tests/(api)/api/items/route.test.ts
+tests/(api)/api/teams/route.test.ts
+tests/(api)/api/favorites/route.test.ts
 ```
 
 Config is `vitest.config.mts` (`.mts`, not `.ts` — the package is CommonJS, and a `.ts` config using
-ESM syntax makes Vite warn). `environment: 'node'`, `include: ['src/**/*.test.ts']`, and the `@`
-alias resolved manually via `fileURLToPath` rather than a tsconfig-paths plugin.
+ESM syntax makes Vite warn). `environment: 'node'`, `include: ['tests/**/*.test.ts']` plus
+`exclude: [...configDefaults.exclude, 'tests/e2e/**']` so the Playwright specs sharing the root are
+never collected, and the `@` alias resolved manually via `fileURLToPath` rather than a
+tsconfig-paths plugin.
 
 Two mocks make a handler callable outside Next:
 
@@ -33,14 +35,15 @@ What that buys: the Zod `.catch()` fallbacks (`?page=abc` → `1`, `?locale=fr` 
 exact arguments the handler passes down. What it deliberately does **not** cover: the SQL itself and
 the schema — those are Playwright's job.
 
-Tests live in the slice's own `tests/` folder, per the `client-structure` invariant
-(`find src -name '*.test.*'` must return only `**/tests/*.test.*`, and no `index.ts` inside them).
-They sit under `src/`, so `yarn type-check` covers them — unlike the e2e suite.
+Suites live in the top-level `tests/` folder, mirroring the subject's path under `src/app` and
+importing it through `@/`, per the `client-structure` invariant (`find src -name '*.test.*'` must be
+empty, and no `index.ts` anywhere under `tests/`). They are still inside the app `tsconfig.json`, so
+`yarn type-check` covers them — unlike the e2e suite, which is excluded.
 
 ## Playwright — layout
 
 ```
-test/e2e/
+tests/e2e/
 ├── tests/          auth.spec.ts (5) · catalog.spec.ts (7) · favorites.spec.ts (2) · gating.spec.ts (4)
 ├── pages/          page objects: items-list, item-detail, favorites, login, register, nav
 ├── fixtures/       test.ts (the extended `test`), api.fixture.ts
@@ -50,7 +53,7 @@ test/e2e/
 └── .auth/user.json storage state produced by the setup project
 ```
 
-`test/` is excluded from the app `tsconfig.json` and has its own — that is why `yarn type-check`
+`tests/e2e` is excluded from the app `tsconfig.json` and has its own — that is why `yarn type-check`
 does not cover the suite.
 
 ## Isolation from the dev environment
@@ -78,7 +81,7 @@ yarn test:e2e          # playwright test
 
 `playwright.config.ts` then does the rest: `globalSetup` asserts the test DB and deletes freshly
 created users; the **`setup` project** runs `auth.setup.ts`, which signs a user up and in through the
-real `/api/auth/*` endpoints (see [[auth]]) and saves storage state to `test/e2e/.auth/user.json`;
+real `/api/auth/*` endpoints (see [[auth]]) and saves storage state to `tests/e2e/.auth/user.json`;
 the **`chromium` project** depends on `setup` and reuses that storage state, so tests start
 authenticated. `webServer` boots `yarn dev:e2e` locally (`yarn start:e2e` in CI) and reuses an
 already-running server outside CI.
